@@ -23,7 +23,8 @@ class VectorEngine:
 
         # init faiss
         dimension = embeddings.shape[1]
-        index = faiss.IndexFlatIP(dimension)
+        base_index = faiss.IndexFlatIP(dimension)
+        index = faiss.IndexIDMap(base_index)
         index.add_with_ids(self.normalized_embeddings, ids)
 
     def search(self, query_embedding, top_n: int = 5):
