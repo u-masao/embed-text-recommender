@@ -14,7 +14,7 @@ class VectorEngine:
         self.dimension = embeddings.shape[1]
 
         # normalize
-        l2norms = np.linalg.norm(embeddings, axis=1, ord=2).reshape(1)
+        l2norms = np.linalg.norm(embeddings, axis=1, ord=2).flatten()
         self.normalized_embeddings = embeddings / l2norms
 
         # init faiss
