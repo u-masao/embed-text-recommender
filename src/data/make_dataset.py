@@ -9,8 +9,7 @@ def make_dataset(kwargs):
     dataset = load_dataset(
         kwargs["dataset_name_or_path"],
         train_ratio=0.8,
-        val_ratio=0.1,
-        test_ratio=0.1,
+        vallidation_ratio=0.1,
         random_state=kwargs["random_state"],
         suffle=True,
     )
@@ -27,7 +26,7 @@ def main(**kwargs):
     # init logging
     logger = logging.getLogger(__name__)
     logger.info("start process")
-    mlflow.set_experiments("make_dataset")
+    mlflow.set_experiment("make_dataset")
     mlflow.start_run(run_name="mlflow_run_name")
 
     # log cli options
