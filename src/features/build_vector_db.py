@@ -4,14 +4,14 @@ import click
 import cloudpickle
 import faiss
 import mlflow
-import pandas as pd
+import numpy as np
 
 
 class VectorEngine:
     def __init__(self, ids, embeddings):
-        self.ids=ids
-        self.embeddings=embeddings
-        slef.dimension = embeddings.shape[1]
+        self.ids = ids
+        self.embeddings = embeddings
+        self.dimension = embeddings.shape[1]
 
         # normalize
         l2norms = np.linalg.norm(embeddings, axis=1, ord=2)
@@ -21,31 +21,30 @@ class VectorEngine:
         dimension = embeddings.size[1]
         index = faiss.IndexFlatIP(dimension)
         index.add_with_ids(self.normailzed_embeddings, ids)
-    def search(self, query_embedding, top_n: int = 5):
 
-        similarities, indices = self.index.search(np.array(query_embedding), top_n)
-        
+    def search(self, query_embedding, top_n: int = 5):
+        similarities, indices = self.index.search(
+            np.array(query_embedding), top_n
+        )
+
         return similarities, indices
+
 
 def build_vector_db(kwargs):
     # init logging
     logger = logging.getLogger(__name__)
 
     # load dataset
-    with open(kwargs["output_filepath"], "rb") as fo:
+    with open(kwargs["input_filepath"], "rb") as fo:
         df, embeddings = cloudpickle.load(fo)
     logger.info(df)
     logger.info(embeddings)
 
-    engine = VectorEngine(df['ids'], embeddings)
+    engine = VectorEngine(df["ids"], embeddings)
 
     similarities, indices = engine.search(embeddings[0])
     print(similarities)
     print(indices)
-
-
-
-
 
 
 @click.command()
