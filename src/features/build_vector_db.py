@@ -25,7 +25,7 @@ class VectorEngine:
         ------
         None
         """
-        self.ids = list(ids)
+        self.ids = [int(x) for x in list(ids)]
         self.embeddings = embeddings
         self.dimension = embeddings.shape[1]
 
