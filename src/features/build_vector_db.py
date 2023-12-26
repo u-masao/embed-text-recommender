@@ -53,6 +53,7 @@ class VectorEngine:
         results = []
         for id in ids:
             print(f"id: {id}")
+            print(f"self.ids: {self.ids}")
             if id in self.ids:
                 print(f"hit id: {id}")
                 results.append(self.ids.index(id))
