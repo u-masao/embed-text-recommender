@@ -32,7 +32,7 @@ stages:
       size: 74004186
   build_vector_db:
     cmd: poetry run python -m src.features.build_vector_db data/interim/vectors.cloudpickle
-      data/interim/vectors.faiss --mlflow_run_name=pipeline
+      data/interim/engine.cloudpickle --mlflow_run_name=pipeline
     deps:
     - path: data/interim/vectors.cloudpickle
       hash: md5
@@ -40,10 +40,10 @@ stages:
       size: 74004186
     - path: src/features/build_vector_db.py
       hash: md5
-      md5: d7c7556bf5eb60a29c8e311c4347267d
-      size: 2818
+      md5: 16b5b425d8b955ccd48365ca91e58a2a
+      size: 2961
     outs:
-    - path: data/interim/vectors.faiss
+    - path: data/interim/engine.cloudpickle
       hash: md5
-      md5: 37a8e935eede7b0510f2f54c0a00655d
-      size: 68029682
+      md5: fbdecc5f370657e7c4c44d7f7d0e1945
+      size: 68029608
