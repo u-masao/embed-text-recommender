@@ -14,7 +14,7 @@ class VectorEngine:
         self.dimension = embeddings.shape[1]
 
         # normalize
-        l2norms = np.linalg.norm(embeddings, axis=1, ord=2).flatten()
+        l2norms = np.linalg.norm(embeddings, axis=1, ord=2).ravel()
 
         print(l2norms.shape)
         print(embeddings.shape)
