@@ -33,3 +33,12 @@ stages:
     - data/interim/vectors.cloudpickle
     outs:
     - data/interim/engine.cloudpickle
+
+  recommend:
+    cmd: >-
+      poetry run python -m src.models.recommend
+      data/interim/engine.cloudpickle
+      --mlflow_run_name=pipeline
+    deps:
+    - src/models/recommend.py
+    - data/interim/engine.cloudpickle
