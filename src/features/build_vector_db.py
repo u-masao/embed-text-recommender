@@ -5,6 +5,7 @@ import cloudpickle
 import faiss
 import mlflow
 import numpy as np
+import pandas as pd
 
 
 class VectorEngine:
@@ -34,6 +35,13 @@ class VectorEngine:
         )
         return similarities, indices
 
+    def write_index(self, output_filepath):
+        faiss.write_index(self.index, output_filepath)
+
+    def read_index(self, input_filepath):
+        self.index = faiss.read_index(input_filepath)
+        self.dimension = self.index.d
+
 
 def build_vector_db(kwargs):
     # init logging
@@ -47,11 +55,14 @@ def build_vector_db(kwargs):
 
     # build vector engine
     engine = VectorEngine(df["id"], embeddings)
+    cloudpickle.dump(engine, open(kwargs["output_filepath"], "bw"))
 
     # search similar
     similarities, indices = engine.search(embeddings[0])
     print(similarities)
     print(indices)
+
+    return pd.DataFrame({"index": indices, "similarity": similarities})
 
 
 @click.command()
