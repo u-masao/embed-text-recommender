@@ -20,7 +20,7 @@ def recommend(kwargs):
         embeddings = vector_builder.encode(sentences)
         similarities, ids = engine.search(embeddings)
 
-        logger.info(embeddings)
+        logger.info(embeddings.shape)
         logger.info(similarities)
         logger.info(ids)
 
