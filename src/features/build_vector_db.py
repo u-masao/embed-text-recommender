@@ -14,11 +14,11 @@ class VectorEngine:
         self.dimension = embeddings.shape[1]
 
         # normalize
-        l2norms = np.linalg.norm(embeddings, axis=1, ord=2).ravel()
+        l2norms = np.linalg.norm(embeddings, axis=1, ord=2)
 
         print(l2norms.shape)
         print(embeddings.shape)
-        self.normalized_embeddings = np.divide(embeddings, l2norms)
+        self.normalized_embeddings = (embeddings.T / l2norms).T
 
         # init faiss
         dimension = embeddings.size[1]
