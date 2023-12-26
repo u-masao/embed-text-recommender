@@ -31,7 +31,6 @@ class VectorEngine:
         similarities, indices = self.index.search(
             np.array(query_embedding), top_n
         )
-
         return similarities, indices
 
 
@@ -46,7 +45,7 @@ def build_vector_db(kwargs):
     logger.info(embeddings)
 
     # build vector engine
-    engine = VectorEngine(df["id"].astype("int64").values, embeddings)
+    engine = VectorEngine(df["id"], embeddings)
 
     # search similar
     similarities, indices = engine.search(embeddings[:3])
