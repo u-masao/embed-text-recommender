@@ -45,6 +45,10 @@ lint:
 	poetry run black src -l 79
 	poetry run flake8 src
 
+## gradio ui
+ui:
+	poetry run gradio  src/visualization/visualize.py
+
 #################################################################################
 # PROJECT RULES                                                                 #
 #################################################################################
