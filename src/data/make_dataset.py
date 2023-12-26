@@ -39,6 +39,7 @@ def make_dataset(kwargs):
     mlflow.log_params(log_params)
     logger.info(log_params)
     logger.info(f"output dataframe: \n{result_df}")
+    logger.info(f"output columns: \n{result_df.columns}")
 
 
 @click.command()
