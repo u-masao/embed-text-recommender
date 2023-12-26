@@ -10,7 +10,7 @@ def make_dataset(kwargs):
         kwargs["dataset_name_or_path"],
         train_ratio=0.8,
         validation_ratio=0.1,
-        random_state=kwargs["random_state"],
+        seed=kwargs["random_state"],
         suffle=True,
     )
 
