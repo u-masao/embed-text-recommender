@@ -18,6 +18,7 @@ class VectorEngine:
 
         print(l2norms.shape)
         print(embeddings.shape)
+        print(type(ids))
         self.normalized_embeddings = (embeddings.T / l2norms).T
 
         # init faiss
@@ -44,7 +45,7 @@ def build_vector_db(kwargs):
     logger.info(embeddings)
 
     # build vector engine
-    engine = VectorEngine(df["id"].astype("float32").values, embeddings)
+    engine = VectorEngine(df["id"].astype("int64").values, embeddings)
 
     # search similar
     similarities, indices = engine.search(embeddings[0])
