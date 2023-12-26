@@ -14,10 +14,22 @@ stages:
     cmd: >-
       poetry run python -m src.features.build_features
       data/interim/dataset.parquet
-      data/interim/vectors.parquet
+      data/interim/vectors.cloudpickle
       --mlflow_run_name=pipeline
     deps:
     - src/features/build_features.py
     - data/interim/dataset.parquet
     outs:
-    - data/interim/vectors.parquet
+    - data/interim/vectors.cloudpickle
+
+  build_vector_db:
+    cmd: >-
+      poetry run python -m src.features.build_vector_db
+      data/interim/vectors.cloudpickle
+      data/interim/vectors.faiss
+      --mlflow_run_name=pipeline
+    deps:
+    - src/features/build_vector_db.py
+    - data/interim/vectors.cloudpickle
+    outs:
+    - data/interim/vectors.faiss
