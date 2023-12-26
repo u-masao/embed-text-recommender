@@ -28,11 +28,9 @@ class VectorEngine:
         self.index.add_with_ids(self.normalized_embeddings, ids)
 
     def search(self, query_embedding, top_n: int = 5):
-        similarities, indices = self.index.search(
-            np.array(query_embedding), top_n
-        )
+        similarities = self.index.search(np.array(query_embedding), top_n)
 
-        return similarities, indices
+        return similarities, None
 
 
 def build_vector_db(kwargs):
