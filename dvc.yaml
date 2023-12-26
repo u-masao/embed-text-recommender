@@ -9,3 +9,15 @@ stages:
     - src/data/make_dataset.py
     outs:
     - data/interim/dataset.parquet
+
+  build_vectors:
+    cmd: >-
+      poetry run python -m src.featurs.build_features
+      data/interim/dataset.parquet
+      data/interim/vectors.pickle
+      --mlflow_run_name=pipeline
+    deps:
+    - src/features/build_features.py
+    - data/interim/dataset.parquet
+    outs:
+    - data/interim/vectors.pickle
