@@ -30,3 +30,20 @@ stages:
       hash: md5
       md5: a30ae193321092a6b314a7587e0fb308
       size: 74004186
+  build_vector_db:
+    cmd: poetry run python -m src.features.build_vector_db data/interim/vectors.cloudpickle
+      data/interim/vectors.faiss --mlflow_run_name=pipeline
+    deps:
+    - path: data/interim/vectors.cloudpickle
+      hash: md5
+      md5: a30ae193321092a6b314a7587e0fb308
+      size: 74004186
+    - path: src/features/build_vector_db.py
+      hash: md5
+      md5: d7c7556bf5eb60a29c8e311c4347267d
+      size: 2818
+    outs:
+    - path: data/interim/vectors.faiss
+      hash: md5
+      md5: 37a8e935eede7b0510f2f54c0a00655d
+      size: 68029682
