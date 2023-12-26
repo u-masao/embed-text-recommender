@@ -57,5 +57,5 @@ stages:
       size: 67992858
     - path: src/models/recommend.py
       hash: md5
-      md5: c9b03d61c82423740ba83982b29f64ae
-      size: 1509
+      md5: 984bfa7d6b9b9b68f71ddae3056c6263
+      size: 1515
