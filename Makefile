@@ -23,7 +23,7 @@ repro: check_commit PIPELINE.md
 check_commit:
 	git status
 	git diff --exit-code --staged
-	git diff
+	git diff --exit-code
 
 ## PIPELINE.md
 PIPELINE.md:
