@@ -33,7 +33,10 @@ def search(query, like_ids):
 
     result_df = pd.DataFrame({"id": ids[0], "similarity": similarities[0]})
     result_df = pd.merge(result_df, text_df, on="id", how="left")
-    return result_df[["id", "similarity", "title", "content", "category"]]
+    return (
+        result_df[["id", "similarity", "title", "content", "category"]],
+        elapsed_time,
+    )
 
 
 demo = gr.Interface(fn=search, inputs=["text"], outputs=["text"])
@@ -43,11 +46,14 @@ with gr.Blocks() as demo:
         like_ids = gr.Textbox(
             label="お気に入り記事", show_label=True, value="6588884 6592773"
         )
+        indicator_label = gr.Label(label="indicator")
         output_dataframe = gr.DataFrame(
             label="検索結果", show_label=True, interactive=True
         )
     query_text.submit(
-        fn=search, inputs=[query_text, like_ids], outputs=[output_dataframe]
+        fn=search,
+        inputs=[query_text, like_ids],
+        outputs=[indicator_label, output_dataframe],
     )
 
 
