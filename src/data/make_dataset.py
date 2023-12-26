@@ -9,7 +9,7 @@ def make_dataset(kwargs):
     dataset = load_dataset(
         kwargs["dataset_name_or_path"],
         train_ratio=0.8,
-        vallidation_ratio=0.1,
+        validation_ratio=0.1,
         random_state=kwargs["random_state"],
         suffle=True,
     )
