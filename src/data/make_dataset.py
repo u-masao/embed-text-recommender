@@ -26,7 +26,7 @@ def make_dataset(kwargs):
         df["id"] = df.url.str.replace(".*/([0-9]*[0-9])/.*", "\\1", regex=True)
         results.append(df)
         logger.info(f"dataset: {name}: {data}")
-    result_df = pd.concat(results)
+    result_df = pd.concat(results).reset_index(drop=True)
 
     # output
     result_df.to_parquet(kwargs["output_filepath"])
