@@ -63,7 +63,7 @@ def search(query, like_ids, top_n):
     result_df = pd.merge(result_df, text_df, on="id", how="left")
     return (
         str(elapsed_time),
-        result_df[["id", "similarity", "title", "content", "category"]],
+        result_df[["id", "similarity", "title", "url", "content", "category"]],
     )
 
 
