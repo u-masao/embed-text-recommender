@@ -48,6 +48,19 @@ class VectorEngine:
         )
         return similarities, indices
 
+    def _find_ids_indices(self, ids):
+        results = []
+        for id in ids:
+            if id in self.ids:
+                results.append(self.ids.index(id))
+        return results
+
+    def ids_to_embeddings(self, ids: List[int], normalized: bool = False):
+        if normalized:
+            return self.normalized_embeddings[self._find_ids_indices(ids)]
+        else:
+            return self.embeddings[self._find_ids_indices(ids)]
+
 
 def build_vector_db(kwargs):
     # init logging
