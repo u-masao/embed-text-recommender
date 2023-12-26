@@ -26,10 +26,10 @@ stages:
     cmd: >-
       poetry run python -m src.features.build_vector_db
       data/interim/vectors.cloudpickle
-      data/interim/vectors.faiss
+      data/interim/engine.cloudpickle
       --mlflow_run_name=pipeline
     deps:
     - src/features/build_vector_db.py
     - data/interim/vectors.cloudpickle
     outs:
-    - data/interim/vectors.faiss
+    - data/interim/engine.cloudpickle
