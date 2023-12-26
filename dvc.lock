@@ -47,3 +47,15 @@ stages:
       hash: md5
       md5: 0741f35bd8419b98515e19e5f588b6cb
       size: 68029608
+  recommend:
+    cmd: poetry run python -m src.models.recommend data/interim/engine.cloudpickle
+      --mlflow_run_name=pipeline
+    deps:
+    - path: data/interim/engine.cloudpickle
+      hash: md5
+      md5: 0741f35bd8419b98515e19e5f588b6cb
+      size: 68029608
+    - path: src/models/recommend.py
+      hash: md5
+      md5: c9b03d61c82423740ba83982b29f64ae
+      size: 1509
