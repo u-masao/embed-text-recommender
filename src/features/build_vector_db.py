@@ -65,14 +65,12 @@ def build_vector_db(kwargs):
 
     # search similar
     similarities, indices = engine.search(embeddings[0])
-    print(similarities.shape)
-    print(indices.shape)
+    print("similarities", similarities.shape)
+    print("indices", indices.shape)
 
     similarities, indices = engine.search(embeddings[:3])
-    print(similarities.shape)
-    print(indices.shape)
-
-    return
+    print("similarities", similarities.shape)
+    print("indices", indices.shape)
 
 
 @click.command()
