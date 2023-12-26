@@ -21,7 +21,7 @@ class VectorEngine:
         self.normalized_embeddings = (embeddings.T / l2norms).T
 
         # init faiss
-        dimension = embeddings.size[1]
+        dimension = embeddings.shape[1]
         index = faiss.IndexFlatIP(dimension)
         index.add_with_ids(self.normailzed_embeddings, ids)
 
