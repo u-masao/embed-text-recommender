@@ -1,0 +1,10 @@
+stages:
+  make_dataset:
+    cmd: >-
+      poetry run python -m src.data.make_dataset
+      llm-book/livedoor-news-corpus
+      data/interim/dataset.parquet
+    deps:
+    - src/data/make_dataset.py
+    outs:
+    - data/interim/dataset.parquet
