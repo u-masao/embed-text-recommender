@@ -30,12 +30,15 @@ def make_dataset(kwargs):
 
     # output
     result_df.to_parquet(kwargs["output_filepath"])
+
+    # logging
     log_params = {
         "output.length": len(result_df),
         "output.columns": result_df.shape[1],
     }
     mlflow.log_params(log_params)
     logger.info(log_params)
+    logger.info(f"output dataframe: \n{result_df}")
 
 
 @click.command()
