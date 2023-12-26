@@ -44,6 +44,7 @@ def search(query, like_ids):
     start_ts = time.perf_counter()
     similarities, ids = engine.search(embeddings, top_n=30)
     elapsed_time = time.perf_counter() - start_ts
+    logger.info(elapsed_time)
 
     result_df = pd.DataFrame({"id": ids[0], "similarity": similarities[0]})
     result_df = pd.merge(result_df, text_df, on="id", how="left")

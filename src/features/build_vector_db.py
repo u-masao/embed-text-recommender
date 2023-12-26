@@ -90,6 +90,8 @@ def build_vector_db(kwargs):
     # lookup id
     like_ids = [6588884, 6592773]
     like_embeddings = engine.ids_to_embeddings(like_ids)
+    logger.info(f"like embeddings: {like_embeddings}")
+    logger.info(f"like embeddings shape: {like_embeddings.shape}")
 
 
 @click.command()
