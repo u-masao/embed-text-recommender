@@ -50,7 +50,6 @@ def embedding(kwargs):
     logger.info(log_params)
     logger.info(f"output dataframe: \n{result_df}")
     logger.info(f"output columns: \n{result_df.columns}")
-    logger.info(result_df[0])
 
 
 @click.command()
