@@ -6,8 +6,8 @@ stages:
     deps:
     - path: src/data/make_dataset.py
       hash: md5
-      md5: f56d6fc0a386625484667fedddb7cf9f
-      size: 1885
+      md5: 3d4f451d36d6bb8da14a2391c12b5b91
+      size: 1943
     outs:
     - path: data/interim/dataset.parquet
       hash: md5
