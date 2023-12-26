@@ -1,0 +1,15 @@
+schema: '2.0'
+stages:
+  make_dataset:
+    cmd: poetry run python -m src.data.make_dataset llm-book/livedoor-news-corpus
+      data/interim/dataset.parquet --mlflow_run_name=pipeline
+    deps:
+    - path: src/data/make_dataset.py
+      hash: md5
+      md5: e50af411e22ef871e73f68d3789d4f0f
+      size: 1738
+    outs:
+    - path: data/interim/dataset.parquet
+      hash: md5
+      md5: a5d4933c6ca928883f93588469ab9b24
+      size: 15010070
