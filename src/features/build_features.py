@@ -1,6 +1,7 @@
 import logging
 
 import click
+import cloudpickle
 import mlflow
 import pandas as pd
 from sentence_transformers import SentenceTransformer
@@ -16,7 +17,7 @@ class VectorBuilder:
         return embeddings
 
 
-def recommend(kwargs):
+def embedding(kwargs):
     # init logging
     logger = logging.getLogger(__name__)
 
@@ -31,13 +32,14 @@ def recommend(kwargs):
 
     # embedding
     builder = VectorBuilder(kwargs["model_name_or_filepath"])
-    df["embed"] = builder.encode(df["sentence"])
+    embeddings = builder.encode(df["sentence"])
 
-    # copy result
-    result_df = df[["ids", "sentence", "embed"]]
+    # make result
+    result_df = df
 
     # output
-    result_df.to_excel(kwargs["output_filepath"])
+    with open(kwargs["output_filepath"], "wb") as fo:
+        cloudpickle.dump([result_df, embeddings], fo)
 
     # logging
     log_params = {
@@ -72,7 +74,7 @@ def main(**kwargs):
     mlflow.log_params({f"args.{k}": v for k, v in kwargs.items()})
 
     # process
-    recommend(kwargs)
+    embedding(kwargs)
 
     # cleanup
     mlflow.end_run()
