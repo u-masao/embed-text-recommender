@@ -32,8 +32,8 @@ def build_vector_db(kwargs):
     logger = logging.getLogger(__name__)
 
     # load dataset
-    with open(kwargs["output_filepath"], "wb") as fo:
-        df, embeddings = cloudpickle.read(fo)
+    with open(kwargs["output_filepath"], "rb") as fo:
+        df, embeddings = cloudpickle.load(fo)
     logger.info(df)
     logger.info(embeddings)
 
