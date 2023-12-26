@@ -2,10 +2,15 @@ import logging
 
 import click
 import mlflow
+import pandas as pd
 from datasets import load_dataset
 
 
 def make_dataset(kwargs):
+    # init logging
+    logger = logging.getLogger(__name__)
+
+    # load dataset
     dataset = load_dataset(
         kwargs["dataset_name_or_path"],
         train_ratio=0.8,
@@ -14,7 +19,22 @@ def make_dataset(kwargs):
         shuffle=True,
     )
 
-    print(dataset)
+    # to pandas dataframe
+    results = []
+    for name, data in dataset.items():
+        df = pd.DataFrame(data).assign(name=name)
+        results.append(df)
+        logger.info(f"dataset: {name}: {data}")
+    result_df = pd.concat(results)
+
+    # output
+    result_df.to_parquet(kwargs["output_filepath"])
+    log_params = {
+        "output.length": len(result_df),
+        "output.columns": result_df.shape[1],
+    }
+    mlflow.log_params(log_params)
+    logger.info(log_params)
 
 
 @click.command()
