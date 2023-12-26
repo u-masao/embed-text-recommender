@@ -13,3 +13,20 @@ stages:
       hash: md5
       md5: 84f7b4101f99436d806c1ae5b6a03855
       size: 15034840
+  build_vectors:
+    cmd: poetry run python -m src.features.build_features data/interim/dataset.parquet
+      data/interim/vectors.cloudpickle --mlflow_run_name=pipeline
+    deps:
+    - path: data/interim/dataset.parquet
+      hash: md5
+      md5: 84f7b4101f99436d806c1ae5b6a03855
+      size: 15034840
+    - path: src/features/build_features.py
+      hash: md5
+      md5: 7fecc8d0d7290278996824171a30568e
+      size: 2254
+    outs:
+    - path: data/interim/vectors.cloudpickle
+      hash: md5
+      md5: a30ae193321092a6b314a7587e0fb308
+      size: 74004186
