@@ -40,21 +40,21 @@ stages:
       size: 74004186
     - path: src/features/build_vector_db.py
       hash: md5
-      md5: 9f0c8c4305a8fa5f9cbe461e43f60581
-      size: 3452
+      md5: 3fdef8fee1fcab39c65e0df921a23e46
+      size: 3630
     outs:
     - path: data/interim/engine.cloudpickle
       hash: md5
-      md5: ccac3c10ebecf82bd8d8180fce0c1180
-      size: 68030138
+      md5: b154b3acc08cf3c9a6f712311e7b5ed5
+      size: 68030198
   recommend:
     cmd: poetry run python -m src.models.recommend data/interim/engine.cloudpickle
       --mlflow_run_name=pipeline
     deps:
     - path: data/interim/engine.cloudpickle
       hash: md5
-      md5: ccac3c10ebecf82bd8d8180fce0c1180
-      size: 68030138
+      md5: b154b3acc08cf3c9a6f712311e7b5ed5
+      size: 68030198
     - path: src/models/recommend.py
       hash: md5
       md5: c9b03d61c82423740ba83982b29f64ae
