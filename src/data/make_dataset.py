@@ -11,7 +11,7 @@ def make_dataset(kwargs):
         train_ratio=0.8,
         validation_ratio=0.1,
         seed=kwargs["random_state"],
-        suffle=True,
+        shuffle=True,
     )
 
     print(dataset)
