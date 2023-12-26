@@ -56,8 +56,6 @@ def build_vector_db(kwargs):
     # load dataset
     with open(kwargs["input_filepath"], "rb") as fo:
         df, embeddings = cloudpickle.load(fo)
-    logger.info(df)
-    logger.info(embeddings)
 
     # build vector engine
     engine = VectorEngine(df["id"], embeddings)
@@ -65,12 +63,12 @@ def build_vector_db(kwargs):
 
     # search similar
     similarities, indices = engine.search(embeddings[0])
-    print("similarities", similarities.shape)
-    print("indices", indices.shape)
+    logger.info("similarities", similarities.shape)
+    logger.info("indices", indices.shape)
 
     similarities, indices = engine.search(embeddings[:3])
-    print("similarities", similarities.shape)
-    print("indices", indices.shape)
+    logger.info("similarities", similarities.shape)
+    logger.info("indices", indices.shape)
 
 
 @click.command()
