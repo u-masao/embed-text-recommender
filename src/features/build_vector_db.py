@@ -44,7 +44,7 @@ def build_vector_db(kwargs):
     logger.info(embeddings)
 
     # build vector engine
-    engine = VectorEngine(df["id"], embeddings)
+    engine = VectorEngine(df["id"].values, embeddings)
 
     # search similar
     similarities, indices = engine.search(embeddings[0])
