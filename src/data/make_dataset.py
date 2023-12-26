@@ -23,6 +23,7 @@ def make_dataset(kwargs):
     results = []
     for name, data in dataset.items():
         df = pd.DataFrame(data).assign(name=name)
+        df["id"] = df.url.str.replace(".*/([0-9]*[0-9])/.*", "\\1", regex=True)
         results.append(df)
         logger.info(f"dataset: {name}: {data}")
     result_df = pd.concat(results)
