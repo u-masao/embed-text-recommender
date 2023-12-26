@@ -4,6 +4,7 @@ stages:
       poetry run python -m src.data.make_dataset
       llm-book/livedoor-news-corpus
       data/interim/dataset.parquet
+      --mlflow_run_name=pipeline
     deps:
     - src/data/make_dataset.py
     outs:
