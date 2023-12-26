@@ -40,10 +40,10 @@ stages:
       size: 74004186
     - path: src/features/build_vector_db.py
       hash: md5
-      md5: 90de8cb1f1706da50c0113603b26e3c1
-      size: 2967
+      md5: 0653ec78b46eefd384b6d3951bb317f0
+      size: 2988
     outs:
     - path: data/interim/engine.cloudpickle
       hash: md5
-      md5: c83ec793272144a75087308508c26a11
+      md5: 0741f35bd8419b98515e19e5f588b6cb
       size: 68029608
