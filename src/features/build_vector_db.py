@@ -66,6 +66,7 @@ def build_vector_db(kwargs):
     logger.info(f"similarities: {similarities}")
     logger.info(f"indices: {indices}")
 
+    # search similar
     similarities, indices = engine.search(embeddings[:3])
     logger.info(f"similarities: {similarities}")
     logger.info(f"indices: {indices}")
