@@ -5,7 +5,6 @@ import cloudpickle
 import faiss
 import mlflow
 import numpy as np
-import pandas as pd
 
 
 class VectorEngine:
@@ -59,10 +58,14 @@ def build_vector_db(kwargs):
 
     # search similar
     similarities, indices = engine.search(embeddings[0])
-    print(similarities)
-    print(indices)
+    print(similarities.shape)
+    print(indices.shape)
 
-    return pd.DataFrame({"index": indices, "similarity": similarities})
+    similarities, indices = engine.search(embeddings[:3])
+    print(similarities.shape)
+    print(indices.shape)
+
+    return
 
 
 @click.command()
