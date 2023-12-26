@@ -40,12 +40,12 @@ stages:
       size: 74004186
     - path: src/features/build_vector_db.py
       hash: md5
-      md5: 3fdef8fee1fcab39c65e0df921a23e46
-      size: 3630
+      md5: 33f5860ce3422e0bc2d37aee69d40eee
+      size: 3752
     outs:
     - path: data/interim/engine.cloudpickle
       hash: md5
-      md5: b154b3acc08cf3c9a6f712311e7b5ed5
+      md5: 76151f3e4f1b85f1426a52c3f4cbfdf0
       size: 68030198
   recommend:
     cmd: poetry run python -m src.models.recommend data/interim/engine.cloudpickle
@@ -53,7 +53,7 @@ stages:
     deps:
     - path: data/interim/engine.cloudpickle
       hash: md5
-      md5: b154b3acc08cf3c9a6f712311e7b5ed5
+      md5: 76151f3e4f1b85f1426a52c3f4cbfdf0
       size: 68030198
     - path: src/models/recommend.py
       hash: md5
