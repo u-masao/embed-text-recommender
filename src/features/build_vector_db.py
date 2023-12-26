@@ -9,37 +9,44 @@ import numpy as np
 
 class VectorEngine:
     def __init__(self, ids, embeddings):
+        """
+        VectorEngine を初期化する。
+        ID一覧と埋め込みを利用して内部のDBに登録する。
+
+        Parameters
+        ------
+        ids: List[int]
+            ID
+        embeddings: numpy.ndarray
+            埋め込み表現
+
+        Returns
+        ------
+        None
+        """
         self.ids = ids
         self.embeddings = embeddings
         self.dimension = embeddings.shape[1]
 
         # normalize
         l2norms = np.linalg.norm(embeddings, axis=1, ord=2)
-
-        print(l2norms.shape)
-        print(embeddings.shape)
-        print(type(ids))
         self.normalized_embeddings = (embeddings.T / l2norms).T
 
         # init faiss
-        dimension = embeddings.shape[1]
-        base_index = faiss.IndexFlatIP(dimension)
+        base_index = faiss.IndexFlatIP(self.dimension)
         self.index = faiss.IndexIDMap(base_index)
+
+        # add vectors to faiss
         self.index.add_with_ids(self.normalized_embeddings, ids)
 
-    def search(self, query_embedding, top_n: int = 5):
-        query_embedding = query_embedding.reshape(-1, self.dimension)
+    def search(self, query_embeddings, top_n: int = 5):
+        query_embeddings = query_embeddings.reshape(-1, self.dimension)
+        l2norms = np.linalg.norm(query_embeddings, axis=1, ord=2)
+        normalized_query_embeddings = (query_embeddings.T / l2norms).T
         similarities, indices = self.index.search(
-            np.array(query_embedding), top_n
+            normalized_query_embeddings, top_n
         )
         return similarities, indices
-
-    def write_index(self, output_filepath):
-        faiss.write_index(self.index, output_filepath)
-
-    def read_index(self, input_filepath):
-        self.index = faiss.read_index(input_filepath)
-        self.dimension = self.index.d
 
 
 def build_vector_db(kwargs):
