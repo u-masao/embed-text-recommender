@@ -52,7 +52,9 @@ class VectorEngine:
     def _find_ids_indices(self, ids):
         results = []
         for id in ids:
+            print(f"id: {id}")
             if id in self.ids:
+                print(f"hit id: {id}")
                 results.append(self.ids.index(id))
         return results
 
@@ -84,6 +86,10 @@ def build_vector_db(kwargs):
     similarities, indices = engine.search(embeddings[:3])
     logger.info(f"similarities: {similarities}")
     logger.info(f"indices: {indices}")
+
+    # lookup id
+    like_ids = [6588884, 6592773]
+    like_embeddings = engine.ids_to_embeddings(like_ids)
 
 
 @click.command()
