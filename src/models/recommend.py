@@ -1,20 +1,16 @@
 import logging
 
 import click
-import cloudpickle
 import mlflow
 
 from src.features.build_features import VectorBuilder
-
-
-def load_engine(filepath):
-    return cloudpickle.load(open(filepath, "rb"))
+from src.models.vector_engine import VectorEngine
 
 
 def recommend(kwargs):
     logger = logging.getLogger(__name__)
     vector_builder = VectorBuilder(kwargs["model_name_or_filepath"])
-    engine = load_engine(kwargs["vector_engine_filepath"])
+    engine = VectorEngine.load(kwargs["vector_engine_filepath"])
 
     for sentences in [["飼い犬"]]:
         embeddings = vector_builder.encode(sentences)
@@ -34,6 +30,20 @@ def recommend(kwargs):
 )
 @click.option("--mlflow_run_name", type=str, default="develop")
 def main(**kwargs):
+    """
+    VectorEngine を利用してクエリ文字列に類似するテキストを計算する。
+
+    Parameters
+    ------
+    kwargs: Dict[str, any]
+        CLI オプション
+        - vector_engine_filepath
+            ベクトルエンジンバイナリのファイルパス
+        - model_name_or_filepath
+            埋め込み作成モデル名
+        - mlflow_run_name
+            MLflow の run_name
+    """
     # init logging
     logger = logging.getLogger(__name__)
     logger.info("start process")
