@@ -103,7 +103,7 @@ def main():
     # load models
     logger.info("load models")
     vector_builder = VectorBuilder(config["embedding_model"])  # noqa: F841
-    engine = VectorEngine.load(open(config["vector_engine"], "rb"))
+    engine = VectorEngine.load(config["vector_engine"])
     text_df, _ = cloudpickle.load(open(config["text_data"], "rb"))
 
     # make widgets
@@ -138,8 +138,9 @@ def main():
                 outputs=output_widgets,
             )
 
-
+demo = None
 if __name__ == "__main__":
     log_fmt = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
     logging.basicConfig(level=logging.INFO, format=log_fmt)
+    main()
     demo.launch(share=False)
