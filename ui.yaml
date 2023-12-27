@@ -1,0 +1,8 @@
+ui:
+  embedding_model:
+    oshizo/sbert-jsnli-luke-japanese-base-lite
+    # intfloat/multilingual-e5-small
+  vector_engine: data/interim/engine.cloudpickle
+  text_data: data/interim/vectors.cloudpickle
+  default_query: 東京
+  default_like_ids: 6588884 6592773
