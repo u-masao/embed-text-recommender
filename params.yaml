@@ -1,0 +1,3 @@
+embedding_models:
+  - intfloat/multilingual-e5-small
+  - oshizo/sbert-jsnli-luke-japanese-base-lite
