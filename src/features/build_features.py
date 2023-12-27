@@ -24,7 +24,7 @@ def embedding(kwargs):
     embeddings = builder.encode(df["sentence"])
 
     # output
-    Path(kwargs["output_filepath"]).parent.mkdir(exist_ok=True)
+    Path(kwargs["output_filepath"]).parent.mkdir(exist_ok=True, parents=True)
     with open(kwargs["output_filepath"], "wb") as fo:
         cloudpickle.dump([df, embeddings], fo)
 

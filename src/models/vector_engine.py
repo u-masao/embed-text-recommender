@@ -136,7 +136,7 @@ class VectorEngine:
         ------
         None
         """
-        Path(filepath).parent.mkdir(exist_ok=True)
+        Path(filepath).parent.mkdir(exist_ok=True, parents=True)
         cloudpickle.dump(self, open(filepath, "wb"))
 
     @classmethod
