@@ -47,7 +47,7 @@ lint:
 
 ## gradio ui
 ui:
-	poetry run gradio  src/visualization/visualize.py
+	poetry run gradio src/visualization/visualize.py
 
 #################################################################################
 # PROJECT RULES                                                                 #
