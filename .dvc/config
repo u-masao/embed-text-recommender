@@ -1,2 +1,4 @@
+[core]
+    remote = gdrive
 ['remote "gdrive"']
     url = /home/masao/gdrive/dataset/sbert-news-recommender/
