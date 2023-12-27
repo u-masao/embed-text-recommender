@@ -25,24 +25,10 @@ def split_text(input_text):
     return [x for x in input_text.replace("　", " ").strip().split(" ")]
 
 
-def search(query, like_ids, top_n):
-    """
-    検索クエリ、お気に入りID、推薦件数を受けとり結果を返す。
-
-    Parameters
-    ------
-    query: str
-        検索クエリ。空行で
-    """
+def embedding_query(query, cast_int=False):
     global vector_builder
-    global engine
-    global text_df
-
     logger = logging.getLogger(__name__)
 
-    logger.info(f"input: [{query}], [{like_ids}], [{top_n}]")
-
-    # 検索クエリ文字列を埋め込みにする
     query_embeddings = np.zeros(engine.dimension)
     if query.strip():
         sentences = split_text(query)
@@ -53,7 +39,12 @@ def search(query, like_ids, top_n):
             f"{np.linalg.norm(query_embeddings, axis=1, ord=2)}"
         )
 
-    # お気に入りIDを埋め込みにする
+    return query_embeddings
+
+
+def embedding_from_ids_string(like_ids):
+    global engine
+    logger = logging.getLogger(__name__)
     like_embeddings = np.zeros(engine.dimension)
     if like_ids.strip():
         like_ids = [int(x) for x in split_text(like_ids)]
@@ -64,6 +55,30 @@ def search(query, like_ids, top_n):
             "like_embeddings l2norm: "
             f"{np.linalg.norm(like_embeddings, axis=1, ord=2)}"
         )
+    return like_embeddings
+
+
+def search(query, like_ids, top_n):
+    """
+    検索クエリ、お気に入りID、推薦件数を受けとり結果を返す。
+
+    Parameters
+    ------
+    query: str
+        検索クエリ。空行で
+    """
+    global engine
+    global text_df
+
+    # init logger
+    logger = logging.getLogger(__name__)
+    logger.info(f"input: [{query}], [{like_ids}], [{top_n}]")
+
+    # 検索クエリ文字列を埋め込みにする
+    query_embeddings = embedding_query(query)
+
+    # お気に入りIDを埋め込みにする
+    like_embeddings = embedding_from_ids_string(like_ids)
 
     # ベクトル合成
     total_embedding = merge_embeddings(query_embeddings, like_embeddings)
@@ -72,7 +87,6 @@ def search(query, like_ids, top_n):
 
     # 合成ベクトルが 0 の場合
     if total_embedding_l2norm < 0.000001:
-        logger.info(f"検索中止")
         return "検索できませんでした", None
 
     # 検索
