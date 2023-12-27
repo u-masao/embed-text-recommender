@@ -59,3 +59,32 @@ stages:
       hash: md5
       md5: 81fb714b3e4ee513723cad98ce87ba0e
       size: 1904
+  build_vectors@oshizo/sbert-jsnli-luke-japanese-base-lite:
+    cmd: poetry run python -m src.features.build_features data/interim/dataset.parquet
+      data/interim/vectors.cloudpickle --mlflow_run_name=pipeline --model_name_or_filepath=oshizo/sbert-jsnli-luke-japanese-base-lite
+    deps:
+    - path: data/interim/dataset.parquet
+      hash: md5
+      md5: bc237833c9ceab972308b563cfaf3b11
+      size: 15023178
+    - path: src/features/build_features.py
+      hash: md5
+      md5: 3fa96f07948ae96eea511a3e3bb8591b
+      size: 2115
+    outs:
+    - path: data/interim/vectors.cloudpickle
+      hash: md5
+      md5: d3f94ae0293a3d16e20e4acae6d4f2d2
+      size: 73989523
+  recommend@oshizo/sbert-jsnli-luke-japanese-base-lite:
+    cmd: poetry run python -m src.models.recommend data/interim/engine.cloudpickle
+      --mlflow_run_name=pipeline --model_name_or_filepath=oshizo/sbert-jsnli-luke-japanese-base-lite
+    deps:
+    - path: data/interim/engine.cloudpickle
+      hash: md5
+      md5: e9158b9e564c885ade6a6669034e34ef
+      size: 67990513
+    - path: src/models/recommend.py
+      hash: md5
+      md5: 81fb714b3e4ee513723cad98ce87ba0e
+      size: 1904
