@@ -11,12 +11,14 @@ stages:
     - data/interim/dataset.parquet
 
   build_vectors:
+    matrix:
+      embedding_model: ${embedding_models}
     cmd: >-
       poetry run python -m src.features.build_features
       data/interim/dataset.parquet
       data/interim/vectors.cloudpickle
       --mlflow_run_name=pipeline
-      --model_name_or_filepath=oshizo/sbert-jsnli-luke-japanese-base-lite
+      --model_name_or_filepath=${item.embedding_model}
     deps:
     - src/features/build_features.py
     - data/interim/dataset.parquet
@@ -36,11 +38,13 @@ stages:
     - data/interim/engine.cloudpickle
 
   recommend:
+    matrix:
+      embedding_model: ${embedding_models}
     cmd: >-
       poetry run python -m src.models.recommend
       data/interim/engine.cloudpickle
       --mlflow_run_name=pipeline
-      --model_name_or_filepath=oshizo/sbert-jsnli-luke-japanese-base-lite
+      --model_name_or_filepath=${item.embedding_model}
     deps:
     - src/models/recommend.py
     - data/interim/engine.cloudpickle
