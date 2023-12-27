@@ -1,20 +1,12 @@
 import logging
+from pathlib import Path
 
 import click
 import cloudpickle
 import mlflow
 import pandas as pd
-from sentence_transformers import SentenceTransformer
 
-
-class VectorBuilder:
-    def __init__(self, model_name_or_filepath):
-        self.model_name_or_filepath = model_name_or_filepath
-        self.model = SentenceTransformer(model_name_or_filepath)
-
-    def encode(self, sentences):
-        embeddings = self.model.encode(sentences)
-        return embeddings
+from src.models.vector_builder import VectorBuilder
 
 
 def embedding(kwargs):
@@ -32,6 +24,7 @@ def embedding(kwargs):
     embeddings = builder.encode(df["sentence"])
 
     # output
+    Path(kwargs["output_filepath"]).parent.mkdir(exist_ok=True)
     with open(kwargs["output_filepath"], "wb") as fo:
         cloudpickle.dump([df, embeddings], fo)
 
