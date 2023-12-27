@@ -90,3 +90,6 @@ target/
 
 # mflow cache
 /mlruns/
+
+# models
+/models/
