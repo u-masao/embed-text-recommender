@@ -16,35 +16,41 @@ stages:
     cmd: >-
       poetry run python -m src.features.build_features
       data/interim/dataset.parquet
-      data/interim/vectors.cloudpickle
+      models/${item.embedding_model}/vectors.cloudpickle
       --mlflow_run_name=pipeline
       --model_name_or_filepath=${item.embedding_model}
     deps:
     - src/features/build_features.py
+    - src/models/vector_builder.py
     - data/interim/dataset.parquet
     outs:
-    - data/interim/vectors.cloudpickle
+    - models/${item.embedding_model}/vectors.cloudpickle
 
   build_vector_db:
+    matrix:
+      embedding_model: ${embedding_models}
     cmd: >-
       poetry run python -m src.features.build_vector_db
-      data/interim/vectors.cloudpickle
-      data/interim/engine.cloudpickle
+      models/${item.embedding_model}/vectors.cloudpickle
+      models/${item.embedding_model}/engine.cloudpickle
       --mlflow_run_name=pipeline
     deps:
     - src/features/build_vector_db.py
-    - data/interim/vectors.cloudpickle
+    - src/models/vector_engine.py
+    - models/${item.embedding_model}/vectors.cloudpickle
     outs:
-    - data/interim/engine.cloudpickle
+    - models/${item.embedding_model}/engine.cloudpickle
 
   recommend:
     matrix:
       embedding_model: ${embedding_models}
     cmd: >-
       poetry run python -m src.models.recommend
-      data/interim/engine.cloudpickle
+      models/${item.embedding_model}/engine.cloudpickle
       --mlflow_run_name=pipeline
       --model_name_or_filepath=${item.embedding_model}
     deps:
     - src/models/recommend.py
-    - data/interim/engine.cloudpickle
+    - src/models/vector_engine.py
+    - src/models/vector_builder.py
+    - models/${item.embedding_model}/engine.cloudpickle
