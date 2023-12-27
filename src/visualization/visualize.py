@@ -109,9 +109,13 @@ def main():
     # make widgets
     with gr.Blocks() as demo:
         with gr.Column():
-            query_text = gr.Textbox(label="検索クエリ", show_label=True, value="東京")
+            query_text = gr.Textbox(
+                label="検索クエリ", show_label=True, value=config["default_query"]
+            )
             like_ids = gr.Textbox(
-                label="お気に入り記事", show_label=True, value="6588884 6592773"
+                label="お気に入り記事の id",
+                show_label=True,
+                value=config["default_like_ids"],
             )
             top_n_number = gr.Number(value=30)
             submit_button = gr.Button(value="検索")
