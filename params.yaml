@@ -4,5 +4,5 @@ embedding_models:
   - intfloat/multilingual-e5-large
   - oshizo/sbert-jsnli-luke-japanese-base-lite
   - sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
-  - sonoisa/sentence-bert-base-ja-mean-tokens-v2
-  - sentence-transformers/paraphrase-multilingual-mpnet-base-v2
+  # - sonoisa/sentence-bert-base-ja-mean-tokens-v2
+  # - sentence-transformers/paraphrase-multilingual-mpnet-base-v2
