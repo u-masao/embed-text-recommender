@@ -1,9 +1,9 @@
 ui:
   embedding_model:
     # oshizo/sbert-jsnli-luke-japanese-base-lite
-    # intfloat/multilingual-e5-small
-    intfloat/multilingual-e5-large
+    intfloat/multilingual-e5-small
+    # intfloat/multilingual-e5-large
   vector_engine: models/intfloat/multilingual-e5-large/engine.cloudpickle
   text_data: models/intfloat/multilingual-e5-large/vectors.cloudpickle
-  default_query: 東京
+  default_query: エンジニア 転職
   default_like_ids: 6588884 6592773
