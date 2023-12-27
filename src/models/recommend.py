@@ -3,7 +3,7 @@ import logging
 import click
 import mlflow
 
-from src.features.build_features import VectorBuilder
+from src.models.vector_builder import VectorBuilder
 from src.models.vector_engine import VectorEngine
 
 

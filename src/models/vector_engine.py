@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import List
 
 import cloudpickle
@@ -135,6 +136,7 @@ class VectorEngine:
         ------
         None
         """
+        Path(filepath).parent.mkdir(exist_ok=True)
         cloudpickle.dump(self, open(filepath, "wb"))
 
     @classmethod

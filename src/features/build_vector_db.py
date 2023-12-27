@@ -18,8 +18,8 @@ def build_vector_db(kwargs):
     # build vector engine
     engine = VectorEngine(df["id"], embeddings)
 
-    # output vector engine
-    cloudpickle.dump(engine, open(kwargs["output_filepath"], "bw"))
+    # save vector engine
+    engine.save(kwargs["output_filepath"])
 
     # search similar
     similarities, indices = engine.search(embeddings[0])
