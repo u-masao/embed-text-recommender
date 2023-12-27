@@ -16,6 +16,7 @@ stages:
       data/interim/dataset.parquet
       data/interim/vectors.cloudpickle
       --mlflow_run_name=pipeline
+      --model_name_or_filepath=oshizo/sbert-jsnli-luke-japanese-base-lite
     deps:
     - src/features/build_features.py
     - data/interim/dataset.parquet
@@ -39,6 +40,7 @@ stages:
       poetry run python -m src.models.recommend
       data/interim/engine.cloudpickle
       --mlflow_run_name=pipeline
+      --model_name_or_filepath=oshizo/sbert-jsnli-luke-japanese-base-lite
     deps:
     - src/models/recommend.py
     - data/interim/engine.cloudpickle
