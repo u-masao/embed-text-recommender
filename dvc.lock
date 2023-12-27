@@ -61,7 +61,8 @@ stages:
       size: 1904
   build_vectors@oshizo/sbert-jsnli-luke-japanese-base-lite:
     cmd: poetry run python -m src.features.build_features data/interim/dataset.parquet
-      data/interim/vectors.cloudpickle --mlflow_run_name=pipeline --model_name_or_filepath=oshizo/sbert-jsnli-luke-japanese-base-lite
+      models/oshizo/sbert-jsnli-luke-japanese-base-lite/vectors.cloudpickle --mlflow_run_name=pipeline
+      --model_name_or_filepath=oshizo/sbert-jsnli-luke-japanese-base-lite
     deps:
     - path: data/interim/dataset.parquet
       hash: md5
@@ -69,22 +70,316 @@ stages:
       size: 15023178
     - path: src/features/build_features.py
       hash: md5
-      md5: 3fa96f07948ae96eea511a3e3bb8591b
-      size: 2115
-    outs:
-    - path: data/interim/vectors.cloudpickle
+      md5: 5d71795c73120cd3f79a2dd4f24ed26b
+      size: 1910
+    - path: src/models/vector_builder.py
       hash: md5
-      md5: d3f94ae0293a3d16e20e4acae6d4f2d2
+      md5: fa1927913e6049e5f76da09fe91e7b37
+      size: 361
+    outs:
+    - path: models/oshizo/sbert-jsnli-luke-japanese-base-lite/vectors.cloudpickle
+      hash: md5
+      md5: 637a0473bc66601c344922083d052bc7
       size: 73989523
   recommend@oshizo/sbert-jsnli-luke-japanese-base-lite:
-    cmd: poetry run python -m src.models.recommend data/interim/engine.cloudpickle
+    cmd: poetry run python -m src.models.recommend models/oshizo/sbert-jsnli-luke-japanese-base-lite/engine.cloudpickle
       --mlflow_run_name=pipeline --model_name_or_filepath=oshizo/sbert-jsnli-luke-japanese-base-lite
     deps:
-    - path: data/interim/engine.cloudpickle
+    - path: models/oshizo/sbert-jsnli-luke-japanese-base-lite/engine.cloudpickle
       hash: md5
-      md5: e9158b9e564c885ade6a6669034e34ef
+      md5: d83429b77bf3363fa3eab7fa4de787a4
       size: 67990513
     - path: src/models/recommend.py
       hash: md5
-      md5: 81fb714b3e4ee513723cad98ce87ba0e
-      size: 1904
+      md5: 96febe76b808ef16bd54f75b1ff92d97
+      size: 1902
+    - path: src/models/vector_builder.py
+      hash: md5
+      md5: fa1927913e6049e5f76da09fe91e7b37
+      size: 361
+    - path: src/models/vector_engine.py
+      hash: md5
+      md5: 9f128fccd0c53da38f04a6584aba9c19
+      size: 4204
+  build_vectors@intfloat/multilingual-e5-small:
+    cmd: poetry run python -m src.features.build_features data/interim/dataset.parquet
+      models/intfloat/multilingual-e5-small/vectors.cloudpickle --mlflow_run_name=pipeline
+      --model_name_or_filepath=intfloat/multilingual-e5-small
+    deps:
+    - path: data/interim/dataset.parquet
+      hash: md5
+      md5: bc237833c9ceab972308b563cfaf3b11
+      size: 15023178
+    - path: src/features/build_features.py
+      hash: md5
+      md5: 5d71795c73120cd3f79a2dd4f24ed26b
+      size: 1910
+    - path: src/models/vector_builder.py
+      hash: md5
+      md5: fa1927913e6049e5f76da09fe91e7b37
+      size: 361
+    outs:
+    - path: models/intfloat/multilingual-e5-small/vectors.cloudpickle
+      hash: md5
+      md5: eb9926dc07b1e2011c7234bbb8bbc8a0
+      size: 62673811
+  build_vector_db@intfloat/multilingual-e5-small:
+    cmd: poetry run python -m src.features.build_vector_db models/intfloat/multilingual-e5-small/vectors.cloudpickle
+      models/intfloat/multilingual-e5-small/engine.cloudpickle --mlflow_run_name=pipeline
+    deps:
+    - path: models/intfloat/multilingual-e5-small/vectors.cloudpickle
+      hash: md5
+      md5: eb9926dc07b1e2011c7234bbb8bbc8a0
+      size: 62673811
+    - path: src/features/build_vector_db.py
+      hash: md5
+      md5: 8fe3e948b1f64fc2153f1dae1ef85d6e
+      size: 1844
+    - path: src/models/vector_engine.py
+      hash: md5
+      md5: 9f128fccd0c53da38f04a6584aba9c19
+      size: 4204
+    outs:
+    - path: models/intfloat/multilingual-e5-small/engine.cloudpickle
+      hash: md5
+      md5: 94e54d85f430ece3b32c4af0d3908d1c
+      size: 34043377
+  recommend@intfloat/multilingual-e5-small:
+    cmd: poetry run python -m src.models.recommend models/intfloat/multilingual-e5-small/engine.cloudpickle
+      --mlflow_run_name=pipeline --model_name_or_filepath=intfloat/multilingual-e5-small
+    deps:
+    - path: models/intfloat/multilingual-e5-small/engine.cloudpickle
+      hash: md5
+      md5: 94e54d85f430ece3b32c4af0d3908d1c
+      size: 34043377
+    - path: src/models/recommend.py
+      hash: md5
+      md5: 96febe76b808ef16bd54f75b1ff92d97
+      size: 1902
+    - path: src/models/vector_builder.py
+      hash: md5
+      md5: fa1927913e6049e5f76da09fe91e7b37
+      size: 361
+    - path: src/models/vector_engine.py
+      hash: md5
+      md5: 9f128fccd0c53da38f04a6584aba9c19
+      size: 4204
+  build_vectors@intfloat/multilingual-e5-base:
+    cmd: poetry run python -m src.features.build_features data/interim/dataset.parquet
+      models/intfloat/multilingual-e5-base/vectors.cloudpickle --mlflow_run_name=pipeline
+      --model_name_or_filepath=intfloat/multilingual-e5-base
+    deps:
+    - path: data/interim/dataset.parquet
+      hash: md5
+      md5: bc237833c9ceab972308b563cfaf3b11
+      size: 15023178
+    - path: src/features/build_features.py
+      hash: md5
+      md5: 5d71795c73120cd3f79a2dd4f24ed26b
+      size: 1910
+    - path: src/models/vector_builder.py
+      hash: md5
+      md5: fa1927913e6049e5f76da09fe91e7b37
+      size: 361
+    outs:
+    - path: models/intfloat/multilingual-e5-base/vectors.cloudpickle
+      hash: md5
+      md5: 47cc90ba6b31951591f523c535d98cfa
+      size: 73989523
+  build_vectors@intfloat/multilingual-e5-large:
+    cmd: poetry run python -m src.features.build_features data/interim/dataset.parquet
+      models/intfloat/multilingual-e5-large/vectors.cloudpickle --mlflow_run_name=pipeline
+      --model_name_or_filepath=intfloat/multilingual-e5-large
+    deps:
+    - path: data/interim/dataset.parquet
+      hash: md5
+      md5: bc237833c9ceab972308b563cfaf3b11
+      size: 15023178
+    - path: src/features/build_features.py
+      hash: md5
+      md5: 5d71795c73120cd3f79a2dd4f24ed26b
+      size: 1910
+    - path: src/models/vector_builder.py
+      hash: md5
+      md5: fa1927913e6049e5f76da09fe91e7b37
+      size: 361
+    outs:
+    - path: models/intfloat/multilingual-e5-large/vectors.cloudpickle
+      hash: md5
+      md5: 572702e6fb62b02487f43f7cbce2ca97
+      size: 81533331
+  build_vector_db@intfloat/multilingual-e5-base:
+    cmd: poetry run python -m src.features.build_vector_db models/intfloat/multilingual-e5-base/vectors.cloudpickle
+      models/intfloat/multilingual-e5-base/engine.cloudpickle --mlflow_run_name=pipeline
+    deps:
+    - path: models/intfloat/multilingual-e5-base/vectors.cloudpickle
+      hash: md5
+      md5: 47cc90ba6b31951591f523c535d98cfa
+      size: 73989523
+    - path: src/features/build_vector_db.py
+      hash: md5
+      md5: 8fe3e948b1f64fc2153f1dae1ef85d6e
+      size: 1844
+    - path: src/models/vector_engine.py
+      hash: md5
+      md5: 9f128fccd0c53da38f04a6584aba9c19
+      size: 4204
+    outs:
+    - path: models/intfloat/multilingual-e5-base/engine.cloudpickle
+      hash: md5
+      md5: f42d2efbcd8b08b2f6d152dcb7629b1e
+      size: 67990513
+  build_vector_db@intfloat/multilingual-e5-large:
+    cmd: poetry run python -m src.features.build_vector_db models/intfloat/multilingual-e5-large/vectors.cloudpickle
+      models/intfloat/multilingual-e5-large/engine.cloudpickle --mlflow_run_name=pipeline
+    deps:
+    - path: models/intfloat/multilingual-e5-large/vectors.cloudpickle
+      hash: md5
+      md5: 572702e6fb62b02487f43f7cbce2ca97
+      size: 81533331
+    - path: src/features/build_vector_db.py
+      hash: md5
+      md5: 8fe3e948b1f64fc2153f1dae1ef85d6e
+      size: 1844
+    - path: src/models/vector_engine.py
+      hash: md5
+      md5: 9f128fccd0c53da38f04a6584aba9c19
+      size: 4204
+    outs:
+    - path: models/intfloat/multilingual-e5-large/engine.cloudpickle
+      hash: md5
+      md5: 0059c7e6b9cadda5c5edea5c25980ca8
+      size: 90621937
+  build_vector_db@oshizo/sbert-jsnli-luke-japanese-base-lite:
+    cmd: poetry run python -m src.features.build_vector_db models/oshizo/sbert-jsnli-luke-japanese-base-lite/vectors.cloudpickle
+      models/oshizo/sbert-jsnli-luke-japanese-base-lite/engine.cloudpickle --mlflow_run_name=pipeline
+    deps:
+    - path: models/oshizo/sbert-jsnli-luke-japanese-base-lite/vectors.cloudpickle
+      hash: md5
+      md5: 637a0473bc66601c344922083d052bc7
+      size: 73989523
+    - path: src/features/build_vector_db.py
+      hash: md5
+      md5: 8fe3e948b1f64fc2153f1dae1ef85d6e
+      size: 1844
+    - path: src/models/vector_engine.py
+      hash: md5
+      md5: 9f128fccd0c53da38f04a6584aba9c19
+      size: 4204
+    outs:
+    - path: models/oshizo/sbert-jsnli-luke-japanese-base-lite/engine.cloudpickle
+      hash: md5
+      md5: d83429b77bf3363fa3eab7fa4de787a4
+      size: 67990513
+  recommend@intfloat/multilingual-e5-base:
+    cmd: poetry run python -m src.models.recommend models/intfloat/multilingual-e5-base/engine.cloudpickle
+      --mlflow_run_name=pipeline --model_name_or_filepath=intfloat/multilingual-e5-base
+    deps:
+    - path: models/intfloat/multilingual-e5-base/engine.cloudpickle
+      hash: md5
+      md5: f42d2efbcd8b08b2f6d152dcb7629b1e
+      size: 67990513
+    - path: src/models/recommend.py
+      hash: md5
+      md5: 96febe76b808ef16bd54f75b1ff92d97
+      size: 1902
+    - path: src/models/vector_builder.py
+      hash: md5
+      md5: fa1927913e6049e5f76da09fe91e7b37
+      size: 361
+    - path: src/models/vector_engine.py
+      hash: md5
+      md5: 9f128fccd0c53da38f04a6584aba9c19
+      size: 4204
+  recommend@intfloat/multilingual-e5-large:
+    cmd: poetry run python -m src.models.recommend models/intfloat/multilingual-e5-large/engine.cloudpickle
+      --mlflow_run_name=pipeline --model_name_or_filepath=intfloat/multilingual-e5-large
+    deps:
+    - path: models/intfloat/multilingual-e5-large/engine.cloudpickle
+      hash: md5
+      md5: 0059c7e6b9cadda5c5edea5c25980ca8
+      size: 90621937
+    - path: src/models/recommend.py
+      hash: md5
+      md5: 96febe76b808ef16bd54f75b1ff92d97
+      size: 1902
+    - path: src/models/vector_builder.py
+      hash: md5
+      md5: fa1927913e6049e5f76da09fe91e7b37
+      size: 361
+    - path: src/models/vector_engine.py
+      hash: md5
+      md5: 9f128fccd0c53da38f04a6584aba9c19
+      size: 4204
+  build_vectors@sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2:
+    cmd: poetry run python -m src.features.build_features data/interim/dataset.parquet
+      models/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2/vectors.cloudpickle
+      --mlflow_run_name=pipeline 
+      --model_name_or_filepath=sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+    deps:
+    - path: data/interim/dataset.parquet
+      hash: md5
+      md5: bc237833c9ceab972308b563cfaf3b11
+      size: 15023178
+    - path: src/features/build_features.py
+      hash: md5
+      md5: 5d71795c73120cd3f79a2dd4f24ed26b
+      size: 1910
+    - path: src/models/vector_builder.py
+      hash: md5
+      md5: fa1927913e6049e5f76da09fe91e7b37
+      size: 361
+    outs:
+    - path: 
+        models/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2/vectors.cloudpickle
+      hash: md5
+      md5: bc578ff7021f56d28f23df2289f2be6f
+      size: 62673811
+  build_vector_db@sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2:
+    cmd: poetry run python -m src.features.build_vector_db 
+      models/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2/vectors.cloudpickle
+      models/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2/engine.cloudpickle
+      --mlflow_run_name=pipeline
+    deps:
+    - path: 
+        models/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2/vectors.cloudpickle
+      hash: md5
+      md5: bc578ff7021f56d28f23df2289f2be6f
+      size: 62673811
+    - path: src/features/build_vector_db.py
+      hash: md5
+      md5: 8fe3e948b1f64fc2153f1dae1ef85d6e
+      size: 1844
+    - path: src/models/vector_engine.py
+      hash: md5
+      md5: 9f128fccd0c53da38f04a6584aba9c19
+      size: 4204
+    outs:
+    - path: 
+        models/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2/engine.cloudpickle
+      hash: md5
+      md5: 93dec1fa14d7ed901431245412b1040d
+      size: 34043377
+  recommend@sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2:
+    cmd: poetry run python -m src.models.recommend 
+      models/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2/engine.cloudpickle
+      --mlflow_run_name=pipeline 
+      --model_name_or_filepath=sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+    deps:
+    - path: 
+        models/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2/engine.cloudpickle
+      hash: md5
+      md5: 93dec1fa14d7ed901431245412b1040d
+      size: 34043377
+    - path: src/models/recommend.py
+      hash: md5
+      md5: 96febe76b808ef16bd54f75b1ff92d97
+      size: 1902
+    - path: src/models/vector_builder.py
+      hash: md5
+      md5: fa1927913e6049e5f76da09fe91e7b37
+      size: 361
+    - path: src/models/vector_engine.py
+      hash: md5
+      md5: 9f128fccd0c53da38f04a6584aba9c19
+      size: 4204
