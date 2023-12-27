@@ -27,29 +27,23 @@ def embedding(kwargs):
     # make features
     df["sentence"] = df["title"] + "\n" + df["content"]
 
-    # log output
-    logger.info(f"sentence:\n{df['sentence']}")
-
     # embedding
     builder = VectorBuilder(kwargs["model_name_or_filepath"])
     embeddings = builder.encode(df["sentence"])
 
-    # make result
-    result_df = df
-
     # output
     with open(kwargs["output_filepath"], "wb") as fo:
-        cloudpickle.dump([result_df, embeddings], fo)
+        cloudpickle.dump([df, embeddings], fo)
 
     # logging
     log_params = {
-        "output.length": len(result_df),
-        "output.columns": result_df.shape[1],
+        "output.length": len(df),
+        "output.columns": df.shape[1],
     }
     mlflow.log_params(log_params)
     logger.info(log_params)
-    logger.info(f"output dataframe: \n{result_df}")
-    logger.info(f"output columns: \n{result_df.columns}")
+    logger.info(f"output dataframe: \n{df}")
+    logger.info(f"output columns: \n{df.columns}")
 
 
 @click.command()
