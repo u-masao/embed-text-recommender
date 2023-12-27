@@ -14,6 +14,8 @@ from src.models.vector_engine import VectorEngine  # noqa: E402
 
 
 def merge_embeddings(embeds1, embeds2):
+    logger = logging.getLogger(__name__)
+    logger.info(f"np.vstack({embeds1.shape}, {embeds2.shape})")
     embeds = np.vstack([embeds1, embeds2])
     result = np.mean(embeds, axis=0)
     return result
@@ -41,18 +43,18 @@ def search(query, like_ids, top_n):
     logger.info(f"input: [{query}], [{like_ids}], [{top_n}]")
 
     # 検索クエリ文字列を埋め込みにする
-    query_embeddings = None
+    query_embeddings = np.zeros(engine.dimension)
     if query.strip():
         sentences = split_text(query)
         query_embeddings = vector_builder.encode(sentences)
-        logger.info(f"embed.shape: {query_embeddings.shape}")
+        logger.info(f"query_embed.shape: {query_embeddings.shape}")
         logger.info(
             "query_embeddings l2norm: "
-            f"{np.linalg.norm(query_embeddings, ord=2)}"
+            f"{np.linalg.norm(query_embeddings, axis=1, ord=2)}"
         )
 
     # お気に入りIDを埋め込みにする
-    like_embeddings = None
+    like_embeddings = np.zeros(engine.dimension)
     if like_ids.strip():
         like_ids = [int(x) for x in split_text(like_ids)]
         logger.info(f"found like_ids: {like_ids}")
@@ -60,24 +62,24 @@ def search(query, like_ids, top_n):
         logger.info(f"like_embed.shape: {like_embeddings.shape}")
         logger.info(
             "like_embeddings l2norm: "
-            f"{np.linalg.norm(like_embeddings, ord=2)}"
+            f"{np.linalg.norm(like_embeddings, axis=1, ord=2)}"
         )
-
-    # エラー処理
-    if query_embeddings is None and like_embeddings is None:
-        return "検索できませんでした", pd.DataFrame()
 
     # ベクトル合成
     total_embedding = merge_embeddings(query_embeddings, like_embeddings)
-    logger.info(
-        f"total_embedding l2norm: {np.linalg.norm(total_embedding, ord=2)}"
-    )
+    total_embedding_l2norm = np.linalg.norm(total_embedding, ord=2)
+    logger.info(f"total_embedding l2norm: {total_embedding_l2norm}")
+
+    # 合成ベクトルが 0 の場合
+    if total_embedding_l2norm < 0.000001:
+        logger.info(f"検索中止")
+        return "検索できませんでした", None
 
     # 検索
     start_ts = time.perf_counter()
     similarities, ids = engine.search(total_embedding, top_n=top_n)
     elapsed_time = time.perf_counter() - start_ts
-    logger.info(elapsed_time)
+    logger.info(f"elapsed time: {elapsed_time}")
 
     # 結果を整形
     result_df = pd.DataFrame({"id": ids[0], "similarity": similarities[0]})
@@ -143,4 +145,4 @@ if __name__ == "__main__":
     log_fmt = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
     logging.basicConfig(level=logging.INFO, format=log_fmt)
     main()
-    demo.launch(share=False)
+    demo.launch(share=False, debug=True)
