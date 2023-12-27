@@ -14,7 +14,7 @@ from src.models.vector_engine import VectorEngine  # noqa: E402
 
 
 def merge_embeddings(embeds1, embeds2):
-    embeds = np.vstack(embeds1, embeds2)
+    embeds = np.vstack([embeds1, embeds2])
     result = np.mean(embeds, axis=0)
     return result
 
@@ -90,7 +90,7 @@ def search(query, like_ids, top_n):
 
 def main():
     global demo
-    global vector_buider
+    global vector_builder
     global engine
     global text_df
 
@@ -138,7 +138,7 @@ def main():
                 outputs=output_widgets,
             )
 
-demo = None
+
 if __name__ == "__main__":
     log_fmt = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
     logging.basicConfig(level=logging.INFO, format=log_fmt)
