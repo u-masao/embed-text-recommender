@@ -137,6 +137,7 @@ class VectorEngine:
         """
         cloudpickle.dump(self, open(filepath, "wb"))
 
+    @classmethod
     def load(cls, filepath: str):
         """
         ファイルからインスタンスを読み込む。
