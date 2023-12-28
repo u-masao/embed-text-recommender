@@ -197,8 +197,6 @@ def test_main():
 
 
 if __name__ == "__main__":
-    import logging
-
     log_fmt = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
     logging.basicConfig(level=logging.INFO, format=log_fmt)
     test_main()
