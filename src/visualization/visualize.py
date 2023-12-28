@@ -58,6 +58,52 @@ def embedding_from_ids_string(like_ids):
     return like_embeddings
 
 
+def format_to_text(df):
+    """
+    dataframe を text 形式にする。
+
+    Parameters
+    ------
+    df: pandas.DataFrame
+        入力 DataFrame。必須カラムは以下の通り。
+        - id: int
+          - 検索ID
+        - similarity: float
+          - 類似度
+        - sentence: str
+          - 埋め込み対象のテキスト
+
+    Returns
+    ------
+    str
+        表示用のテキスト
+    """
+
+    template = """## index: {index}
+- info
+  - id: {id}
+  - similarity: {similarity}
+  - url: {url}
+  - length: {length}
+- text
+
+{sentence}
+
+"""
+    result = ""
+    for index, row in df.iterrows():
+        result += template.format(
+            index=index,
+            id=row["id"],
+            similarity=row["similarity"],
+            length=len(row["sentence"]),
+            sentence=row["sentence"],
+            url=row.get("url", ""),
+        )
+
+    return result
+
+
 def search(query, like_ids, top_n):
     """
     検索クエリ、お気に入りID、推薦件数を受けとり結果を返す。
@@ -98,10 +144,12 @@ def search(query, like_ids, top_n):
     # 結果を整形
     result_df = pd.DataFrame({"id": ids[0], "similarity": similarities[0]})
     result_df = pd.merge(result_df, text_df, on="id", how="left").loc[
-        :, ["id", "similarity", "title", "url", "content", "category"]
+        :, ["id", "similarity", "sentence", "url"]
     ]
 
-    return str(elapsed_time), result_df
+    output_text = format_to_text(result_df)
+
+    return str(elapsed_time), output_text
 
 
 def main():
@@ -133,16 +181,14 @@ def main():
                 show_label=True,
                 value=config["default_like_ids"],
             )
-            top_n_number = gr.Number(value=30)
+            top_n_number = gr.Number(value=config["default_top_n"])
             submit_button = gr.Button(value="検索")
             indicator_label = gr.Label(label="indicator")
-            output_dataframe = gr.DataFrame(
-                label="検索結果", show_label=True, interactive=True
-            )
+            output_text = gr.Markdown(label="検索結果", show_label=True)
 
         # set event callback
         input_widgets = [query_text, like_ids, top_n_number]
-        output_widgets = [indicator_label, output_dataframe]
+        output_widgets = [indicator_label, output_text]
         for entry_point in [
             query_text.submit,
             like_ids.submit,
