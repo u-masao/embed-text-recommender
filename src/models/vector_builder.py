@@ -1,3 +1,4 @@
+import logging
 from typing import List
 
 import numpy as np
@@ -18,8 +19,20 @@ class VectorBuilder:
         )
 
     def encode(self, sentences):
-        chunks_list = self.splitter.split_text(sentences)
-        return make_chunk_averaged_embeddings(self.model, chunks_list)
+        # init logger
+        logger = logging.getLogger(__name__)
+
+        # split to chunks
+        logger.info("split sentences to chunks")
+        chunks_list = [
+            x
+            for x in map(lambda x: self.splitter.split_text(text=x), sentences)
+        ]
+
+        # embedding
+        embeddings = make_chunk_averaged_embeddings(self.model, chunks_list)
+
+        return embeddings
 
         # return self._naive_encode(sentences)
 
