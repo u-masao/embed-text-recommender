@@ -4,6 +4,7 @@ from typing import List
 import numpy as np
 from langchain.text_splitter import SentenceTransformersTokenTextSplitter
 from sentence_transformers import SentenceTransformer
+from tqdm.contrib import tmap
 
 
 class VectorBuilder:
@@ -26,7 +27,9 @@ class VectorBuilder:
         logger.info("split sentences to chunks")
         chunks_list = [
             x
-            for x in map(lambda x: self.splitter.split_text(text=x), sentences)
+            for x in tmap(
+                lambda x: self.splitter.split_text(text=x), sentences
+            )
         ]
 
         # embedding
