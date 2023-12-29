@@ -20,8 +20,10 @@ def embedding(kwargs):
     df["sentence"] = df["title"] + "\n" + df["content"]
 
     # embedding
-    builder = Embedder(kwargs["model_name_or_filepath"])
-    embeddings = builder.encode(df["sentence"])
+    embedder = Embedder(kwargs["model_name_or_filepath"])
+    embeddings = embedder.encode(
+        df["sentence"], method=kwargs["embedding_method"]
+    )
 
     # output
     Path(kwargs["output_filepath"]).parent.mkdir(exist_ok=True, parents=True)
@@ -47,6 +49,7 @@ def embedding(kwargs):
     type=str,
     default="oshizo/sbert-jsnli-luke-japanese-base-lite",
 )
+@click.option("--embedding_method", type=str, default="chunk_split")
 @click.option("--mlflow_run_name", type=str, default="develop")
 def main(**kwargs):
     # init logging
