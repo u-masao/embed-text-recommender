@@ -4,6 +4,7 @@ import click
 import mlflow
 
 from src.models import Embedder, VectorEngine
+from src.utils import get_device_info
 
 
 def recommend(kwargs):
@@ -52,6 +53,7 @@ def main(**kwargs):
     # log cli options
     logger.info(f"args: {kwargs}")
     mlflow.log_params({f"args.{k}": v for k, v in kwargs.items()})
+    mlflow.log_params(get_device_info())
 
     # process
     recommend(kwargs)

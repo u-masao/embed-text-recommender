@@ -7,6 +7,7 @@ import mlflow
 import pandas as pd
 
 from src.models import Embedder
+from src.utils import get_device_info
 
 
 def embedding(kwargs):
@@ -61,6 +62,7 @@ def main(**kwargs):
     # log cli options
     logger.info(f"args: {kwargs}")
     mlflow.log_params({f"args.{k}": v for k, v in kwargs.items()})
+    mlflow.log_params(get_device_info())
 
     # process
     embedding(kwargs)

@@ -1,6 +1,7 @@
 import logging
 import sys
 import time
+from pprint import pprint
 
 import cloudpickle
 import gradio as gr
@@ -10,6 +11,7 @@ import yaml
 
 sys.path.append(".")
 from src.features import Embedder, VectorEngine  # noqa: E402
+from src.utils import get_device_info  # noqa: E402
 
 
 def merge_embeddings(embeds1, embeds2):
@@ -159,6 +161,8 @@ def main():
 
     # init logging
     logger = logging.getLogger(__name__)
+
+    logger.info(pprint(get_device_info()))
 
     # load config
     config = yaml.safe_load(open("ui.yaml", "r"))["ui"]
