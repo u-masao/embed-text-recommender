@@ -158,7 +158,6 @@ class VectorEngine:
 
     def __str__(self) -> str:
         params = {
-            "model": self.model,
             "indexer": str(self.index),
             "ids length": len(self.ids),
             "embeddings shape": self.embeddings.shape,
