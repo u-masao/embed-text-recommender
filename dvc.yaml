@@ -25,6 +25,7 @@ stages:
     deps:
     - src/features/build_features.py
     - src/models/embedder.py
+    - src/models/vector_engine.py
     - data/interim/dataset.parquet
     outs:
     - data/interim/sentences.parquet
@@ -49,6 +50,7 @@ stages:
   recommend:
     matrix:
       embedding_model: ${embedding_models}
+      embedding_method: ${embedding_methods}
     cmd: >-
       poetry run python -m src.models.recommend
       models/${item.embedding_model}/engine_${item.embedding_method}.cloudpickle
