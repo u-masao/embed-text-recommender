@@ -1,4 +1,5 @@
 import logging
+from pprint import pformat
 from typing import List
 
 import numpy as np
@@ -128,6 +129,14 @@ class Embedder:
         assert embeddings.shape[1] == d_size
 
         return embeddings
+
+    def __str__(self) -> str:
+        params = {
+            "model": str(self.model),
+            "indexer": str(self.splitter),
+            "model_name_or_path": self.model_name_or_path,
+        }
+        return pformat(params)
 
 
 def make_weight_matrix(chunks_list: List[List[str]]) -> np.ndarray:
