@@ -1,4 +1,5 @@
 from pathlib import Path
+from pprint import pformat
 from typing import List
 
 import cloudpickle
@@ -7,6 +8,16 @@ import numpy as np
 
 
 class VectorEngine:
+    def __str__(self) -> str:
+        params = {
+            "ids length": len(self.ids),
+            "embeddings shape": self.embeddings.shape,
+            "embedding dimension": self.dimension,
+            "splitter": self.splitter,
+            "model": self.model,
+        }
+        return pformat(params)
+
     def __init__(self, ids, embeddings):
         """
         VectorEngine を初期化する。
