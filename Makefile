@@ -1,4 +1,4 @@
-.PHONY: clean data lint requirements sync_data_to_s3 sync_data_from_s3
+.PHONY: clean data lint requirements sync_data_to_s3 sync_data_from_s3 test
 
 #################################################################################
 # GLOBALS                                                                       #
@@ -44,6 +44,10 @@ lint:
 	poetry run isort src
 	poetry run black src -l 79
 	poetry run flake8 src
+
+## run pytest
+test:
+	poetry run pytest -vv --cache-clear test
 
 ## gradio ui
 ui:
