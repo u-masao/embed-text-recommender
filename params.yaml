@@ -1,8 +1,8 @@
 embedding_models:
-  - intfloat/multilingual-e5-small
-  - intfloat/multilingual-e5-base
-  - intfloat/multilingual-e5-large
+  # - intfloat/multilingual-e5-small
+  # - intfloat/multilingual-e5-base
+  # - intfloat/multilingual-e5-large
   # - sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
-  - sentence-transformers/paraphrase-multilingual-mpnet-base-v2
-  # - oshizo/sbert-jsnli-luke-japanese-base-lite
+  # - sentence-transformers/paraphrase-multilingual-mpnet-base-v2
+  - oshizo/sbert-jsnli-luke-japanese-base-lite
   # - sonoisa/sentence-bert-base-ja-mean-tokens-v2
