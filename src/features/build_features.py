@@ -27,9 +27,15 @@ def embedding(kwargs):
     )
 
     # output
-    Path(kwargs["output_filepath"]).parent.mkdir(exist_ok=True, parents=True)
-    with open(kwargs["output_filepath"], "wb") as fo:
-        cloudpickle.dump([df, embeddings], fo)
+    Path(kwargs["embeddings_filepath"]).parent.mkdir(
+        exist_ok=True, parents=True
+    )
+    Path(kwargs["sentences_filepath"]).parent.mkdir(
+        exist_ok=True, parents=True
+    )
+    with open(kwargs["embeddings_filepath"], "wb") as fo:
+        cloudpickle.dump(embeddings, fo)
+    df.to_parquet(kwargs["sentences_filepath"])
 
     # logging
     log_params = {
@@ -44,7 +50,8 @@ def embedding(kwargs):
 
 @click.command()
 @click.argument("input_filepath", type=click.Path(exists=True))
-@click.argument("output_filepath", type=click.Path())
+@click.argument("sentences_filepath", type=click.Path())
+@click.argument("embeddings_filepath", type=click.Path())
 @click.option(
     "--model_name_or_filepath",
     type=str,

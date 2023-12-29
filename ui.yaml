@@ -4,10 +4,9 @@ ui:
     # intfloat/multilingual-e5-small
     # intfloat/multilingual-e5-large
   vector_engine:
-    models/intfloat/multilingual-e5-small/engine.cloudpickle
-  text_data:
-    models/intfloat/multilingual-e5-small/vectors_head_only.cloudpickle
-    # models/intfloat/multilingual-e5-small/vectors_chunk_split.cloudpickle
+    models/intfloat/multilingual-e5-small/engine_head_only.cloudpickle
+  sentences_data:
+    data/interim/sentences.parquet
   default_query: エンジニア 転職
   default_like_ids: 6588884 6592773
   default_top_n: 5
