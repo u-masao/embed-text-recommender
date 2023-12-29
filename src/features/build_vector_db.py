@@ -3,6 +3,7 @@ import logging
 import click
 import cloudpickle
 import mlflow
+import pandas as pd
 
 from src.models import VectorEngine
 from src.utils import get_device_info
@@ -12,35 +13,27 @@ def build_vector_db(kwargs):
     # init logging
     logger = logging.getLogger(__name__)
 
-    # load dataset
-    with open(kwargs["input_filepath"], "rb") as fo:
-        df, embeddings = cloudpickle.load(fo)
+    # load sentences
+    logger.info("load sentences")
+    df = pd.read_parquet(kwargs["sentences_filepath"])
+
+    # load embeddings
+    logger.info("load embeddings file")
+    with open(kwargs["embeddings_filepath"], "rb") as fo:
+        embeddings = cloudpickle.load(fo)
 
     # build vector engine
+    logger.info("create vector engine")
     engine = VectorEngine(df["id"], embeddings)
 
     # save vector engine
+    logger.info("save vector engine")
     engine.save(kwargs["output_filepath"])
-
-    # search similar
-    similarities, indices = engine.search(embeddings[0])
-    logger.info(f"similarities: {similarities}")
-    logger.info(f"indices: {indices}")
-
-    # search similar
-    similarities, indices = engine.search(embeddings[:3])
-    logger.info(f"similarities: {similarities}")
-    logger.info(f"indices: {indices}")
-
-    # lookup ids
-    like_ids = [6588884, 6592773]
-    like_embeddings = engine.ids_to_embeddings(like_ids)
-    logger.info(f"like embeddings: {like_embeddings}")
-    logger.info(f"like embeddings shape: {like_embeddings.shape}")
 
 
 @click.command()
-@click.argument("input_filepath", type=click.Path(exists=True))
+@click.argument("sentences_filepath", type=click.Path(exists=True))
+@click.argument("embeddings_filepath", type=click.Path(exists=True))
 @click.argument("output_filepath", type=click.Path())
 @click.option("--mlflow_run_name", type=str, default="develop")
 def main(**kwargs):
