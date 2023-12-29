@@ -21,7 +21,13 @@ isort = "^5.13.2"
 flake8 = "^6.1.0"
 black = "^23.12.1"
 dvc = "^3.36.1"
+pytest = "^7.4.3"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+filterwarnings = [
+  "ignore:distutils Version classes are deprecated. Use packaging.version instead.",
+]
