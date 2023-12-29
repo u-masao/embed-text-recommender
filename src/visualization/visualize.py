@@ -200,10 +200,10 @@ def search(
     # 動作状況メッセージを作成
     message = (
         f"encode: {encode_elapsed_time:.3f} sec"
-        f"\nsearch: {search_elapsed_time:.3f} sec"
-        f"\ndf merge: {df_merge_elapsed_time:.3f} sec"
-        f"\nmodel: {config['embedding_model']}"
-        f"\nmodel dimension: {embedder.get_model_dimension()}"
+        f",\nsearch: {search_elapsed_time:.3f} sec"
+        f",\ndf merge: {df_merge_elapsed_time:.3f} sec"
+        f",\nmodel: {config['embedding_model']}"
+        f",\nmodel dimension: {embedder.get_model_dimension()}"
     )
     return message, output_text
 
