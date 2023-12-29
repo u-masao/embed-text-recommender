@@ -22,6 +22,7 @@ stages:
       --mlflow_run_name=pipeline
       --model_name_or_filepath=${item.embedding_model}
       --embedding_method=${item.embedding_method}
+      --limit_sentence_size=${limit_sentence_size}
     deps:
     - src/features/build_features.py
     - src/models/embedder.py
