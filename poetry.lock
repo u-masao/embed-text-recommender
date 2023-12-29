@@ -2077,6 +2077,16 @@ files = [
 ]
 
 [[package]]
+name = "ipadic"
+version = "1.0.0"
+description = "IPAdic packaged for Python"
+optional = false
+python-versions = "*"
+files = [
+    {file = "ipadic-1.0.0.tar.gz", hash = "sha256:f5923d31eca6131acaaf18ed28d8998665b1347b640d3a6476f64650e9a71c07"},
+]
+
+[[package]]
 name = "isort"
 version = "5.13.2"
 description = "A Python utility / library to sort Python imports."
@@ -5762,4 +5772,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "dacaf946fb25074a25bb81ae137dd073a1e99faee99d17c232f4a8738dfdaf26"
+content-hash = "f7425ace23be7baaa3bbbb9b967b7ed67dca3a93e6dbf3b2e4ca41ac037e1238"
