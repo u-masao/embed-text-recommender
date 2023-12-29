@@ -6,3 +6,5 @@ embedding_models:
   # - sentence-transformers/paraphrase-multilingual-mpnet-base-v2
   - oshizo/sbert-jsnli-luke-japanese-base-lite
   # - sonoisa/sentence-bert-base-ja-mean-tokens-v2
+embedding_methods:
+  - chunk_split
