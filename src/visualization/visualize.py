@@ -1,16 +1,16 @@
 import logging
 import sys
 import time
+from pprint import pprint
 
-import cloudpickle
 import gradio as gr
 import numpy as np
 import pandas as pd
 import yaml
 
 sys.path.append(".")
-from src.features.build_features import VectorBuilder  # noqa: E402
-from src.models.vector_engine import VectorEngine  # noqa: E402
+from src.models import Embedder, VectorEngine  # noqa: E402
+from src.utils import get_device_info  # noqa: E402
 
 
 def merge_embeddings(embeds1, embeds2):
@@ -26,13 +26,13 @@ def split_text(input_text):
 
 
 def embedding_query(query, cast_int=False):
-    global vector_builder
+    global embedder
     logger = logging.getLogger(__name__)
 
     query_embeddings = np.zeros(engine.dimension)
     if query.strip():
         sentences = split_text(query)
-        query_embeddings = vector_builder.encode(sentences)
+        query_embeddings = embedder.encode(sentences)
         logger.info(f"query_embed.shape: {query_embeddings.shape}")
         logger.info(
             "query_embeddings l2norm: "
@@ -154,21 +154,24 @@ def search(query, like_ids, top_n):
 
 def main():
     global demo
-    global vector_builder
+    global embedder
     global engine
     global text_df
+    global config
 
     # init logging
     logger = logging.getLogger(__name__)
+
+    logger.info(pprint(get_device_info()))
 
     # load config
     config = yaml.safe_load(open("ui.yaml", "r"))["ui"]
 
     # load models
     logger.info("load models")
-    vector_builder = VectorBuilder(config["embedding_model"])  # noqa: F841
+    embedder = Embedder(config["embedding_model"])  # noqa: F841
     engine = VectorEngine.load(config["vector_engine"])
-    text_df, _ = cloudpickle.load(open(config["text_data"], "rb"))
+    text_df = pd.read_parquet(config["sentences_data"])
 
     # make widgets
     with gr.Blocks() as demo:
@@ -205,4 +208,4 @@ if __name__ == "__main__":
     log_fmt = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
     logging.basicConfig(level=logging.INFO, format=log_fmt)
     main()
-    demo.launch(share=False, debug=True)
+    demo.launch(share=config['gradio_share'], debug=True)

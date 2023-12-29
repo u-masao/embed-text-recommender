@@ -87,16 +87,16 @@ stages:
     deps:
     - path: models/oshizo/sbert-jsnli-luke-japanese-base-lite/engine.cloudpickle
       hash: md5
-      md5: d83429b77bf3363fa3eab7fa4de787a4
+      md5: e9158b9e564c885ade6a6669034e34ef
       size: 67990513
+    - path: src/models/embedder.py
+      hash: md5
+      md5: 07739ff77d0ec7b83eb2b30bca54d3d7
+      size: 6567
     - path: src/models/recommend.py
       hash: md5
-      md5: 96febe76b808ef16bd54f75b1ff92d97
-      size: 1902
-    - path: src/models/vector_builder.py
-      hash: md5
-      md5: fa1927913e6049e5f76da09fe91e7b37
-      size: 361
+      md5: 77a3175dd424798e35afc579dac52af1
+      size: 1908
     - path: src/models/vector_engine.py
       hash: md5
       md5: 9f128fccd0c53da38f04a6584aba9c19
@@ -383,3 +383,47 @@ stages:
       hash: md5
       md5: 9f128fccd0c53da38f04a6584aba9c19
       size: 4204
+  build_vectors@oshizo/sbert-jsnli-luke-japanese-base-lite-head_only:
+    cmd: poetry run python -m src.features.build_features data/interim/dataset.parquet
+      models/oshizo/sbert-jsnli-luke-japanese-base-lite/vectors_head_only.cloudpickle
+      --mlflow_run_name=pipeline --model_name_or_filepath=oshizo/sbert-jsnli-luke-japanese-base-lite
+      --embedding_method=head_only
+    deps:
+    - path: data/interim/dataset.parquet
+      hash: md5
+      md5: bc237833c9ceab972308b563cfaf3b11
+      size: 15023178
+    - path: src/features/build_features.py
+      hash: md5
+      md5: d1abfe414d96e1baa852161d9e91d6eb
+      size: 2084
+    - path: src/models/embedder.py
+      hash: md5
+      md5: 07739ff77d0ec7b83eb2b30bca54d3d7
+      size: 6567
+    outs:
+    - path: models/oshizo/sbert-jsnli-luke-japanese-base-lite/vectors_head_only.cloudpickle
+      hash: md5
+      md5: d3f94ae0293a3d16e20e4acae6d4f2d2
+      size: 73989523
+  build_vector_db@oshizo/sbert-jsnli-luke-japanese-base-lite-head_only:
+    cmd: poetry run python -m src.features.build_vector_db models/oshizo/sbert-jsnli-luke-japanese-base-lite/vectors_head_only.cloudpickle
+      models/oshizo/sbert-jsnli-luke-japanese-base-lite/engine.cloudpickle --mlflow_run_name=pipeline
+    deps:
+    - path: models/oshizo/sbert-jsnli-luke-japanese-base-lite/vectors_head_only.cloudpickle
+      hash: md5
+      md5: d3f94ae0293a3d16e20e4acae6d4f2d2
+      size: 73989523
+    - path: src/features/build_vector_db.py
+      hash: md5
+      md5: 4483f191267a390d9dcf8d81cd84a6c1
+      size: 1909
+    - path: src/models/vector_engine.py
+      hash: md5
+      md5: 9f128fccd0c53da38f04a6584aba9c19
+      size: 4204
+    outs:
+    - path: models/oshizo/sbert-jsnli-luke-japanese-base-lite/engine.cloudpickle
+      hash: md5
+      md5: e9158b9e564c885ade6a6669034e34ef
+      size: 67990513

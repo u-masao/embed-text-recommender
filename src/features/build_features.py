@@ -6,7 +6,8 @@ import cloudpickle
 import mlflow
 import pandas as pd
 
-from src.models.vector_builder import VectorBuilder
+from src.models import Embedder
+from src.utils import get_device_info
 
 
 def embedding(kwargs):
@@ -20,13 +21,21 @@ def embedding(kwargs):
     df["sentence"] = df["title"] + "\n" + df["content"]
 
     # embedding
-    builder = VectorBuilder(kwargs["model_name_or_filepath"])
-    embeddings = builder.encode(df["sentence"])
+    embedder = Embedder(kwargs["model_name_or_filepath"])
+    embeddings = embedder.encode(
+        df["sentence"], method=kwargs["embedding_method"]
+    )
 
     # output
-    Path(kwargs["output_filepath"]).parent.mkdir(exist_ok=True, parents=True)
-    with open(kwargs["output_filepath"], "wb") as fo:
-        cloudpickle.dump([df, embeddings], fo)
+    Path(kwargs["embeddings_filepath"]).parent.mkdir(
+        exist_ok=True, parents=True
+    )
+    Path(kwargs["sentences_filepath"]).parent.mkdir(
+        exist_ok=True, parents=True
+    )
+    with open(kwargs["embeddings_filepath"], "wb") as fo:
+        cloudpickle.dump(embeddings, fo)
+    df.to_parquet(kwargs["sentences_filepath"])
 
     # logging
     log_params = {
@@ -41,12 +50,14 @@ def embedding(kwargs):
 
 @click.command()
 @click.argument("input_filepath", type=click.Path(exists=True))
-@click.argument("output_filepath", type=click.Path())
+@click.argument("sentences_filepath", type=click.Path())
+@click.argument("embeddings_filepath", type=click.Path())
 @click.option(
     "--model_name_or_filepath",
     type=str,
     default="oshizo/sbert-jsnli-luke-japanese-base-lite",
 )
+@click.option("--embedding_method", type=str, default="chunk_split")
 @click.option("--mlflow_run_name", type=str, default="develop")
 def main(**kwargs):
     # init logging
@@ -58,6 +69,7 @@ def main(**kwargs):
     # log cli options
     logger.info(f"args: {kwargs}")
     mlflow.log_params({f"args.{k}": v for k, v in kwargs.items()})
+    mlflow.log_params(get_device_info())
 
     # process
     embedding(kwargs)
