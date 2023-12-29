@@ -1,3 +1,5 @@
+limit_sentence_size:
+  - 10
 embedding_models:
   - intfloat/multilingual-e5-small
   - intfloat/multilingual-e5-base

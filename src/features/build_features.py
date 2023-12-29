@@ -17,6 +17,10 @@ def embedding(kwargs):
     # load dataset
     df = pd.read_parquet(kwargs["input_filepath"])
 
+    # limit sentence size
+    if kwargs["limit_sentence_size"] > 0:
+        df = df.head(kwargs["limit_sentence_size"])
+
     # make features
     df["sentence"] = df["title"] + "\n" + df["content"]
 
@@ -59,6 +63,7 @@ def embedding(kwargs):
     default="oshizo/sbert-jsnli-luke-japanese-base-lite",
 )
 @click.option("--embedding_method", type=str, default="chunk_split")
+@click.option("--limit_sentence_size", type=int, default=0)
 @click.option("--mlflow_run_name", type=str, default="develop")
 def main(**kwargs):
     # init logging

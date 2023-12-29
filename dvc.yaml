@@ -14,6 +14,7 @@ stages:
     matrix:
       embedding_model: ${embedding_models}
       embedding_method: ${embedding_methods}
+      limit_sentence_size: ${limit_sentence_size}
     cmd: >-
       poetry run python -m src.features.build_features
       data/interim/dataset.parquet
@@ -22,6 +23,7 @@ stages:
       --mlflow_run_name=pipeline
       --model_name_or_filepath=${item.embedding_model}
       --embedding_method=${item.embedding_method}
+      --limit_sentence_size=${item.limit_sentence_size}
     deps:
     - src/features/build_features.py
     - src/models/embedder.py
