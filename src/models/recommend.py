@@ -12,13 +12,16 @@ def recommend(kwargs):
     embedder = Embedder(kwargs["model_name_or_filepath"])
     engine = VectorEngine.load(kwargs["vector_engine_filepath"])
 
-    for sentences in [["飼い犬"]]:
+    for sentences, like_ids in zip([["飼い犬"]], [[6588884, 6592773]]):
         embeddings = embedder.encode(sentences)
-        similarities, ids = engine.search(embeddings)
-
+        similarities, similar_ids = engine.search(embeddings)
         logger.info(embeddings.shape)
         logger.info(similarities)
-        logger.info(ids)
+        logger.info(similar_ids)
+
+        like_embeddings = engine.ids_to_embeddings(like_ids)
+        logger.info(like_ids)
+        logger.info(like_embeddings.shape)
 
 
 @click.command()
