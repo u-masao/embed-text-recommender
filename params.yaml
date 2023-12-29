@@ -1,12 +1,12 @@
-limit_sentence_size: 30
+limit_sentence_size: 0
 embedding_models:
-  - intfloat/multilingual-e5-small
-  - intfloat/multilingual-e5-base
-  - intfloat/multilingual-e5-large
-  - sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
-  - sentence-transformers/paraphrase-multilingual-mpnet-base-v2
-  - oshizo/sbert-jsnli-luke-japanese-base-lite
-  # - sonoisa/sentence-bert-base-ja-mean-tokens-v2
+  # - intfloat/multilingual-e5-small
+  # - intfloat/multilingual-e5-base
+  # - intfloat/multilingual-e5-large
+  # - sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+  # - sentence-transformers/paraphrase-multilingual-mpnet-base-v2
+  # - oshizo/sbert-jsnli-luke-japanese-base-lite
+  - sonoisa/sentence-bert-base-ja-mean-tokens-v2
 embedding_methods:
-  - chunk_split
+  # - chunk_split
   - head_only
