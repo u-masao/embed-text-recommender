@@ -87,16 +87,16 @@ stages:
     deps:
     - path: models/oshizo/sbert-jsnli-luke-japanese-base-lite/engine.cloudpickle
       hash: md5
-      md5: d83429b77bf3363fa3eab7fa4de787a4
+      md5: e9158b9e564c885ade6a6669034e34ef
       size: 67990513
+    - path: src/models/embedder.py
+      hash: md5
+      md5: 07739ff77d0ec7b83eb2b30bca54d3d7
+      size: 6567
     - path: src/models/recommend.py
       hash: md5
-      md5: 96febe76b808ef16bd54f75b1ff92d97
-      size: 1902
-    - path: src/models/vector_builder.py
-      hash: md5
-      md5: fa1927913e6049e5f76da09fe91e7b37
-      size: 361
+      md5: 77a3175dd424798e35afc579dac52af1
+      size: 1908
     - path: src/models/vector_engine.py
       hash: md5
       md5: 9f128fccd0c53da38f04a6584aba9c19
