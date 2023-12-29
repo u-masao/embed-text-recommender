@@ -173,6 +173,10 @@ def main():
     engine = VectorEngine.load(config["vector_engine"])
     text_df = pd.read_parquet(config["sentences_data"])
 
+    # logging
+    logger.info(f"engine summary: {engine}")
+    logger.info(f"embedder summary: {embedder}")
+
     # make widgets
     with gr.Blocks() as demo:
         with gr.Column():
@@ -208,4 +212,4 @@ if __name__ == "__main__":
     log_fmt = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
     logging.basicConfig(level=logging.INFO, format=log_fmt)
     main()
-    demo.launch(share=config['gradio_share'], debug=True)
+    demo.launch(share=config["gradio_share"], debug=True)

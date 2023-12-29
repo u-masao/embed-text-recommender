@@ -1,4 +1,5 @@
 from pathlib import Path
+from pprint import pformat
 from typing import List
 
 import cloudpickle
@@ -154,3 +155,13 @@ class VectorEngine:
         VectorEngine
         """
         return cloudpickle.load(open(filepath, "rb"))
+
+    def __str__(self) -> str:
+        params = {
+            "indexer": self.index,
+            "ids length": len(self.ids),
+            "embeddings shape": self.embeddings.shape,
+            "normalized_embeddings shape": self.normalized_embeddings.shape,
+            "embedding dimension": self.dimension,
+        }
+        return pformat(params)

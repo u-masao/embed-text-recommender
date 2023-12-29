@@ -11,6 +11,7 @@ def recommend(kwargs):
     logger = logging.getLogger(__name__)
     embedder = Embedder(kwargs["model_name_or_filepath"])
     engine = VectorEngine.load(kwargs["vector_engine_filepath"])
+    logger.info(f"engine summary: {engine}")
 
     for sentences, like_ids in zip([["飼い犬"]], [[6588884, 6592773]]):
         embeddings = embedder.encode(sentences)

@@ -25,6 +25,7 @@ def build_vector_db(kwargs):
     # build vector engine
     logger.info("create vector engine")
     engine = VectorEngine(df["id"], embeddings)
+    logger.info(f"engine summary: {engine}")
 
     # save vector engine
     logger.info("save vector engine")
