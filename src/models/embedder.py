@@ -43,9 +43,13 @@ class Embedder:
             埋め込み行列。
             センテンスの数 n、埋め込み次元 d とすると、(n, d) の2次元ベクトルを返す。
         """
+
         # init logger
         logger = logging.getLogger(__name__)
         logger.info(f"encode method: {method}")
+
+        # remove empty sentence
+        sentences = [x for x in sentences if x]
 
         # それぞれの方法で embedding する
         if method == "head_only":
@@ -55,7 +59,7 @@ class Embedder:
         elif method == "chunk_split":
             embeddings = self._make_chunk_averaged_encode(sentences)
         else:
-            ValueError(f"指定の method には対応していません。 method: {method}")
+            raise ValueError(f"指定の method には対応していません。 method: {method}")
 
         return embeddings
 
@@ -68,7 +72,7 @@ class Embedder:
             vectors = self.model.encode(self.splitter.split_text(sentence))
             mean_vector = np.mean(vectors, axis=0)
             assert (
-                len(mean_vector)
+                mean_vector.shape[0]
                 == self.model.get_sentence_embedding_dimension()
             )
             embeddings.append(mean_vector)
