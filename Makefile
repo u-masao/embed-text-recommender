@@ -41,13 +41,13 @@ clean:
 
 ## Lint and formatting
 lint:
-	poetry run isort src
-	poetry run black src -l 79
-	poetry run flake8 src
+	poetry run isort src test
+	poetry run black src test -l 79
+	poetry run flake8 src test
 
 ## run pytest
 test:
-	poetry run pytest -vv --cache-clear test
+	poetry run pytest -vv --cache-clear -s test
 
 ## gradio ui
 ui:
