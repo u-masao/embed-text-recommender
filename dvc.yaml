@@ -21,7 +21,7 @@ stages:
       --model_name_or_filepath=${item.embedding_model}
     deps:
     - src/features/build_features.py
-    - src/models/vector_builder.py
+    - src/models/embedder.py
     - data/interim/dataset.parquet
     outs:
     - models/${item.embedding_model}/vectors.cloudpickle
@@ -52,5 +52,5 @@ stages:
     deps:
     - src/models/recommend.py
     - src/models/vector_engine.py
-    - src/models/vector_builder.py
+    - src/models/embedder.py
     - models/${item.embedding_model}/engine.cloudpickle
