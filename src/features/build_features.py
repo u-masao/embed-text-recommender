@@ -2,11 +2,11 @@ import logging
 from pathlib import Path
 
 import click
-import cloudpickle
 import mlflow
 import pandas as pd
 
-from src.models import Embedder
+from src.models import Embedder, VectorEngine
+from src.utils import get_device_info
 
 
 def embedding(kwargs):
@@ -25,10 +25,16 @@ def embedding(kwargs):
         df["sentence"], method=kwargs["embedding_method"]
     )
 
+    # build vector engine
+    engine = VectorEngine(df["id"], embeddings)
+
     # output
-    Path(kwargs["output_filepath"]).parent.mkdir(exist_ok=True, parents=True)
-    with open(kwargs["output_filepath"], "wb") as fo:
-        cloudpickle.dump([df, embeddings], fo)
+    Path(kwargs["engine_filepath"]).parent.mkdir(exist_ok=True, parents=True)
+    engine.save(kwargs["engine_filepath"])
+    Path(kwargs["sentences_filepath"]).parent.mkdir(
+        exist_ok=True, parents=True
+    )
+    df.to_parquet(kwargs["sentences_filepath"])
 
     # logging
     log_params = {
@@ -43,7 +49,8 @@ def embedding(kwargs):
 
 @click.command()
 @click.argument("input_filepath", type=click.Path(exists=True))
-@click.argument("output_filepath", type=click.Path())
+@click.argument("engine_filepath", type=click.Path())
+@click.argument("sentences_filepath", type=click.Path())
 @click.option(
     "--model_name_or_filepath",
     type=str,
@@ -61,6 +68,7 @@ def main(**kwargs):
     # log cli options
     logger.info(f"args: {kwargs}")
     mlflow.log_params({f"args.{k}": v for k, v in kwargs.items()})
+    mlflow.log_params(get_device_info())
 
     # process
     embedding(kwargs)

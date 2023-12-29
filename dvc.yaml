@@ -17,43 +17,31 @@ stages:
     cmd: >-
       poetry run python -m src.features.build_features
       data/interim/dataset.parquet
-      models/${item.embedding_model}/vectors_${item.embedding_method}.cloudpickle
+      models/${item.embedding_model}/engine_${item.embedding_method}.cloudpickle
+      models/${item.embedding_model}/sentences_${item.embedding_method}.parquet
       --mlflow_run_name=pipeline
       --model_name_or_filepath=${item.embedding_model}
       --embedding_method=${item.embedding_method}
     deps:
     - src/features/build_features.py
     - src/models/embedder.py
+    - src/models/vector_engine.py
     - data/interim/dataset.parquet
     outs:
-    - models/${item.embedding_model}/vectors_${item.embedding_method}.cloudpickle
-
-  build_vector_db:
-    matrix:
-      embedding_model: ${embedding_models}
-      embedding_method: ${embedding_methods}
-    cmd: >-
-      poetry run python -m src.features.build_vector_db
-      models/${item.embedding_model}/vectors_${item.embedding_method}.cloudpickle
-      models/${item.embedding_model}/engine.cloudpickle
-      --mlflow_run_name=pipeline
-    deps:
-    - src/features/build_vector_db.py
-    - src/models/vector_engine.py
-    - models/${item.embedding_model}/vectors_${item.embedding_method}.cloudpickle
-    outs:
-    - models/${item.embedding_model}/engine.cloudpickle
+    - models/${item.embedding_model}/engine_${item.embedding_method}.cloudpickle
+    - models/${item.embedding_model}/sentences_${item.embedding_method}.parquet
 
   recommend:
     matrix:
       embedding_model: ${embedding_models}
+      embedding_method: ${embedding_methods}
     cmd: >-
       poetry run python -m src.models.recommend
-      models/${item.embedding_model}/engine.cloudpickle
+      models/${item.embedding_model}/engine_${item.embedding_method}.cloudpickle
       --mlflow_run_name=pipeline
       --model_name_or_filepath=${item.embedding_model}
     deps:
     - src/models/recommend.py
     - src/models/vector_engine.py
     - src/models/embedder.py
-    - models/${item.embedding_model}/engine.cloudpickle
+    - models/${item.embedding_model}/engine_${item.embedding_method}.cloudpickle

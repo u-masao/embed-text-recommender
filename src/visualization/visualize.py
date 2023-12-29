@@ -2,7 +2,6 @@ import logging
 import sys
 import time
 
-import cloudpickle
 import gradio as gr
 import numpy as np
 import pandas as pd
@@ -167,7 +166,7 @@ def main():
     logger.info("load models")
     embedder = Embedder(config["embedding_model"])  # noqa: F841
     engine = VectorEngine.load(config["vector_engine"])
-    text_df, _ = cloudpickle.load(open(config["text_data"], "rb"))
+    text_df = pd.read_parquet(config["text_data"])
 
     # make widgets
     with gr.Blocks() as demo:
