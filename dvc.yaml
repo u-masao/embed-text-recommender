@@ -37,12 +37,14 @@ stages:
       embedding_method: ${embedding_methods}
     cmd: >-
       poetry run python -m src.features.build_vector_db
+      data/interim/sentences.parquet
       models/${item.embedding_model}/embeddings_${item.embedding_method}.cloudpickle
       models/${item.embedding_model}/engine_${item.embedding_method}.cloudpickle
       --mlflow_run_name=pipeline
     deps:
     - src/features/build_vector_db.py
     - src/models/vector_engine.py
+    - data/interim/sentences.parquet
     - models/${item.embedding_model}/embeddings_${item.embedding_method}.cloudpickle
     outs:
     - models/${item.embedding_model}/engine_${item.embedding_method}.cloudpickle
