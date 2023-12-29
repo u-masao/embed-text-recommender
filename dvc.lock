@@ -642,3 +642,87 @@ stages:
       hash: md5
       md5: c171ff2794839915ad207819c3ea2321
       size: 151481
+  build_sentences_and_embeddings@sonoisa/sentence-bert-base-ja-mean-tokens-v2-head_only:
+    cmd: poetry run python -m src.features.build_features data/interim/dataset.parquet
+      models/sonoisa/sentence-bert-base-ja-mean-tokens-v2/sentences_head_only.cloudpickle
+      models/sonoisa/sentence-bert-base-ja-mean-tokens-v2/embeddings_head_only.cloudpickle
+      --mlflow_run_name=pipeline --model_name_or_filepath=sonoisa/sentence-bert-base-ja-mean-tokens-v2
+      --embedding_method=head_only --limit_sentence_size=30
+    deps:
+    - path: data/interim/dataset.parquet
+      hash: md5
+      md5: bc237833c9ceab972308b563cfaf3b11
+      size: 15023178
+    - path: src/features/build_features.py
+      hash: md5
+      md5: 421d4aa7d2ba1dab2dda0b64e1c718a9
+      size: 2534
+    - path: src/models/embedder.py
+      hash: md5
+      md5: 49e1bdf97565daee8256e146d45a93bc
+      size: 6916
+    - path: src/models/vector_engine.py
+      hash: md5
+      md5: 854c663bbe137652a813c1aaa4764d4d
+      size: 4581
+    outs:
+    - path: 
+        models/sonoisa/sentence-bert-base-ja-mean-tokens-v2/embeddings_head_only.cloudpickle
+      hash: md5
+      md5: 12f9bb8f3c902e8897e803785bf788f9
+      size: 92298
+    - path: 
+        models/sonoisa/sentence-bert-base-ja-mean-tokens-v2/sentences_head_only.cloudpickle
+      hash: md5
+      md5: c171ff2794839915ad207819c3ea2321
+      size: 151481
+  build_vector_db@sonoisa/sentence-bert-base-ja-mean-tokens-v2-head_only:
+    cmd: poetry run python -m src.features.build_vector_db 
+      models/sonoisa/sentence-bert-base-ja-mean-tokens-v2/sentences_head_only.cloudpickle
+      models/sonoisa/sentence-bert-base-ja-mean-tokens-v2/embeddings_head_only.cloudpickle
+      models/sonoisa/sentence-bert-base-ja-mean-tokens-v2/engine_head_only.cloudpickle
+      --mlflow_run_name=pipeline
+    deps:
+    - path: 
+        models/sonoisa/sentence-bert-base-ja-mean-tokens-v2/embeddings_head_only.cloudpickle
+      hash: md5
+      md5: 12f9bb8f3c902e8897e803785bf788f9
+      size: 92298
+    - path: 
+        models/sonoisa/sentence-bert-base-ja-mean-tokens-v2/sentences_head_only.cloudpickle
+      hash: md5
+      md5: c171ff2794839915ad207819c3ea2321
+      size: 151481
+    - path: src/features/build_vector_db.py
+      hash: md5
+      md5: 7337a9289c70ca170d8c24d91593b1a2
+      size: 1714
+    - path: src/models/vector_engine.py
+      hash: md5
+      md5: 854c663bbe137652a813c1aaa4764d4d
+      size: 4581
+    outs:
+    - path: models/sonoisa/sentence-bert-base-ja-mean-tokens-v2/engine_head_only.cloudpickle
+      hash: md5
+      md5: be7aa33223228ea513a8cae51bb40cb8
+      size: 277324
+  recommend@sonoisa/sentence-bert-base-ja-mean-tokens-v2-head_only:
+    cmd: poetry run python -m src.models.recommend models/sonoisa/sentence-bert-base-ja-mean-tokens-v2/engine_head_only.cloudpickle
+      --mlflow_run_name=pipeline --model_name_or_filepath=sonoisa/sentence-bert-base-ja-mean-tokens-v2
+    deps:
+    - path: models/sonoisa/sentence-bert-base-ja-mean-tokens-v2/engine_head_only.cloudpickle
+      hash: md5
+      md5: be7aa33223228ea513a8cae51bb40cb8
+      size: 277324
+    - path: src/models/embedder.py
+      hash: md5
+      md5: 49e1bdf97565daee8256e146d45a93bc
+      size: 6916
+    - path: src/models/recommend.py
+      hash: md5
+      md5: 2f9019fce46687f4af44aef2ac5f3892
+      size: 2140
+    - path: src/models/vector_engine.py
+      hash: md5
+      md5: 854c663bbe137652a813c1aaa4764d4d
+      size: 4581
