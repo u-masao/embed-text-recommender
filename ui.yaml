@@ -5,7 +5,7 @@ ui:
     # intfloat/multilingual-e5-small
     # intfloat/multilingual-e5-large
   vector_engine:
-    models/intfloat/multilingual-e5-small/engine_head_only.cloudpickle
+    models/oshizo/sbert-jsnli-luke-japanese-base-lite/engine_head_only.cloudpickle
   sentences_data:
     data/interim/sentences.parquet
   default_query: エンジニア 転職
