@@ -44,6 +44,7 @@ def embedding(kwargs):
     }
     mlflow.log_params(log_params)
     logger.info(log_params)
+    logger.info(f"embedder summary: {embedder}")
     logger.info(f"output dataframe: \n{df}")
     logger.info(f"output columns: \n{df.columns}")
 

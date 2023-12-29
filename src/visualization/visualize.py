@@ -175,6 +175,7 @@ def main():
 
     # logging
     logger.info(f"engine summary: {engine}")
+    logger.info(f"embedder summary: {embedder}")
 
     # make widgets
     with gr.Blocks() as demo:
