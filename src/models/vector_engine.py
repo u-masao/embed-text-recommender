@@ -158,10 +158,10 @@ class VectorEngine:
 
     def __str__(self) -> str:
         params = {
-            "indexer": str(self.index),
+            "indexer": self.index,
             "ids length": len(self.ids),
             "embeddings shape": self.embeddings.shape,
-            "normalized_embeddings shape": self.normalized_embeddings,
+            "normalized_embeddings shape": self.normalized_embeddings.shape,
             "embedding dimension": self.dimension,
         }
         return pformat(params)

@@ -132,8 +132,8 @@ class Embedder:
 
     def __str__(self) -> str:
         params = {
-            "model": str(self.model),
-            "indexer": str(self.splitter),
+            "model": self.model,
+            "splitter": self.splitter,
             "model_name_or_filepath": self.model_name_or_filepath,
         }
         return pformat(params)
