@@ -102,7 +102,17 @@ def format_to_text(df):
     return result
 
 
-def search(positive_query, negative_query, like_ids, top_n):
+def search(
+    positive_query,
+    positive_query_blend_ratio,
+    negative_query,
+    negative_query_blend_ratio,
+    like_ids,
+    like_blend_ratio,
+    dislike_ids,
+    dislike_blend_ratio,
+    top_n,
+):
     """
     検索クエリ、お気に入りID、推薦件数を受けとり結果を返す。
 
@@ -110,10 +120,20 @@ def search(positive_query, negative_query, like_ids, top_n):
     ------
     positive_query: str
         検索クエリ。
+    positive_query_blend_ratio: float
+        検索クエリベクトルのブレンド倍率。
     negative_query: str
         ネガティブ検索クエリ。
+    negative_query_blend_ratio: float
+        ネガティブ検索クエリベクトルのブレンド倍率。
     like_ids: str
         お気に入り ID
+    like_blend_ratio: float
+        お気に入りベクトルのブレンド倍率。
+    dislike_ids: str
+        見たくない ID
+    dislike_blend_ratio: float
+        見たくないベクトルのブレンド倍率。
     top_n: int
         取得したい件数
 
@@ -126,6 +146,7 @@ def search(positive_query, negative_query, like_ids, top_n):
     """
     global engine
     global text_df
+    global embedder
 
     # init logger
     logger = logging.getLogger(__name__)
@@ -135,42 +156,56 @@ def search(positive_query, negative_query, like_ids, top_n):
     )
 
     # 検索クエリ文字列を埋め込みにする
+    start_ts = time.perf_counter()
     positive_query_embeddings = embedding_query(positive_query)
     negative_query_embeddings = embedding_query(negative_query)
+    encode_elapsed_time = time.perf_counter() - start_ts
 
     # お気に入りIDを埋め込みにする
     like_embeddings = embedding_from_ids_string(like_ids)
+    dislike_embeddings = embedding_from_ids_string(dislike_ids)
 
     # ベクトル合成
     total_embedding = merge_embeddings(
         [
-            positive_query_embeddings,
-            -negative_query_embeddings,
-            like_embeddings,
+            positive_query_embeddings * positive_query_blend_ratio,
+            -negative_query_embeddings * negative_query_blend_ratio,
+            like_embeddings * like_blend_ratio,
+            -dislike_embeddings * dislike_blend_ratio,
         ]
     )
+
+    # L2ノルム計算(長さ計算)
     total_embedding_l2norm = np.linalg.norm(total_embedding, ord=2)
     logger.info(f"total_embedding l2norm: {total_embedding_l2norm}")
 
     # 合成ベクトルが 0 の場合
     if total_embedding_l2norm < 0.000001:
-        return "検索できませんでした", None
+        return "検索できません。検索キーのベクトルの長さが 0 になってしまいました。", None
 
     # 検索
     start_ts = time.perf_counter()
     similarities, ids = engine.search(total_embedding, top_n=top_n)
-    elapsed_time = time.perf_counter() - start_ts
-    logger.info(f"elapsed time: {elapsed_time}")
+    search_elapsed_time = time.perf_counter() - start_ts
 
     # 結果を整形
+    start_ts = time.perf_counter()
     result_df = pd.DataFrame({"id": ids[0], "similarity": similarities[0]})
     result_df = pd.merge(result_df, text_df, on="id", how="left").loc[
         :, ["id", "similarity", "sentence", "url"]
     ]
-
+    df_merge_elapsed_time = time.perf_counter() - start_ts
     output_text = format_to_text(result_df)
 
-    return str(elapsed_time), output_text
+    # 動作状況メッセージを作成
+    message = (
+        f"encode: {encode_elapsed_time:.3f} sec"
+        f",\nsearch: {search_elapsed_time:.3f} sec"
+        f",\ndf merge: {df_merge_elapsed_time:.3f} sec"
+        f",\nmodel: {config['embedding_model']}"
+        f",\nmodel dimension: {embedder.get_model_dimension()}"
+    )
+    return message, output_text
 
 
 def main():
@@ -199,33 +234,82 @@ def main():
     logger.info(f"embedder summary: {embedder}")
 
     # make widgets
+    slider_kwargs = dict(
+        minimum=0.0,
+        maximum=2.0,
+        value=1.0,
+        step=0.1,
+        show_label=True,
+        scale=1,
+    )
+    left_column_scale = 2
     with gr.Blocks() as demo:
         with gr.Column():
-            positive_query_text = gr.Textbox(
-                label="ポジティブ検索クエリ",
-                show_label=True,
-                value=config["default_positive_query"],
-            )
-            negative_query_text = gr.Textbox(
-                label="ネガティブ検索クエリ",
-                show_label=True,
-                value=config["default_negative_query"],
-            )
-            like_ids = gr.Textbox(
-                label="お気に入り記事の id",
-                show_label=True,
-                value=config["default_like_ids"],
-            )
+            with gr.Row():
+                positive_query_text = gr.Textbox(
+                    label="ポジティブ検索クエリ",
+                    show_label=True,
+                    value=config["default_positive_query"],
+                    scale=left_column_scale,
+                )
+                positive_blend_ratio = gr.Slider(
+                    label="ポジティブ検索クエリ ブレンド倍率",
+                    **slider_kwargs,
+                )
+            with gr.Row():
+                negative_query_text = gr.Textbox(
+                    label="ネガティブ検索クエリ",
+                    show_label=True,
+                    value=config["default_negative_query"],
+                    scale=left_column_scale,
+                )
+                negative_blend_ratio = gr.Slider(
+                    label="ネガティブ検索クエリ ブレンド倍率",
+                    **slider_kwargs,
+                )
+            with gr.Row():
+                like_ids = gr.Textbox(
+                    label="お気に入り記事の id",
+                    show_label=True,
+                    value=config["default_like_ids"],
+                    scale=left_column_scale,
+                )
+                like_ids_blend_ratio = gr.Slider(
+                    label="お気に入り記事 ブレンド倍率",
+                    **slider_kwargs,
+                )
+            with gr.Row():
+                dislike_ids = gr.Textbox(
+                    label="見たくない記事の id",
+                    show_label=True,
+                    value=config["default_dislike_ids"],
+                    scale=left_column_scale,
+                )
+                dislike_ids_blend_ratio = gr.Slider(
+                    label="見たくない記事 ブレンド倍率",
+                    **slider_kwargs,
+                )
             top_n_number = gr.Number(value=config["default_top_n"])
             submit_button = gr.Button(value="検索")
-            indicator_label = gr.Label(label="indicator")
+            indicator_label = gr.Label(
+                label="indicator",
+                value=(
+                    f"model: {config['embedding_model']}, "
+                    f"model dimension: {embedder.get_model_dimension()}"
+                ),
+            )
             output_text = gr.Markdown(label="検索結果", show_label=True)
 
         # set event callback
         input_widgets = [
             positive_query_text,
+            positive_blend_ratio,
             negative_query_text,
+            negative_blend_ratio,
             like_ids,
+            like_ids_blend_ratio,
+            dislike_ids,
+            dislike_ids_blend_ratio,
             top_n_number,
         ]
         output_widgets = [indicator_label, output_text]
@@ -233,6 +317,7 @@ def main():
             positive_query_text.submit,
             negative_query_text.submit,
             like_ids.submit,
+            dislike_ids.submit,
             submit_button.click,
             top_n_number.submit,
         ]:
