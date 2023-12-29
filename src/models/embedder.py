@@ -1,6 +1,6 @@
 import logging
 from pprint import pformat
-from typing import List
+from typing import List, Optional
 
 import numpy as np
 from langchain.text_splitter import SentenceTransformersTokenTextSplitter
@@ -10,8 +10,24 @@ from tqdm.contrib import tmap
 
 class Embedder:
     def __init__(
-        self, model_name_or_filepath, chunk_overlap=50, tokens_par_chunk=None
+        self,
+        model_name_or_filepath: str,
+        chunk_overlap: int = 50,
+        tokens_par_chunk: Optional[int] = None,
     ):
+        """
+        コンストラクタ。
+
+        Parameters
+        ------
+        model_name_or_filepath: str
+            埋め込みモデル名
+        chunk_overlap: int
+            チャンクオーバーラップトークン数
+        tokens_par_chunk: Optional[int]
+            チャンクあたりのトークン数。
+            デフォルト値 None にすることで自動的にモデルの max_tokens を利用する。
+        """
         self.model_name_or_filepath = model_name_or_filepath
         self.model = SentenceTransformer(model_name_or_filepath)
         self.splitter = SentenceTransformersTokenTextSplitter(
@@ -19,6 +35,12 @@ class Embedder:
             model_name=model_name_or_filepath,
             tokens_per_chunk=tokens_par_chunk,
         )
+
+    def get_model_dimension(self) -> int:
+        """
+        埋め込みモデルの次元数を返す。
+        """
+        return self.model.get_sentence_embedding_dimension()
 
     def encode(self, sentences: List[str], method: str = "chunk_split"):
         """

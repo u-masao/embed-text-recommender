@@ -146,6 +146,7 @@ def search(
     """
     global engine
     global text_df
+    global embedder
 
     # init logger
     logger = logging.getLogger(__name__)
@@ -202,6 +203,7 @@ def search(
         f"\nsearch: {search_elapsed_time:.3f} sec"
         f"\ndf merge: {df_merge_elapsed_time:.3f} sec"
         f"\nmodel: {config['embedding_model']}"
+        f"\nmodel dimension: {embedder.get_model_dimension()}"
     )
     return message, output_text
 
@@ -290,7 +292,11 @@ def main():
             top_n_number = gr.Number(value=config["default_top_n"])
             submit_button = gr.Button(value="検索")
             indicator_label = gr.Label(
-                label="indicator", value=f"model: {config['embedding_model']}"
+                label="indicator",
+                value=(
+                    f"model: {config['embedding_model']}, "
+                    f"model dimension: {embedder.get_model_dimension()}"
+                ),
             )
             output_text = gr.Markdown(label="検索結果", show_label=True)
 
