@@ -13,10 +13,8 @@ from src.models import Embedder, VectorEngine  # noqa: E402
 from src.utils import get_device_info  # noqa: E402
 
 
-def merge_embeddings(embeds1, embeds2):
-    logger = logging.getLogger(__name__)
-    logger.info(f"np.vstack({embeds1.shape}, {embeds2.shape})")
-    embeds = np.vstack([embeds1, embeds2])
+def merge_embeddings(embeds_list):
+    embeds = np.vstack(embeds_list)
     result = np.mean(embeds, axis=0)
     return result
 
@@ -104,30 +102,53 @@ def format_to_text(df):
     return result
 
 
-def search(query, like_ids, top_n):
+def search(positive_query, negative_query, like_ids, top_n):
     """
     検索クエリ、お気に入りID、推薦件数を受けとり結果を返す。
 
     Parameters
     ------
-    query: str
-        検索クエリ。空行で
+    positive_query: str
+        検索クエリ。
+    negative_query: str
+        ネガティブ検索クエリ。
+    like_ids: str
+        お気に入り ID
+    top_n: int
+        取得したい件数
+
+    Returns
+    ------
+    str
+        メッセージ
+    str
+        検索結果のテキスト
     """
     global engine
     global text_df
 
     # init logger
     logger = logging.getLogger(__name__)
-    logger.info(f"input: [{query}], [{like_ids}], [{top_n}]")
+    logger.info(
+        f"input: [{positive_query}], [{negative_query}],"
+        f" [{like_ids}], [{top_n}]"
+    )
 
     # 検索クエリ文字列を埋め込みにする
-    query_embeddings = embedding_query(query)
+    positive_query_embeddings = embedding_query(positive_query)
+    negative_query_embeddings = embedding_query(negative_query)
 
     # お気に入りIDを埋め込みにする
     like_embeddings = embedding_from_ids_string(like_ids)
 
     # ベクトル合成
-    total_embedding = merge_embeddings(query_embeddings, like_embeddings)
+    total_embedding = merge_embeddings(
+        [
+            positive_query_embeddings,
+            -negative_query_embeddings,
+            like_embeddings,
+        ]
+    )
     total_embedding_l2norm = np.linalg.norm(total_embedding, ord=2)
     logger.info(f"total_embedding l2norm: {total_embedding_l2norm}")
 
@@ -180,8 +201,15 @@ def main():
     # make widgets
     with gr.Blocks() as demo:
         with gr.Column():
-            query_text = gr.Textbox(
-                label="検索クエリ", show_label=True, value=config["default_query"]
+            positive_query_text = gr.Textbox(
+                label="ポジティブ検索クエリ",
+                show_label=True,
+                value=config["default_positive_query"],
+            )
+            negative_query_text = gr.Textbox(
+                label="ネガティブ検索クエリ",
+                show_label=True,
+                value=config["default_negative_query"],
             )
             like_ids = gr.Textbox(
                 label="お気に入り記事の id",
@@ -194,12 +222,19 @@ def main():
             output_text = gr.Markdown(label="検索結果", show_label=True)
 
         # set event callback
-        input_widgets = [query_text, like_ids, top_n_number]
+        input_widgets = [
+            positive_query_text,
+            negative_query_text,
+            like_ids,
+            top_n_number,
+        ]
         output_widgets = [indicator_label, output_text]
         for entry_point in [
-            query_text.submit,
+            positive_query_text.submit,
+            negative_query_text.submit,
             like_ids.submit,
             submit_button.click,
+            top_n_number.submit,
         ]:
             entry_point(
                 fn=search,
