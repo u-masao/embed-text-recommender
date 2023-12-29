@@ -416,13 +416,13 @@ stages:
     - path: 
         models/oshizo/sbert-jsnli-luke-japanese-base-lite/embeddings_head_only.cloudpickle
       hash: md5
-      md5: 26083b9dc803b7f591abad12783d5146
-      size: 30849
+      md5: bcd0daf1524b5c299116d3472232dae7
+      size: 92298
     - path: 
         models/oshizo/sbert-jsnli-luke-japanese-base-lite/sentences_head_only.cloudpickle
       hash: md5
-      md5: 1663b3619083cf679055bef945b7d725
-      size: 74847
+      md5: c171ff2794839915ad207819c3ea2321
+      size: 151481
     - path: src/features/build_vector_db.py
       hash: md5
       md5: 7337a9289c70ca170d8c24d91593b1a2
@@ -434,8 +434,8 @@ stages:
     outs:
     - path: models/oshizo/sbert-jsnli-luke-japanese-base-lite/engine_head_only.cloudpickle
       hash: md5
-      md5: 98af99ae7ed7847ca6ff3193161345b9
-      size: 92717
+      md5: 059a9b2b6a683a0c9b77b82a8035fe8b
+      size: 277324
   build_sentences_and_embeddings@oshizo/sbert-jsnli-luke-japanese-base-lite-chunk_split-10:
     cmd: poetry run python -m src.features.build_features data/interim/dataset.parquet
       models/oshizo/sbert-jsnli-luke-japanese-base-lite/sentences_chunk_split.cloudpickle
@@ -514,13 +514,13 @@ stages:
     - path: 
         models/oshizo/sbert-jsnli-luke-japanese-base-lite/embeddings_chunk_split.cloudpickle
       hash: md5
-      md5: 3cd1ec703a3bfdf5ec7848c71383dfb9
-      size: 61569
+      md5: eb2b8475888c0ba5f11c7be24b289b7d
+      size: 184458
     - path: 
         models/oshizo/sbert-jsnli-luke-japanese-base-lite/sentences_chunk_split.cloudpickle
       hash: md5
-      md5: 1663b3619083cf679055bef945b7d725
-      size: 74847
+      md5: c171ff2794839915ad207819c3ea2321
+      size: 151481
     - path: src/features/build_vector_db.py
       hash: md5
       md5: 7337a9289c70ca170d8c24d91593b1a2
@@ -532,16 +532,16 @@ stages:
     outs:
     - path: models/oshizo/sbert-jsnli-luke-japanese-base-lite/engine_chunk_split.cloudpickle
       hash: md5
-      md5: 878154b743fdc3637a2ace2b50e8467f
-      size: 154166
+      md5: fb5d21302b250a5586821f09ad1e1686
+      size: 461644
   recommend@oshizo/sbert-jsnli-luke-japanese-base-lite-chunk_split:
     cmd: poetry run python -m src.models.recommend models/oshizo/sbert-jsnli-luke-japanese-base-lite/engine_chunk_split.cloudpickle
       --mlflow_run_name=pipeline --model_name_or_filepath=oshizo/sbert-jsnli-luke-japanese-base-lite
     deps:
     - path: models/oshizo/sbert-jsnli-luke-japanese-base-lite/engine_chunk_split.cloudpickle
       hash: md5
-      md5: 878154b743fdc3637a2ace2b50e8467f
-      size: 154166
+      md5: fb5d21302b250a5586821f09ad1e1686
+      size: 461644
     - path: src/models/embedder.py
       hash: md5
       md5: 49e1bdf97565daee8256e146d45a93bc
@@ -560,8 +560,8 @@ stages:
     deps:
     - path: models/oshizo/sbert-jsnli-luke-japanese-base-lite/engine_head_only.cloudpickle
       hash: md5
-      md5: 98af99ae7ed7847ca6ff3193161345b9
-      size: 92717
+      md5: 059a9b2b6a683a0c9b77b82a8035fe8b
+      size: 277324
     - path: src/models/embedder.py
       hash: md5
       md5: 49e1bdf97565daee8256e146d45a93bc
@@ -574,3 +574,71 @@ stages:
       hash: md5
       md5: 854c663bbe137652a813c1aaa4764d4d
       size: 4581
+  build_sentences_and_embeddings@oshizo/sbert-jsnli-luke-japanese-base-lite-chunk_split:
+    cmd: poetry run python -m src.features.build_features data/interim/dataset.parquet
+      models/oshizo/sbert-jsnli-luke-japanese-base-lite/sentences_chunk_split.cloudpickle
+      models/oshizo/sbert-jsnli-luke-japanese-base-lite/embeddings_chunk_split.cloudpickle
+      --mlflow_run_name=pipeline --model_name_or_filepath=oshizo/sbert-jsnli-luke-japanese-base-lite
+      --embedding_method=chunk_split --limit_sentence_size=30
+    deps:
+    - path: data/interim/dataset.parquet
+      hash: md5
+      md5: bc237833c9ceab972308b563cfaf3b11
+      size: 15023178
+    - path: src/features/build_features.py
+      hash: md5
+      md5: 421d4aa7d2ba1dab2dda0b64e1c718a9
+      size: 2534
+    - path: src/models/embedder.py
+      hash: md5
+      md5: 49e1bdf97565daee8256e146d45a93bc
+      size: 6916
+    - path: src/models/vector_engine.py
+      hash: md5
+      md5: 854c663bbe137652a813c1aaa4764d4d
+      size: 4581
+    outs:
+    - path: 
+        models/oshizo/sbert-jsnli-luke-japanese-base-lite/embeddings_chunk_split.cloudpickle
+      hash: md5
+      md5: eb2b8475888c0ba5f11c7be24b289b7d
+      size: 184458
+    - path: 
+        models/oshizo/sbert-jsnli-luke-japanese-base-lite/sentences_chunk_split.cloudpickle
+      hash: md5
+      md5: c171ff2794839915ad207819c3ea2321
+      size: 151481
+  build_sentences_and_embeddings@oshizo/sbert-jsnli-luke-japanese-base-lite-head_only:
+    cmd: poetry run python -m src.features.build_features data/interim/dataset.parquet
+      models/oshizo/sbert-jsnli-luke-japanese-base-lite/sentences_head_only.cloudpickle
+      models/oshizo/sbert-jsnli-luke-japanese-base-lite/embeddings_head_only.cloudpickle
+      --mlflow_run_name=pipeline --model_name_or_filepath=oshizo/sbert-jsnli-luke-japanese-base-lite
+      --embedding_method=head_only --limit_sentence_size=30
+    deps:
+    - path: data/interim/dataset.parquet
+      hash: md5
+      md5: bc237833c9ceab972308b563cfaf3b11
+      size: 15023178
+    - path: src/features/build_features.py
+      hash: md5
+      md5: 421d4aa7d2ba1dab2dda0b64e1c718a9
+      size: 2534
+    - path: src/models/embedder.py
+      hash: md5
+      md5: 49e1bdf97565daee8256e146d45a93bc
+      size: 6916
+    - path: src/models/vector_engine.py
+      hash: md5
+      md5: 854c663bbe137652a813c1aaa4764d4d
+      size: 4581
+    outs:
+    - path: 
+        models/oshizo/sbert-jsnli-luke-japanese-base-lite/embeddings_head_only.cloudpickle
+      hash: md5
+      md5: bcd0daf1524b5c299116d3472232dae7
+      size: 92298
+    - path: 
+        models/oshizo/sbert-jsnli-luke-japanese-base-lite/sentences_head_only.cloudpickle
+      hash: md5
+      md5: c171ff2794839915ad207819c3ea2321
+      size: 151481
