@@ -9,7 +9,7 @@ import pandas as pd
 import yaml
 
 sys.path.append(".")
-from src.features import Embedder, VectorEngine  # noqa: E402
+from src.models import Embedder, VectorEngine  # noqa: E402
 from src.utils import get_device_info  # noqa: E402
 
 
