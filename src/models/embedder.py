@@ -19,27 +19,49 @@ class Embedder:
             tokens_per_chunk=tokens_par_chunk,
         )
 
-    def encode(self, sentences):
+    def encode(self, sentences: List[str], method: str = "chunk_split"):
+        """
+        埋め込みを計算する。
+
+        Parameters
+        ------
+        sentences: List[str]
+            センテンスの List
+        method: str
+            埋め込みの計算方法を指定する。以下に対応。
+            - chunk_split (default)
+              - 各センテンスをチャンクに分割し埋め込みを計算する。
+              - 埋め込みの平均ベクトルを返す。
+            - head_only
+              - チャンクに分割せずに埋め込みモデルで処理する。
+              - モデルの max_tokens のみの埋め込みを計算する
+
+        Returns
+        ------
+        numpy.ndarray
+            埋め込み行列。
+            センテンスの数 n、埋め込み次元 d とすると、(n, d) の2次元ベクトルを返す。
+        """
         # init logger
         logger = logging.getLogger(__name__)
+        logger.info(f"encode method: {method}")
 
-        # split to chunks
-        logger.info("split sentences to chunks")
-        chunks_list = [
-            x
-            for x in tmap(
-                lambda x: self.splitter.split_text(text=x), sentences
-            )
-        ]
-
-        # embedding
-        embeddings = make_chunk_averaged_embeddings(self.model, chunks_list)
+        # それぞれの方法で embedding する
+        if method == "head_only":
+            embeddings = self._head_only_encode(sentences)
+        elif method == "naive_chunk_split":
+            embeddings = self._naive_split_encode(sentences)
+        elif method == "chunk_split":
+            embeddings = self._make_chunk_averaged_encode(sentences)
+        else:
+            ValueError(f"指定の method には対応していません。 method: {method}")
 
         return embeddings
 
-        # return self._naive_encode(sentences)
+    def _head_only_encode(self, sentences):
+        return self.model.encode(sentences)
 
-    def _naive_encode(self, sentences):
+    def _naive_split_encode(self, sentences):
         embeddings = []
         for sentence in sentences:
             vectors = self.model.encode(self.splitter.split_text(sentence))
@@ -53,6 +75,59 @@ class Embedder:
         assert result.shape[0] == len(sentences)
         assert result.shape[1] == self.model.get_sentence_embedding_dimension()
         return result
+
+    def _make_chunk_averaged_encode(self, sentences: List[str]) -> np.ndarray:
+        """
+        センテンス毎のチャンク List を受け取り、センテンス毎の
+        平均埋め込みベクトルを返す。
+
+        Parameters
+        ------
+        sentences: List[str]
+            センテンスのリスト
+
+        Returns
+        ------
+        numpy.ndarray
+            センテンス毎の埋め込み表現
+            次元は、センテンス数 n、モデル次元 d に対して、(n, d)となる。
+        """
+
+        # init logger
+        logger = logging.getLogger(__name__)
+        d_size = self.model.get_sentence_embedding_dimension()
+
+        # split to chunks
+        logger.info("split sentences to chunks")
+        chunks_list = [
+            x
+            for x in tmap(
+                lambda x: self.splitter.split_text(text=x), sentences
+            )
+        ]
+
+        # チャンクを 1 次元の List に flatten する
+        chunk_list = flatten_chunks(chunks_list)
+
+        # matrix mask を作成
+        logger.info("make weight matrix")
+        weight_matrix = make_weight_matrix(chunks_list)
+        assert weight_matrix.shape[0] == len(chunks_list)
+        assert weight_matrix.shape[1] == len(chunk_list)
+
+        # 埋め込みを計算
+        logger.info("encode chunks")
+        chunk_embeddings = self.model.encode(chunk_list)
+        assert chunk_embeddings.shape[0] == weight_matrix.shape[1]
+        assert chunk_embeddings.shape[1] == d_size
+
+        # ウェイト行列とチャンク毎のEmbeddingで行列積を計算
+        logger.info("calc dot matrix, weight_matrix @ chunk_embeddings")
+        embeddings = np.dot(weight_matrix, chunk_embeddings)
+        assert embeddings.shape[0] == len(chunks_list)
+        assert embeddings.shape[1] == d_size
+
+        return embeddings
 
 
 def make_weight_matrix(chunks_list: List[List[str]]) -> np.ndarray:
@@ -116,87 +191,3 @@ def flatten_chunks(chunks_list: List[List[str]]) -> List[str]:
         for chunk in chunks:
             chunk_list.append(chunk)
     return chunk_list
-
-
-def make_chunk_averaged_embeddings(
-    model: SentenceTransformer, chunks_list: List[List[str]]
-) -> np.ndarray:
-    """
-    センテンス毎のチャンク List を受け取り、センテンス毎の
-    平均埋め込みベクトルを返す。
-
-    Parameters
-    ------
-    model: SentenceTransformer
-        埋め込みモデル
-    chunks_list: List[List[str]]
-        センテンス毎のチャンク List
-
-    Returns
-    ------
-    numpy.ndarray
-        センテンス毎の埋め込み表現
-        次元は、センテンス数 n、モデル次元 d に対して、(n, d)となる。
-    """
-
-    # init logger
-    logger = logging.getLogger(__name__)
-    d_size = model.get_sentence_embedding_dimension()
-
-    # チャンクを 1 次元の List に flatten する
-    chunk_list = flatten_chunks(chunks_list)
-
-    # matrix mask を作成
-    logger.info("make weight matrix")
-    weight_matrix = make_weight_matrix(chunks_list)
-    assert weight_matrix.shape[0] == len(chunks_list)
-    assert weight_matrix.shape[1] == len(chunk_list)
-
-    # 埋め込みを計算
-    logger.info("encode chunks")
-    chunk_embeddings = model.encode(chunk_list)
-    assert chunk_embeddings.shape[0] == weight_matrix.shape[1]
-    assert chunk_embeddings.shape[1] == d_size
-
-    # ウェイト行列とチャンク毎のEmbeddingで行列積を計算
-    logger.info("calc dot matrix, weight_matrix @ chunk_embeddings")
-    embeddings = np.dot(weight_matrix, chunk_embeddings)
-    assert embeddings.shape[0] == len(chunks_list)
-    assert embeddings.shape[1] == d_size
-
-    return embeddings
-
-
-def test_main():
-    import os
-
-    import pandas as pd
-    from tqdm import tqdm
-
-    tqdm.pandas()
-
-    # init model and splitter
-    model_name = "intfloat/multilingual-e5-small"
-    model = SentenceTransformer(model_name)
-    splitter = SentenceTransformersTokenTextSplitter(model_name=model_name)
-
-    # make dataset
-    cache_filepath = "data/interim/tmp_cache_chunked.parquet"
-    if os.path.isfile(cache_filepath):
-        df = pd.read_parquet(cache_filepath)
-    else:
-        df = pd.read_parquet("data/interim/dataset.parquet")
-        df["sentence"] = df["title"] + "\n" + df["content"]
-        df["chunks"] = df["sentence"].progress_map(
-            lambda x: splitter.split_text(text=x)
-        )
-        df.to_parquet(cache_filepath)
-
-    embeddings = make_chunk_averaged_embeddings(model, df["chunks"])
-    print(f"get embeds: {embeddings.shape}")
-
-
-if __name__ == "__main__":
-    log_fmt = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-    logging.basicConfig(level=logging.INFO, format=log_fmt)
-    test_main()
