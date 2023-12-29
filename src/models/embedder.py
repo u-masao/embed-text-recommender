@@ -7,7 +7,7 @@ from sentence_transformers import SentenceTransformer
 from tqdm.contrib import tmap
 
 
-class VectorBuilder:
+class Embedder:
     def __init__(
         self, model_name_or_filepath, chunk_overlap=50, tokens_par_chunk=None
     ):

@@ -6,7 +6,7 @@ import cloudpickle
 import mlflow
 import pandas as pd
 
-from src.models.vector_builder import VectorBuilder
+from src.models import Embedder
 
 
 def embedding(kwargs):
@@ -20,7 +20,7 @@ def embedding(kwargs):
     df["sentence"] = df["title"] + "\n" + df["content"]
 
     # embedding
-    builder = VectorBuilder(kwargs["model_name_or_filepath"])
+    builder = Embedder(kwargs["model_name_or_filepath"])
     embeddings = builder.encode(df["sentence"])
 
     # output

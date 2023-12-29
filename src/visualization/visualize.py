@@ -9,8 +9,7 @@ import pandas as pd
 import yaml
 
 sys.path.append(".")
-from src.features.build_features import VectorBuilder  # noqa: E402
-from src.models.vector_engine import VectorEngine  # noqa: E402
+from src.features import Embedder, VectorEngine  # noqa: E402
 
 
 def merge_embeddings(embeds1, embeds2):
@@ -26,13 +25,13 @@ def split_text(input_text):
 
 
 def embedding_query(query, cast_int=False):
-    global vector_builder
+    global embedder
     logger = logging.getLogger(__name__)
 
     query_embeddings = np.zeros(engine.dimension)
     if query.strip():
         sentences = split_text(query)
-        query_embeddings = vector_builder.encode(sentences)
+        query_embeddings = embedder.encode(sentences)
         logger.info(f"query_embed.shape: {query_embeddings.shape}")
         logger.info(
             "query_embeddings l2norm: "
@@ -154,7 +153,7 @@ def search(query, like_ids, top_n):
 
 def main():
     global demo
-    global vector_builder
+    global embedder
     global engine
     global text_df
 
@@ -166,7 +165,7 @@ def main():
 
     # load models
     logger.info("load models")
-    vector_builder = VectorBuilder(config["embedding_model"])  # noqa: F841
+    embedder = Embedder(config["embedding_model"])  # noqa: F841
     engine = VectorEngine.load(config["vector_engine"])
     text_df, _ = cloudpickle.load(open(config["text_data"], "rb"))
 

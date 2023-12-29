@@ -4,7 +4,7 @@ import click
 import cloudpickle
 import mlflow
 
-from src.models.vector_engine import VectorEngine
+from src.models import VectorEngine
 
 
 def build_vector_db(kwargs):

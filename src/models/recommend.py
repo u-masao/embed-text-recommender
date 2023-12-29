@@ -3,17 +3,16 @@ import logging
 import click
 import mlflow
 
-from src.models.vector_builder import VectorBuilder
-from src.models.vector_engine import VectorEngine
+from src.models import Embedder, VectorEngine
 
 
 def recommend(kwargs):
     logger = logging.getLogger(__name__)
-    vector_builder = VectorBuilder(kwargs["model_name_or_filepath"])
+    embedder = Embedder(kwargs["model_name_or_filepath"])
     engine = VectorEngine.load(kwargs["vector_engine_filepath"])
 
     for sentences in [["飼い犬"]]:
-        embeddings = vector_builder.encode(sentences)
+        embeddings = embedder.encode(sentences)
         similarities, ids = engine.search(embeddings)
 
         logger.info(embeddings.shape)
