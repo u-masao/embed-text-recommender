@@ -8,16 +8,6 @@ import numpy as np
 
 
 class VectorEngine:
-    def __str__(self) -> str:
-        params = {
-            "ids length": len(self.ids),
-            "embeddings shape": self.embeddings.shape,
-            "embedding dimension": self.dimension,
-            "splitter": self.splitter,
-            "model": self.model,
-        }
-        return pformat(params)
-
     def __init__(self, ids, embeddings):
         """
         VectorEngine を初期化する。
@@ -165,3 +155,14 @@ class VectorEngine:
         VectorEngine
         """
         return cloudpickle.load(open(filepath, "rb"))
+
+    def __str__(self) -> str:
+        params = {
+            "model": self.model,
+            "indexer": str(self.index),
+            "ids length": len(self.ids),
+            "embeddings shape": self.embeddings.shape,
+            "normalized_embeddings shape": self.normalized_embeddings,
+            "embedding dimension": self.dimension,
+        }
+        return pformat(params)
