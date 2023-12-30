@@ -546,8 +546,8 @@ stages:
       size: 461754
     - path: src/models/embedding/
       hash: md5
-      md5: 599cb59d9117e917257da56473f07a2e.dir
-      size: 32101
+      md5: f1c8f44c611fb72f60dbddf699d76f43.dir
+      size: 31936
       nfiles: 10
     - path: src/models/recommend.py
       hash: md5
@@ -568,8 +568,8 @@ stages:
       size: 277434
     - path: src/models/embedding/
       hash: md5
-      md5: 599cb59d9117e917257da56473f07a2e.dir
-      size: 32101
+      md5: f1c8f44c611fb72f60dbddf699d76f43.dir
+      size: 31936
       nfiles: 10
     - path: src/models/recommend.py
       hash: md5
@@ -597,8 +597,8 @@ stages:
       size: 2657
     - path: src/models/embedding/
       hash: md5
-      md5: 599cb59d9117e917257da56473f07a2e.dir
-      size: 32101
+      md5: f1c8f44c611fb72f60dbddf699d76f43.dir
+      size: 31936
       nfiles: 10
     - path: src/models/search_engine/
       hash: md5
@@ -633,8 +633,8 @@ stages:
       size: 2657
     - path: src/models/embedding/
       hash: md5
-      md5: 599cb59d9117e917257da56473f07a2e.dir
-      size: 32101
+      md5: f1c8f44c611fb72f60dbddf699d76f43.dir
+      size: 31936
       nfiles: 10
     - path: src/models/search_engine/
       hash: md5
