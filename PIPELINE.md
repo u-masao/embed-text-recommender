@@ -8,8 +8,10 @@ flowchart TD
 	node6["make_dataset"]
 	node7["recommend@oshizo/sbert-jsnli-luke-japanese-base-lite-chunk_split"]
 	node8["recommend@oshizo/sbert-jsnli-luke-japanese-base-lite-head_only"]
+	node9["train_word2vec"]
 	node1-->node4
 	node2-->node5
+	node3-->node9
 	node4-->node7
 	node5-->node8
 	node6-->node1
