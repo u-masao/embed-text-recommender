@@ -715,17 +715,19 @@ stages:
     deps:
     - path: models/sonoisa/sentence-bert-base-ja-mean-tokens-v2/engine_head_only.cloudpickle
       hash: md5
-      md5: be7aa33223228ea513a8cae51bb40cb8
-      size: 277324
-    - path: src/models/embedder.py
+      md5: 33a8ce0f07bcf79c01d013a2f11274a0
+      size: 277434
+    - path: src/models/embedding/
       hash: md5
-      md5: dd0e9e51bf98d8ec638bf4c03f5f4833
-      size: 7619
+      md5: 31d70bc334de40a3f8f0a0f6355c5076.dir
+      size: 25708
+      nfiles: 8
     - path: src/models/recommend.py
       hash: md5
-      md5: df2ac834e2df3734ac08c09df5a77352
-      size: 2271
-    - path: src/models/vector_engine.py
+      md5: da5eb353675c4df31aea6929f01f4b23
+      size: 2253
+    - path: src/models/search_engine/
       hash: md5
-      md5: 854c663bbe137652a813c1aaa4764d4d
-      size: 4581
+      md5: 5b864d310a5207f4e0b25ff2ce8ab980.dir
+      size: 32299
+      nfiles: 8
