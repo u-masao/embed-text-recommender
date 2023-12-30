@@ -5,6 +5,7 @@ from src.models.embedding import (
     DummyEmbedding,
     EmbeddingModel,
     SentenceTransformerEmbedding,
+    Word2VecEmbedding,
 )
 
 
@@ -15,6 +16,7 @@ from src.models.embedding import (
         SentenceTransformerEmbedding(
             "oshizo/sbert-jsnli-luke-japanese-base-lite"
         ),
+        Word2VecEmbedding("models/word2vec/kv.bin"),
     ],
 )
 def model(request):
