@@ -47,8 +47,8 @@ class EmbeddingModel:
     def set_strategy(self, strategy: EmbeddingStrategy):
         self.strategy = strategy
 
-    def embed(self, sentences: List[str]) -> np.ndarray:
-        return self.strategy.embed(sentences)
+    def embed(self, sentences: List[str], **kwargs) -> np.ndarray:
+        return self.strategy.embed(sentences, **kwargs)
 
     def get_embed_dimension(self):
         return self.strategy.get_embed_dimension()
