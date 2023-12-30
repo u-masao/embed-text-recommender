@@ -743,7 +743,7 @@ stages:
       nfiles: 8
   build_token_list:
     cmd: poetry run python -m src.features.build_token_list data/interim/dataset.parquet
-      data/interim/tokens.parquet --mlflow_run_name=pipeline
+      data/interim/tokens.parquet --limit_sentence_size=30 --mlflow_run_name=pipeline
     deps:
     - path: data/interim/dataset.parquet
       hash: md5
@@ -751,10 +751,10 @@ stages:
       size: 15023178
     - path: src/features/build_token_list.py
       hash: md5
-      md5: ef4659b11ba4c4d4682d917638e12050
-      size: 1634
+      md5: 1347a4d41067dce453f28a456f9bdff4
+      size: 2442
     outs:
     - path: data/interim/tokens.parquet
       hash: md5
-      md5: bc237833c9ceab972308b563cfaf3b11
-      size: 15023178
+      md5: 481345a3eb174406f9184adc18f86e66
+      size: 77536
