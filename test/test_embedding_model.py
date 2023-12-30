@@ -1,17 +1,24 @@
 import numpy as np
 import pytest
 
-from src.models.embedding import DummyEmbedding, EmbeddingModel
+from src.models.embedding import (
+    DummyEmbedding,
+    EmbeddingModel,
+    SentenceTransformerEmbedding,
+)
 
 
 @pytest.fixture(
     scope="session",
     params=[
-        (EmbeddingModel(DummyEmbedding())),
+        DummyEmbedding(),
+        SentenceTransformerEmbedding(
+            "oshizo/sbert-jsnli-luke-japanese-base-lite"
+        ),
     ],
 )
 def model(request):
-    return request.param
+    return EmbeddingModel(request.param)
 
 
 def test_basic(model):
