@@ -29,7 +29,7 @@ def embedding_query(query, cast_int=False):
     global embedding_model
     logger = logging.getLogger(__name__)
 
-    query_embeddings = np.zeros(engine.dimension)
+    query_embeddings = np.zeros(engine.get_embed_dimension())
     if query.strip():
         sentences = split_text(query)
         query_embeddings = embedding_model.embed(sentences)
@@ -45,7 +45,7 @@ def embedding_query(query, cast_int=False):
 def embedding_from_ids_string(like_ids):
     global engine
     logger = logging.getLogger(__name__)
-    like_embeddings = np.zeros(engine.dimension)
+    like_embeddings = np.zeros(engine.get_embed_dimension())
     if like_ids.strip():
         like_ids = [int(x) for x in split_text(like_ids)]
         logger.info(f"found like_ids: {like_ids}")
@@ -187,7 +187,7 @@ def search(
 
     # 検索
     start_ts = time.perf_counter()
-    similarities, ids = engine.search(total_embedding, top_n=top_n)
+    ids, similarities = engine.search(total_embedding, top_n=top_n)
     search_elapsed_time = time.perf_counter() - start_ts
 
     # 結果を整形

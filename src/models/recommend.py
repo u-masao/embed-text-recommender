@@ -18,7 +18,7 @@ def recommend(kwargs):
 
     for sentences, like_ids in zip([["飼い犬"]], [[6588884, 6592773]]):
         embeddings = embedding_model.embed(sentences)
-        similarities, similar_ids = engine.search(embeddings)
+        similar_ids, similarities = engine.search(embeddings)
         logger.info(embeddings.shape)
         logger.info(similarities)
         logger.info(similar_ids)
