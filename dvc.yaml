@@ -64,3 +64,28 @@ stages:
     - src/models/embedding/
     - src/models/search_engine/
     - models/${item.embedding_model}/engine_${item.embedding_method}.cloudpickle
+
+  build_token_list:
+    cmd: >-
+      poetry run python -m src.features.build_token_list
+      data/interim/dataset.parquet
+      data/interim/tokens.cloudpickle
+      --mlflow_run_name=pipeline
+    deps:
+    - src/features/build_token_list.py
+    - data/interim/dataset.parquet
+    outs:
+    - data/interim/tokens.cloudpickle
+
+  train_word2vec:
+    cmd: >-
+      poetry run python -m src.models.train_w2v_model
+      data/interim/tokens.cloudpickle
+      models/word2vec/w2v.bin
+      models/word2vec/kv.bin
+    deps:
+    - src/models/train_w2v_model.py
+    - data/interim/tokens.cloudpickle
+    outs:
+    - models/word2vec/w2v.bin
+    - models/word2vec/kv.bin

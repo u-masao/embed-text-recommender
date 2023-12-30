@@ -11,7 +11,8 @@ EMBEDDING_DIMENSION = 30
 @pytest.fixture(
     scope="session",
     params=[
-        200,1000,
+        200,
+        1000,
     ],
 )
 def id_size(request):
@@ -57,20 +58,16 @@ def _pickup_top_n(cosine, ids, top_n):
 
 
 def test_cosine(id_size, top_n):
-
-
     # SearchEngine への入力を作成
-    input_ids= [x for x in range(id_size)]
-    input_embeds =  np.random.randn(id_size, EMBEDDING_DIMENSION)
+    input_ids = [x for x in range(id_size)]
+    input_embeds = np.random.randn(id_size, EMBEDDING_DIMENSION)
 
     # クエリーを作成
     offset = 0.1
-    query_embed = input_embeds[0]+offset
+    query_embed = input_embeds[0] + offset
 
     # use engine
-    engine = SearchEngine(
-        FaissSearchEngine(dimension=EMBEDDING_DIMENSION)
-    )
+    engine = SearchEngine(FaissSearchEngine(dimension=EMBEDDING_DIMENSION))
     engine.add_ids_and_embeds(input_ids, input_embeds)
     result_ids, similarities = engine.search(query_embed, top_n=top_n)
     assert result_ids is not None
