@@ -5,7 +5,7 @@
 #################################################################################
 
 PROJECT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
-PROJECT_NAME = sbert-news-recommender
+PROJECT_NAME = embed-text-recommender
 PYTHON_INTERPRETER = python3
 
 

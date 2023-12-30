@@ -14,7 +14,7 @@ def embedder():
 
 def test_bugfix_check_issue_17(embedder):
     """
-    https://github.com/u-masao/sbert-news-recommender/issues/17
+    https://github.com/u-masao/embed-text-recommender/issues/17
     """
     # 初期化されてるか
     assert embedder is not None, "Embedder が正しく初期化されてません"

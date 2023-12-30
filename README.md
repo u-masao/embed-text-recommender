@@ -1,4 +1,4 @@
-sbert-news-recommender
+embed-text-recommender
 ==============================
 
 A short description of the project.

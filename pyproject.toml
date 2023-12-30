@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "sbert-news-recommender"
+name = "embed-text-recommender"
 version = "0.1.0"
 description = ""
 authors = ["u-masao <4973920+u-masao@users.noreply.github.com>"]
