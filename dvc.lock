@@ -657,14 +657,16 @@ stages:
       hash: md5
       md5: 2c42093ef32bde626e265a69fa810a73
       size: 2657
-    - path: src/models/embedder.py
+    - path: src/models/embedding/
       hash: md5
-      md5: dd0e9e51bf98d8ec638bf4c03f5f4833
-      size: 7619
-    - path: src/models/vector_engine.py
+      md5: 31d70bc334de40a3f8f0a0f6355c5076.dir
+      size: 25708
+      nfiles: 8
+    - path: src/models/search_engine/
       hash: md5
-      md5: 854c663bbe137652a813c1aaa4764d4d
-      size: 4581
+      md5: 5b864d310a5207f4e0b25ff2ce8ab980.dir
+      size: 32299
+      nfiles: 8
     outs:
     - path: 
         models/sonoisa/sentence-bert-base-ja-mean-tokens-v2/embeddings_head_only.cloudpickle

@@ -26,7 +26,7 @@ def build_vector_db(kwargs):
     logger.info("create search engine")
     engine = SearchEngine(
         FaissSearchEngine(embeddings.shape[1])
-    ).add_ids_embeds(df["id"], embeddings)
+    ).add_ids_and_embeds(df["id"], embeddings)
     logger.info(f"engine summary: {engine}")
 
     # save vector engine
