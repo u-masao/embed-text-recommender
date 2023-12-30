@@ -18,12 +18,12 @@ def train_w2v_model(kwargs):
 
     # learn
     model = word2vec.Word2Vec(
-        word_list,
-        size=100,
+        sentences=word_list,
+        vector_size=300,
         min_count=5,
         window=5,
-        iter=100,
         workers=3,
+        sg=0,
     )
 
     # output
@@ -34,7 +34,7 @@ def train_w2v_model(kwargs):
     Path(kwargs["output_kv_filepath"]).parent.mkdir(
         exist_ok=True, parents=True
     )
-    model.wv.save(kwargs["output_kv_filepath"])
+    model.wv.save_word2vec_format(kwargs["output_kv_filepath"], binary=True)
 
     # logging
     log_params = {
