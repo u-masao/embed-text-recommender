@@ -655,8 +655,8 @@ stages:
       size: 15023178
     - path: src/features/build_features.py
       hash: md5
-      md5: 421d4aa7d2ba1dab2dda0b64e1c718a9
-      size: 2534
+      md5: 2c42093ef32bde626e265a69fa810a73
+      size: 2657
     - path: src/models/embedder.py
       hash: md5
       md5: dd0e9e51bf98d8ec638bf4c03f5f4833
@@ -720,8 +720,8 @@ stages:
       size: 7619
     - path: src/models/recommend.py
       hash: md5
-      md5: 2f9019fce46687f4af44aef2ac5f3892
-      size: 2140
+      md5: df2ac834e2df3734ac08c09df5a77352
+      size: 2271
     - path: src/models/vector_engine.py
       hash: md5
       md5: 854c663bbe137652a813c1aaa4764d4d
