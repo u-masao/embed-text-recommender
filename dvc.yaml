@@ -25,8 +25,8 @@ stages:
       --limit_sentence_size=${limit_sentence_size}
     deps:
     - src/features/build_features.py
-    - src/models/embedder.py
-    - src/models/vector_engine.py
+    - src/models/embedding/
+    - src/models/search_engine/
     - data/interim/dataset.parquet
     outs:
     - models/${item.embedding_model}/sentences_${item.embedding_method}.cloudpickle
@@ -44,7 +44,7 @@ stages:
       --mlflow_run_name=pipeline
     deps:
     - src/features/build_vector_db.py
-    - src/models/vector_engine.py
+    - src/models/search_engine/
     - models/${item.embedding_model}/sentences_${item.embedding_method}.cloudpickle
     - models/${item.embedding_model}/embeddings_${item.embedding_method}.cloudpickle
     outs:
@@ -61,6 +61,6 @@ stages:
       --model_name_or_filepath=${item.embedding_model}
     deps:
     - src/models/recommend.py
-    - src/models/vector_engine.py
-    - src/models/embedder.py
+    - src/models/embedding/
+    - src/models/search_engine/
     - models/${item.embedding_model}/engine_${item.embedding_method}.cloudpickle
