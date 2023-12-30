@@ -429,7 +429,7 @@ stages:
       size: 1817
     - path: src/models/search_engine/
       hash: md5
-      md5: 5b864d310a5207f4e0b25ff2ce8ab980.dir
+      md5: 40b82155d21ff673e69fbb296db12baf.dir
       size: 32299
       nfiles: 8
     outs:
@@ -528,7 +528,7 @@ stages:
       size: 1817
     - path: src/models/search_engine/
       hash: md5
-      md5: 5b864d310a5207f4e0b25ff2ce8ab980.dir
+      md5: 40b82155d21ff673e69fbb296db12baf.dir
       size: 32299
       nfiles: 8
     outs:
@@ -546,16 +546,16 @@ stages:
       size: 461754
     - path: src/models/embedding/
       hash: md5
-      md5: 31d70bc334de40a3f8f0a0f6355c5076.dir
-      size: 25708
-      nfiles: 8
+      md5: 599cb59d9117e917257da56473f07a2e.dir
+      size: 32101
+      nfiles: 10
     - path: src/models/recommend.py
       hash: md5
-      md5: da5eb353675c4df31aea6929f01f4b23
+      md5: 4ca432c267f58c6b2083f25f7cf363b7
       size: 2253
     - path: src/models/search_engine/
       hash: md5
-      md5: 5b864d310a5207f4e0b25ff2ce8ab980.dir
+      md5: 40b82155d21ff673e69fbb296db12baf.dir
       size: 32299
       nfiles: 8
   recommend@oshizo/sbert-jsnli-luke-japanese-base-lite-head_only:
@@ -568,16 +568,16 @@ stages:
       size: 277434
     - path: src/models/embedding/
       hash: md5
-      md5: 31d70bc334de40a3f8f0a0f6355c5076.dir
-      size: 25708
-      nfiles: 8
+      md5: 599cb59d9117e917257da56473f07a2e.dir
+      size: 32101
+      nfiles: 10
     - path: src/models/recommend.py
       hash: md5
-      md5: da5eb353675c4df31aea6929f01f4b23
+      md5: 4ca432c267f58c6b2083f25f7cf363b7
       size: 2253
     - path: src/models/search_engine/
       hash: md5
-      md5: 5b864d310a5207f4e0b25ff2ce8ab980.dir
+      md5: 40b82155d21ff673e69fbb296db12baf.dir
       size: 32299
       nfiles: 8
   build_sentences_and_embeddings@oshizo/sbert-jsnli-luke-japanese-base-lite-chunk_split:
@@ -597,12 +597,12 @@ stages:
       size: 2657
     - path: src/models/embedding/
       hash: md5
-      md5: 31d70bc334de40a3f8f0a0f6355c5076.dir
-      size: 25708
-      nfiles: 8
+      md5: 599cb59d9117e917257da56473f07a2e.dir
+      size: 32101
+      nfiles: 10
     - path: src/models/search_engine/
       hash: md5
-      md5: 5b864d310a5207f4e0b25ff2ce8ab980.dir
+      md5: 40b82155d21ff673e69fbb296db12baf.dir
       size: 32299
       nfiles: 8
     outs:
@@ -633,12 +633,12 @@ stages:
       size: 2657
     - path: src/models/embedding/
       hash: md5
-      md5: 31d70bc334de40a3f8f0a0f6355c5076.dir
-      size: 25708
-      nfiles: 8
+      md5: 599cb59d9117e917257da56473f07a2e.dir
+      size: 32101
+      nfiles: 10
     - path: src/models/search_engine/
       hash: md5
-      md5: 5b864d310a5207f4e0b25ff2ce8ab980.dir
+      md5: 40b82155d21ff673e69fbb296db12baf.dir
       size: 32299
       nfiles: 8
     outs:
@@ -741,3 +741,20 @@ stages:
       md5: 5b864d310a5207f4e0b25ff2ce8ab980.dir
       size: 32299
       nfiles: 8
+  build_token_list:
+    cmd: poetry run python -m src.features.build_token_list data/interim/dataset.parquet
+      data/interim/tokens.parquet --mlflow_run_name=pipeline
+    deps:
+    - path: data/interim/dataset.parquet
+      hash: md5
+      md5: bc237833c9ceab972308b563cfaf3b11
+      size: 15023178
+    - path: src/features/build_token_list.py
+      hash: md5
+      md5: ef4659b11ba4c4d4682d917638e12050
+      size: 1634
+    outs:
+    - path: data/interim/tokens.parquet
+      hash: md5
+      md5: bc237833c9ceab972308b563cfaf3b11
+      size: 15023178
