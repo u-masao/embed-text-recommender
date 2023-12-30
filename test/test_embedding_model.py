@@ -35,3 +35,25 @@ def test_basic(model):
     assert embed.shape[0] == len(sentences)
     assert embed.shape[1] == dimension
     assert np.linalg.norm(embed[0], ord=2) > 0
+
+
+def test_sentence_transformer_embedding():
+    model = SentenceTransformerEmbedding(
+        "oshizo/sbert-jsnli-luke-japanese-base-lite"
+    )
+
+    # 初期化チェック
+    assert model is not None, "Embedding が正しく初期化されていません"
+
+    sentences = ["日本" * 500, "東京" * 500, "シンガポール" * 500, "ジャカルタ" * 500]
+    methods = ["chunk_split", "head_only"]
+    for method in methods:
+        # Embedding
+        embed = model.embed(sentences, method=method)
+        dimension = model.get_embed_dimension()
+
+        # 返り値のチェック
+        assert embed is not None, "embed() が値を返しません"
+        assert embed.shape[0] == len(sentences)
+        assert embed.shape[1] == dimension
+        assert np.linalg.norm(embed[0], ord=2) > 0
