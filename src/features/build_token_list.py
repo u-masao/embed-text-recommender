@@ -2,8 +2,11 @@ import logging
 from pathlib import Path
 
 import click
+import cloudpickle
 import mlflow
 import pandas as pd
+from janome.tokenizer import Tokenizer
+from tqdm import tqdm
 
 from src.utils import get_device_info
 
@@ -14,25 +17,48 @@ def build_token_list(kwargs):
 
     # load dataset
     df = pd.read_parquet(kwargs["input_filepath"])
+    df["sentence"] = df["title"] + "\n" + df["content"]
+
+    # limit sentence size
+    if kwargs["limit_sentence_size"] > 0:
+        df = df.head(kwargs["limit_sentence_size"])
+
+    # concat sentence
+    full_text = "\n".join(df["sentence"].values)
+
+    # init tokenizer
+    tokenizer = Tokenizer()
+
+    def extract_words(text):
+        tokens = tokenizer.tokenize(text)
+        words = []
+        for token in tokens:
+            if token.part_of_speech.split(",")[0] in ["名詞", "動詞"]:
+                words.append(token.base_form)
+
+        return words
+
+    sentences = full_text.split("。")
+    word_list = [extract_words(sentence) for sentence in tqdm(sentences)]
 
     # output
     Path(kwargs["output_filepath"]).parent.mkdir(exist_ok=True, parents=True)
-    df.to_parquet(kwargs["output_filepath"])
+    with open(kwargs["output_filepath"], "wb") as fo:
+        cloudpickle.dump(word_list, fo)
 
     # logging
+    logger.info(f"word_list head 5: {word_list[:5]}")
     log_params = {
-        "output.length": len(df),
-        "output.columns": df.shape[1],
+        "output.length": len(word_list),
     }
     mlflow.log_params(log_params)
     logger.info(log_params)
-    logger.info(f"output dataframe: \n{df}")
-    logger.info(f"output columns: \n{df.columns}")
 
 
 @click.command()
 @click.argument("input_filepath", type=click.Path(exists=True))
 @click.argument("output_filepath", type=click.Path())
+@click.option("--limit_sentence_size", type=int, default=0)
 @click.option("--mlflow_run_name", type=str, default="develop")
 def main(**kwargs):
     """
