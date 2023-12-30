@@ -4,10 +4,14 @@ import pytest
 from src.models.embedding import DummyEmbedding, EmbeddingModel
 
 
-@pytest.fixture(scope="session")
-def model():
-    _model = EmbeddingModel(DummyEmbedding())
-    yield _model
+@pytest.fixture(
+    scope="session",
+    params=[
+        (EmbeddingModel(DummyEmbedding())),
+    ],
+)
+def model(request):
+    return request.param
 
 
 def test_basic(model):
