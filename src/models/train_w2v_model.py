@@ -18,7 +18,12 @@ def train_w2v_model(kwargs):
 
     # learn
     model = word2vec.Word2Vec(
-        word_list, size=100, min_count=5, window=5, iter=100
+        word_list,
+        size=100,
+        min_count=5,
+        window=5,
+        iter=100,
+        workers=3,
     )
 
     # output
@@ -32,7 +37,9 @@ def train_w2v_model(kwargs):
     model.wv.save(kwargs["output_kv_filepath"])
 
     # logging
-    log_params = {}
+    log_params = {
+        "KeyedVector.length": len(model.wv),
+    }
     mlflow.log_params(log_params)
     logger.info(log_params)
 
