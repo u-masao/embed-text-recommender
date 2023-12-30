@@ -3,18 +3,21 @@ import logging
 import click
 import mlflow
 
-from src.models import Embedder, VectorEngine
+from src.models import VectorEngine
+from src.models.embedding import EmbeddingModel, SentenceTransformerEmbedding
 from src.utils import get_device_info
 
 
 def recommend(kwargs):
     logger = logging.getLogger(__name__)
-    embedder = Embedder(kwargs["model_name_or_filepath"])
+    embedding_model = EmbeddingModel(
+        SentenceTransformerEmbedding(kwargs["model_name_or_filepath"])
+    )
     engine = VectorEngine.load(kwargs["vector_engine_filepath"])
     logger.info(f"engine summary: {engine}")
 
     for sentences, like_ids in zip([["飼い犬"]], [[6588884, 6592773]]):
-        embeddings = embedder.encode(sentences)
+        embeddings = embedding_model.encode(sentences)
         similarities, similar_ids = engine.search(embeddings)
         logger.info(embeddings.shape)
         logger.info(similarities)
