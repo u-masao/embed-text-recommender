@@ -3,14 +3,14 @@ ui:
   embedding_model:
     # intfloat/multilingual-e5-small
     # intfloat/multilingual-e5-base
-    intfloat/multilingual-e5-large
-    # oshizo/sbert-jsnli-luke-japanese-base-lite
+    # intfloat/multilingual-e5-large
+    oshizo/sbert-jsnli-luke-japanese-base-lite
   vector_engine:
-    # models/oshizo/sbert-jsnli-luke-japanese-base-lite/engine_chunk_split.cloudpickle
-    models/intfloat/multilingual-e5-large/engine_chunk_split.cloudpickle
+    models/oshizo/sbert-jsnli-luke-japanese-base-lite/engine_chunk_split.cloudpickle
+    # models/intfloat/multilingual-e5-large/engine_chunk_split.cloudpickle
   sentences_data:
-    # models/oshizo/sbert-jsnli-luke-japanese-base-lite/sentences_chunk_split.cloudpickle
-    models/intfloat/multilingual-e5-large/sentences_chunk_split.cloudpickle
+    models/oshizo/sbert-jsnli-luke-japanese-base-lite/sentences_chunk_split.cloudpickle
+    # models/intfloat/multilingual-e5-large/sentences_chunk_split.cloudpickle
   default_positive_query: エンジニア 転職
   default_negative_query: 旅行 カメラ
   default_like_ids: 6588884 6592773
