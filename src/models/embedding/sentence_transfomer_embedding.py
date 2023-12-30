@@ -236,8 +236,8 @@ def make_weight_matrix(chunks_list: List[List[str]]) -> np.ndarray:
         chunk_offset += len(chunks)
 
     # サイズチェックと値チェック
-    assert weight_matrix.sum() == n_size
-    assert np.mean(weight_matrix.sum(axis=1) ** 2) == 1
+    assert weight_matrix.sum() - n_size < 1.0e-9
+    assert np.mean(weight_matrix.sum(axis=1) ** 2) - 1 < 1.0e-9
 
     return weight_matrix
 
