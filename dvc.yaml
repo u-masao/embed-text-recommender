@@ -64,3 +64,15 @@ stages:
     - src/models/embedding/
     - src/models/search_engine/
     - models/${item.embedding_model}/engine_${item.embedding_method}.cloudpickle
+
+  build_token_list:
+    cmd: >-
+      poetry run python -m src.features.build_token_list
+      data/interim/dataset.parquet
+      data/interim/tokens.parquet
+      --mlflow_run_name=pipeline
+    deps:
+    - src/features/build_token_list.py
+    - data/interim/dataset.parquet
+    outs:
+    - data/interim/tokens.parquet
