@@ -9,7 +9,9 @@ import pandas as pd
 import yaml
 
 sys.path.append(".")
-from src.models import Embedder, VectorEngine  # noqa: E402
+from src.models.embedding import EmbeddingModel  # noqa: E402
+from src.models.embedding import SentenceTransformerEmbedding  # noqa: E402
+from src.models.search_engine import SearchEngine  # noqa: E402
 from src.utils import get_device_info  # noqa: E402
 
 
@@ -24,13 +26,13 @@ def split_text(input_text):
 
 
 def embedding_query(query, cast_int=False):
-    global embedder
+    global embedding_model
     logger = logging.getLogger(__name__)
 
-    query_embeddings = np.zeros(engine.dimension)
+    query_embeddings = np.zeros(engine.get_embed_dimension())
     if query.strip():
         sentences = split_text(query)
-        query_embeddings = embedder.encode(sentences)
+        query_embeddings = embedding_model.embed(sentences)
         logger.info(f"query_embed.shape: {query_embeddings.shape}")
         logger.info(
             "query_embeddings l2norm: "
@@ -43,11 +45,11 @@ def embedding_query(query, cast_int=False):
 def embedding_from_ids_string(like_ids):
     global engine
     logger = logging.getLogger(__name__)
-    like_embeddings = np.zeros(engine.dimension)
+    like_embeddings = np.zeros(engine.get_embed_dimension())
     if like_ids.strip():
         like_ids = [int(x) for x in split_text(like_ids)]
         logger.info(f"found like_ids: {like_ids}")
-        like_embeddings = engine.ids_to_embeddings(like_ids)
+        like_embeddings = engine.ids_to_embeds(like_ids)
         logger.info(f"like_embed.shape: {like_embeddings.shape}")
         logger.info(
             "like_embeddings l2norm: "
@@ -146,7 +148,7 @@ def search(
     """
     global engine
     global text_df
-    global embedder
+    global embedding_model
 
     # init logger
     logger = logging.getLogger(__name__)
@@ -185,7 +187,7 @@ def search(
 
     # 検索
     start_ts = time.perf_counter()
-    similarities, ids = engine.search(total_embedding, top_n=top_n)
+    ids, similarities = engine.search(total_embedding, top_n=top_n)
     search_elapsed_time = time.perf_counter() - start_ts
 
     # 結果を整形
@@ -203,14 +205,14 @@ def search(
         f",\nsearch: {search_elapsed_time:.3f} sec"
         f",\ndf merge: {df_merge_elapsed_time:.3f} sec"
         f",\nmodel: {config['embedding_model']}"
-        f",\nmodel dimension: {embedder.get_model_dimension()}"
+        f",\nmodel dimension: {embedding_model.get_embed_dimension()}"
     )
     return message, output_text
 
 
 def main():
     global demo
-    global embedder
+    global embedding_model
     global engine
     global text_df
     global config
@@ -225,13 +227,15 @@ def main():
 
     # load models
     logger.info("load models")
-    embedder = Embedder(config["embedding_model"])  # noqa: F841
-    engine = VectorEngine.load(config["vector_engine"])
+    embedding_model = EmbeddingModel(
+        SentenceTransformerEmbedding(config["embedding_model"])
+    )  # noqa: F841
+    engine = SearchEngine.load(config["search_engine"])
     text_df = pd.read_parquet(config["sentences_data"])
 
     # logging
     logger.info(f"engine summary: {engine}")
-    logger.info(f"embedder summary: {embedder}")
+    logger.info(f"embedding_model summary: {embedding_model}")
 
     # make widgets
     slider_kwargs = dict(
@@ -295,7 +299,7 @@ def main():
                 label="indicator",
                 value=(
                     f"model: {config['embedding_model']}, "
-                    f"model dimension: {embedder.get_model_dimension()}"
+                    f"model dimension: {embedding_model.get_embed_dimension()}"
                 ),
             )
             output_text = gr.Markdown(label="検索結果", show_label=True)

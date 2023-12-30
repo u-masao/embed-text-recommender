@@ -1,3 +1,6 @@
+"""
+このモジュールは DummyEmbedding モデルを実装します
+"""
 import logging
 from pprint import pformat
 from typing import List, Optional
@@ -7,8 +10,14 @@ from langchain.text_splitter import SentenceTransformersTokenTextSplitter
 from sentence_transformers import SentenceTransformer
 from tqdm.contrib import tmap
 
+from .embedding_model import EmbeddingStrategy
 
-class Embedder:
+
+class SentenceTransformerEmbedding(EmbeddingStrategy):
+    """
+    SentenceTransformer を利用した Embedding 実装です。
+    """
+
     def __init__(
         self,
         model_name_or_filepath: str,
@@ -36,13 +45,37 @@ class Embedder:
             tokens_per_chunk=tokens_par_chunk,
         )
 
-    def get_model_dimension(self) -> int:
+    def get_embed_dimension(self) -> int:
         """
-        埋め込みモデルの次元数を返す。
+        モデルの次元数を返す
+
+        Parameters
+        ------
+        None
+
+        Returns
+        ------
+        int
+            モデルの次元数
         """
         return self.model.get_sentence_embedding_dimension()
 
-    def encode(self, sentences: List[str], method: str = "chunk_split"):
+    def get_model_name(self) -> str:
+        """
+        モデルの次元数を返す
+
+        Parameters
+        ------
+        None
+
+        Returns
+        ------
+        str
+            モデルの名前
+        """
+        return self.model_name_or_filepath
+
+    def embed(self, sentences: List[str], method: str = "chunk_split"):
         """
         埋め込みを計算する。
 
@@ -62,8 +95,11 @@ class Embedder:
         Returns
         ------
         numpy.ndarray
-            埋め込み行列。
-            センテンスの数 n、埋め込み次元 d とすると、(n, d) の2次元ベクトルを返す。
+            埋め込み行列。埋め込み次元 d とすると以下の行列やベクトルを返す。
+            - センテンスの数 1
+              - (d, ) の 1 次元ベクトル
+            - センテンスの数 n (n>1)
+              - (n, d) の行列
         """
 
         # init logger
@@ -200,8 +236,8 @@ def make_weight_matrix(chunks_list: List[List[str]]) -> np.ndarray:
         chunk_offset += len(chunks)
 
     # サイズチェックと値チェック
-    assert weight_matrix.sum() == n_size
-    assert np.mean(weight_matrix.sum(axis=1) ** 2) == 1
+    assert weight_matrix.sum() - n_size < 1.0e-9
+    assert np.mean(weight_matrix.sum(axis=1) ** 2) - 1 < 1.0e-9
 
     return weight_matrix
 

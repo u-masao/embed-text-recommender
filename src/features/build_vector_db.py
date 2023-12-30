@@ -5,7 +5,7 @@ import cloudpickle
 import mlflow
 import pandas as pd
 
-from src.models import VectorEngine
+from src.models.search_engine import FaissSearchEngine, SearchEngine
 from src.utils import get_device_info
 
 
@@ -22,9 +22,10 @@ def build_vector_db(kwargs):
     with open(kwargs["embeddings_filepath"], "rb") as fo:
         embeddings = cloudpickle.load(fo)
 
-    # build vector engine
-    logger.info("create vector engine")
-    engine = VectorEngine(df["id"], embeddings)
+    # build search engine
+    logger.info("create search engine")
+    engine = SearchEngine(FaissSearchEngine(embeddings.shape[1]))
+    engine.add_ids_and_embeds(df["id"], embeddings)
     logger.info(f"engine summary: {engine}")
 
     # save vector engine

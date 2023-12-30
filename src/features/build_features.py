@@ -6,7 +6,7 @@ import cloudpickle
 import mlflow
 import pandas as pd
 
-from src.models import Embedder
+from src.models.embedding import EmbeddingModel, SentenceTransformerEmbedding
 from src.utils import get_device_info
 
 
@@ -25,8 +25,10 @@ def embedding(kwargs):
     df["sentence"] = df["title"] + "\n" + df["content"]
 
     # embedding
-    embedder = Embedder(kwargs["model_name_or_filepath"])
-    embeddings = embedder.encode(
+    embedding_model = EmbeddingModel(
+        SentenceTransformerEmbedding(kwargs["model_name_or_filepath"])
+    )
+    embeddings = embedding_model.embed(
         df["sentence"], method=kwargs["embedding_method"]
     )
 
@@ -48,7 +50,7 @@ def embedding(kwargs):
     }
     mlflow.log_params(log_params)
     logger.info(log_params)
-    logger.info(f"embedder summary: {embedder}")
+    logger.info(f"embedding_model summary: {embedding_model}")
     logger.info(f"output dataframe: \n{df}")
     logger.info(f"output columns: \n{df.columns}")
 

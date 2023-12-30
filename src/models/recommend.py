@@ -3,30 +3,33 @@ import logging
 import click
 import mlflow
 
-from src.models import Embedder, VectorEngine
+from src.models.embedding import EmbeddingModel, SentenceTransformerEmbedding
+from src.models.search_engine import SearchEngine
 from src.utils import get_device_info
 
 
 def recommend(kwargs):
     logger = logging.getLogger(__name__)
-    embedder = Embedder(kwargs["model_name_or_filepath"])
-    engine = VectorEngine.load(kwargs["vector_engine_filepath"])
+    embedding_model = EmbeddingModel(
+        SentenceTransformerEmbedding(kwargs["model_name_or_filepath"])
+    )
+    engine = SearchEngine.load(kwargs["search_engine_filepath"])
     logger.info(f"engine summary: {engine}")
 
     for sentences, like_ids in zip([["飼い犬"]], [[6588884, 6592773]]):
-        embeddings = embedder.encode(sentences)
-        similarities, similar_ids = engine.search(embeddings)
+        embeddings = embedding_model.embed(sentences)
+        similar_ids, similarities = engine.search(embeddings)
         logger.info(embeddings.shape)
         logger.info(similarities)
         logger.info(similar_ids)
 
-        like_embeddings = engine.ids_to_embeddings(like_ids)
+        like_embeddings = engine.ids_to_embeds(like_ids)
         logger.info(like_ids)
         logger.info(like_embeddings.shape)
 
 
 @click.command()
-@click.argument("vector_engine_filepath", type=click.Path(exists=True))
+@click.argument("search_engine_filepath", type=click.Path(exists=True))
 @click.option(
     "--model_name_or_filepath",
     type=str,
@@ -35,13 +38,13 @@ def recommend(kwargs):
 @click.option("--mlflow_run_name", type=str, default="develop")
 def main(**kwargs):
     """
-    VectorEngine を利用してクエリ文字列に類似するテキストを計算する。
+    クエリ文字列に類似するテキストを計算する。
 
     Parameters
     ------
     kwargs: Dict[str, any]
         CLI オプション
-        - vector_engine_filepath
+        - search_engine_filepath
             ベクトルエンジンバイナリのファイルパス
         - model_name_or_filepath
             埋め込み作成モデル名

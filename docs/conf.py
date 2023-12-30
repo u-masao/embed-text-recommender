@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# sbert-news-recommender documentation build configuration file, created by
+# embed-text-recommender documentation build configuration file, created by
 # sphinx-quickstart.
 #
 # This file is execfile()d with the current directory set to its containing dir.
@@ -41,7 +41,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'sbert-news-recommender'
+project = u'embed-text-recommender'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -164,7 +164,7 @@ html_static_path = ['_static']
 # html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'sbert-news-recommenderdoc'
+htmlhelp_basename = 'embed-text-recommenderdoc'
 
 
 # -- Options for LaTeX output --------------------------------------------------
@@ -184,8 +184,8 @@ latex_elements = {
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
     ('index',
-     'sbert-news-recommender.tex',
-     u'sbert-news-recommender Documentation',
+     'embed-text-recommender.tex',
+     u'embed-text-recommender Documentation',
      u"u-masao", 'manual'),
 ]
 
@@ -215,7 +215,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'sbert-news-recommender', u'sbert-news-recommender Documentation',
+    ('index', 'embed-text-recommender', u'embed-text-recommender Documentation',
      [u"u-masao"], 1)
 ]
 
@@ -229,8 +229,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    ('index', 'sbert-news-recommender', u'sbert-news-recommender Documentation',
-     u"u-masao", 'sbert-news-recommender',
+    ('index', 'embed-text-recommender', u'embed-text-recommender Documentation',
+     u"u-masao", 'embed-text-recommender',
      'A short description of the project.', 'Miscellaneous'),
 ]
 
