@@ -104,15 +104,15 @@ class DummySearchEngine(SearchEngineStrategy):
         Returns
         ------
         np.ndarray
-            検索結果 ID の行列またはベクトル
+            検索結果 ID の行列
         np.ndarray
-            距離（類似度）の行列またはベクトル
+            距離（類似度）の行列
         """
 
         np.random.seed(self.random_seed)
         if query_embeds.ndim == 1:
-            result_ids = np.random.randint(1, high=1000, size=top_n)
-            result_distances = np.random.randn(top_n)
+            result_ids = np.random.randint(1, high=1000, size=(1, top_n))
+            result_distances = np.random.randn(1, top_n)
         elif query_embeds.ndim == 2:
             result_ids = np.random.randint(
                 1, high=1000, size=(query_embeds.shape[0], top_n)
@@ -121,3 +121,10 @@ class DummySearchEngine(SearchEngineStrategy):
         else:
             raise ValueError("入力 query_embeds のサイズは (d,) または (n,d) として下さい。")
         return result_ids, result_distances
+
+    def save(self, filepath: str):
+        """
+        インスタンスをファイルに保存する。
+        """
+
+        pass
