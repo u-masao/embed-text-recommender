@@ -32,7 +32,7 @@ def embedding_query(query, cast_int=False):
     query_embeddings = np.zeros(engine.dimension)
     if query.strip():
         sentences = split_text(query)
-        query_embeddings = embedding_model.encode(sentences)
+        query_embeddings = embedding_model.embed(sentences)
         logger.info(f"query_embed.shape: {query_embeddings.shape}")
         logger.info(
             "query_embeddings l2norm: "

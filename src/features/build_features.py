@@ -28,7 +28,7 @@ def embedding(kwargs):
     embedding_model = EmbeddingModel(
         SentenceTransformerEmbedding(kwargs["model_name_or_filepath"])
     )
-    embeddings = embedding_model.encode(
+    embeddings = embedding_model.embed(
         df["sentence"], method=kwargs["embedding_method"]
     )
 
