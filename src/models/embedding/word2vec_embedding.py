@@ -6,8 +6,8 @@ from typing import List
 
 import fugashi
 import ipadic
+import numpy as np
 from gensim.models import KeyedVectors
-from huggingface_hub import hf_hub_download
 
 from .embedding_model import EmbeddingStrategy
 
@@ -37,12 +37,8 @@ class Word2VecEmbedding(EmbeddingStrategy):
         self.model_name_or_filepath = model_name_or_filepath
         self.tagger = fugashi.GenericTagger(ipadic.MECAB_ARGS)
         self.model = KeyedVectors.load_word2vec_format(
-            hf_hub_download(
-                repo_id="Word2vec/wikipedia2vec_jawiki_20180420_100d",
-                filename="jawiki_20180420_100d.txt",
-            )
+            model_name_or_filepath, binary=True
         )
-        self.model.most_similar("your_word")
 
     def get_embed_dimension(self) -> int:
         """
@@ -57,7 +53,7 @@ class Word2VecEmbedding(EmbeddingStrategy):
         int
             モデルの次元数
         """
-        pass
+        return self.model.vector_size
 
     def get_model_name(self) -> str:
         """
@@ -93,16 +89,21 @@ class Word2VecEmbedding(EmbeddingStrategy):
               - (n, d) の行列
         """
 
-        splitted_sentences = []
-        for sentence in sentences:
-            splitted_sentences.append(
-                [x.surface for x in self.tagger(sentence)]
-            )
+        result = np.zeros((len(sentences), self.get_embed_dimension()))
+        for index, sentence in enumerate(sentences):
+            tags = self.tagger(sentence)
+            for tag in tags:
+                word = tag.surface
+                if word in self.model:
+                    result[index, :] += self.model[word]
+
+            result[index, :] /= len(tags)
+
+        return result
 
     def __str__(self) -> str:
         params = {
             "model": self.model,
-            "splitter": self.splitter,
             "model_name_or_filepath": self.model_name_or_filepath,
         }
         return pformat(params)
