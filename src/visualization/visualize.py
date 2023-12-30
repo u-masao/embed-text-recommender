@@ -9,9 +9,9 @@ import pandas as pd
 import yaml
 
 sys.path.append(".")
-from src.models import VectorEngine  # noqa: E402
 from src.models.embedding import EmbeddingModel  # noqa: E402
 from src.models.embedding import SentenceTransformerEmbedding  # noqa: E402
+from src.models.search_engine import SearchEngine  # noqa: E402
 from src.utils import get_device_info  # noqa: E402
 
 
@@ -230,7 +230,7 @@ def main():
     embedding_model = EmbeddingModel(
         SentenceTransformerEmbedding(config["embedding_model"])
     )  # noqa: F841
-    engine = VectorEngine.load(config["vector_engine"])
+    engine = SearchEngine.load(config["search_engine"])
     text_df = pd.read_parquet(config["sentences_data"])
 
     # logging

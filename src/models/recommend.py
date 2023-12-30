@@ -3,8 +3,8 @@ import logging
 import click
 import mlflow
 
-from src.models import VectorEngine
 from src.models.embedding import EmbeddingModel, SentenceTransformerEmbedding
+from src.models.search_engine import SearchEngine
 from src.utils import get_device_info
 
 
@@ -13,7 +13,7 @@ def recommend(kwargs):
     embedding_model = EmbeddingModel(
         SentenceTransformerEmbedding(kwargs["model_name_or_filepath"])
     )
-    engine = VectorEngine.load(kwargs["vector_engine_filepath"])
+    engine = SearchEngine.load(kwargs["search_engine_filepath"])
     logger.info(f"engine summary: {engine}")
 
     for sentences, like_ids in zip([["飼い犬"]], [[6588884, 6592773]]):
@@ -29,7 +29,7 @@ def recommend(kwargs):
 
 
 @click.command()
-@click.argument("vector_engine_filepath", type=click.Path(exists=True))
+@click.argument("search_engine_filepath", type=click.Path(exists=True))
 @click.option(
     "--model_name_or_filepath",
     type=str,
@@ -38,13 +38,13 @@ def recommend(kwargs):
 @click.option("--mlflow_run_name", type=str, default="develop")
 def main(**kwargs):
     """
-    VectorEngine を利用してクエリ文字列に類似するテキストを計算する。
+    クエリ文字列に類似するテキストを計算する。
 
     Parameters
     ------
     kwargs: Dict[str, any]
         CLI オプション
-        - vector_engine_filepath
+        - search_engine_filepath
             ベクトルエンジンバイナリのファイルパス
         - model_name_or_filepath
             埋め込み作成モデル名
