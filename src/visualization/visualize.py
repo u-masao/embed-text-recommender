@@ -49,7 +49,7 @@ def embedding_from_ids_string(like_ids):
     if like_ids.strip():
         like_ids = [int(x) for x in split_text(like_ids)]
         logger.info(f"found like_ids: {like_ids}")
-        like_embeddings = engine.ids_to_embeddings(like_ids)
+        like_embeddings = engine.ids_to_embeds(like_ids)
         logger.info(f"like_embed.shape: {like_embeddings.shape}")
         logger.info(
             "like_embeddings l2norm: "

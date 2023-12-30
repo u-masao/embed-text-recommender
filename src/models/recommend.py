@@ -23,7 +23,7 @@ def recommend(kwargs):
         logger.info(similarities)
         logger.info(similar_ids)
 
-        like_embeddings = engine.ids_to_embeddings(like_ids)
+        like_embeddings = engine.ids_to_embeds(like_ids)
         logger.info(like_ids)
         logger.info(like_embeddings.shape)
 
