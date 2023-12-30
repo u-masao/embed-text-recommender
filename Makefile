@@ -35,7 +35,7 @@ check_commit:
 	git diff --exit-code
 
 ## PIPELINE.md
-PIPELINE.md:
+PIPELINE.md: dvc.yaml params.yaml
 	poetry run dvc dag --md > PIPELINE.md
 	git commit PIPELINE.md -m '[update] dvc repro' || true
 
