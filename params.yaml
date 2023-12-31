@@ -1,4 +1,4 @@
-limit_sentence_size: 30
+limit_sentence_size: 0
 embedding_storategies:
   - SentenceTransformer
   # - Word2Vec
