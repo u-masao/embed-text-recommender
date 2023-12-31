@@ -836,8 +836,8 @@ stages:
       size: 2758
     - path: src/models/embedding/
       hash: md5
-      md5: 1a10fc43dc504c114d86d9607e9b6eb4.dir
-      size: 33400
+      md5: ef7bc930af1f73c099a16bcc9182324d.dir
+      size: 33395
       nfiles: 10
     - path: src/models/search_engine/
       hash: md5
