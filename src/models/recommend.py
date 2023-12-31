@@ -16,7 +16,7 @@ def recommend(kwargs):
     embedding_model = EmbeddingModel.make_embedding_model(
         kwargs["embedding_storategy"],
         kwargs["model_name_or_filepath"],
-        method=kwargs["chunk_method"],
+        chunk_method=kwargs["chunk_method"],
     )
 
     # load search engine

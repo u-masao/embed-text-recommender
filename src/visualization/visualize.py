@@ -228,7 +228,7 @@ def main():
     embedding_model = EmbeddingModel.make_embedding_model(
         config["embedding_storategy"],
         config["embedding_model_name"],
-        method=config["chunk_method"],
+        chunk_method=config["chunk_method"],
     )  # noqa: F841
 
     # init search engin
