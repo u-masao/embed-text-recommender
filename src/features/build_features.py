@@ -28,7 +28,7 @@ def embedding(kwargs):
     embedding_model = EmbeddingModel.make_embedding_model(
         kwargs["embedding_storategy"],
         kwargs["model_name_or_filepath"],
-        method=kwargs["chunking_method"],
+        method=kwargs["chunk_method"],
     )
 
     # embedding
@@ -67,7 +67,7 @@ def embedding(kwargs):
     default="oshizo/sbert-jsnli-luke-japanese-base-lite",
 )
 @click.option("--embedding_storategy", type=str, default="SentenceTransformer")
-@click.option("--chunking_method", type=str, default="chunk_split")
+@click.option("--chunk_method", type=str, default="chunk_split")
 @click.option("--limit_sentence_size", type=int, default=0)
 @click.option("--mlflow_run_name", type=str, default="develop")
 def main(**kwargs):
