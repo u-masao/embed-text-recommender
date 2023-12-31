@@ -10,7 +10,6 @@ import yaml
 
 sys.path.append(".")
 from src.models.embedding import EmbeddingModel  # noqa: E402
-from src.models.embedding import SentenceTransformerEmbedding  # noqa: E402
 from src.models.search_engine import SearchEngine  # noqa: E402
 from src.utils import get_device_info  # noqa: E402
 
@@ -225,12 +224,17 @@ def main():
     # load config
     config = yaml.safe_load(open("ui.yaml", "r"))["ui"]
 
-    # load models
-    logger.info("load models")
-    embedding_model = EmbeddingModel(
-        SentenceTransformerEmbedding(config["embedding_model_name"])
+    # load embedding_model
+    embedding_model = EmbeddingModel.make_embedding_model(
+        config["embedding_storategy"],
+        config["embedding_model_name"],
+        method=config["chunking_method"],
     )  # noqa: F841
+
+    # init search engin
     engine = SearchEngine.load(config["search_engine"])
+
+    # load text data
     text_df = pd.read_parquet(config["sentences_data"])
 
     # logging
