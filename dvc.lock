@@ -820,7 +820,7 @@ stages:
       models/Word2Vec/models/Word2Vec/base_dict/kv.bin/sentences_chunk_split.cloudpickle
       models/Word2Vec/models/Word2Vec/base_dict/kv.bin/embeddings_chunk_split.cloudpickle
       --mlflow_run_name=pipeline --model_name_or_filepath=models/Word2Vec/base_dict/kv.bin
-      --embedding_storategy=Word2Vec --chunking_method=chunk_split --limit_sentence_size=30
+      --embedding_storategy=Word2Vec --chunk_method=chunk_split --limit_sentence_size=30
     deps:
     - path: data/interim/dataset.parquet
       hash: md5
@@ -832,8 +832,8 @@ stages:
       size: 31001700
     - path: src/features/build_features.py
       hash: md5
-      md5: 2bd32d5eebedee3e579373cdc3ed8285
-      size: 2758
+      md5: 0e25d878ed9aa71731985a38a0d1e896
+      size: 2752
     - path: src/models/embedding/
       hash: md5
       md5: ef7bc930af1f73c099a16bcc9182324d.dir
