@@ -23,6 +23,8 @@ class SentenceTransformerEmbedding(EmbeddingStrategy):
         model_name_or_filepath: str,
         chunk_overlap: int = 50,
         tokens_par_chunk: Optional[int] = None,
+        chunk_method: str = "chunk_split",
+        **kwargs,
     ):
         """
         コンストラクタ。
@@ -36,6 +38,14 @@ class SentenceTransformerEmbedding(EmbeddingStrategy):
         tokens_par_chunk: Optional[int]
             チャンクあたりのトークン数。
             デフォルト値 None にすることで自動的にモデルの max_tokens を利用する。
+        chunk_method: str
+            埋め込みの計算方法を指定する。以下に対応。
+            - chunk_split (default)
+              - 各センテンスをチャンクに分割し埋め込みを計算する。
+              - 埋め込みの平均ベクトルを返す。
+            - head_only
+              - チャンクに分割せずに埋め込みモデルで処理する。
+              - モデルの max_tokens のみの埋め込みを計算する
         """
         self.model_name_or_filepath = model_name_or_filepath
         self.model = SentenceTransformer(model_name_or_filepath)
@@ -44,6 +54,19 @@ class SentenceTransformerEmbedding(EmbeddingStrategy):
             model_name=model_name_or_filepath,
             tokens_per_chunk=tokens_par_chunk,
         )
+        self.chunk_method = chunk_method
+
+        # _encode function を設定する
+        if self.chunk_method == "head_only":
+            self._encode= self._head_only_encode
+        elif self.chunk_method == "naive_chunk_split":
+            self._encode= self._naive_split_encode
+        elif self.chunk_method == "chunk_split":
+            self._encode = self._make_chunk_averaged_encode
+        else:
+            raise ValueError(
+                "指定の chunk_method には対応していません: " f"chunk_method: {chunk_method}"
+            )
 
     def get_embed_dimension(self) -> int:
         """
@@ -75,7 +98,7 @@ class SentenceTransformerEmbedding(EmbeddingStrategy):
         """
         return self.model_name_or_filepath
 
-    def embed(self, sentences: List[str], method: str = "chunk_split"):
+    def embed(self, sentences: List[str]):
         """
         埋め込みを計算する。
 
@@ -83,14 +106,6 @@ class SentenceTransformerEmbedding(EmbeddingStrategy):
         ------
         sentences: List[str]
             センテンスの List
-        method: str
-            埋め込みの計算方法を指定する。以下に対応。
-            - chunk_split (default)
-              - 各センテンスをチャンクに分割し埋め込みを計算する。
-              - 埋め込みの平均ベクトルを返す。
-            - head_only
-              - チャンクに分割せずに埋め込みモデルで処理する。
-              - モデルの max_tokens のみの埋め込みを計算する
 
         Returns
         ------
@@ -102,24 +117,10 @@ class SentenceTransformerEmbedding(EmbeddingStrategy):
               - (n, d) の行列
         """
 
-        # init logger
-        logger = logging.getLogger(__name__)
-        logger.info(f"encode method: {method}")
-
         # remove empty sentence
         sentences = [x for x in sentences if x]
 
-        # それぞれの方法で embedding する
-        if method == "head_only":
-            embeddings = self._head_only_encode(sentences)
-        elif method == "naive_chunk_split":
-            embeddings = self._naive_split_encode(sentences)
-        elif method == "chunk_split":
-            embeddings = self._make_chunk_averaged_encode(sentences)
-        else:
-            raise ValueError(f"指定の method には対応していません。 method: {method}")
-
-        return embeddings
+        return self._encode(sentences)
 
     def _head_only_encode(self, sentences):
         return self.model.encode(sentences)
