@@ -1,5 +1,7 @@
 ui:
   gradio_share: True
+  embedding_storategy: SentenceTransformer
+  # embedding_storategy: Word2Vec
   embedding_model_name:
     # intfloat/multilingual-e5-small
     # intfloat/multilingual-e5-base
