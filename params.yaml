@@ -11,6 +11,6 @@ embedding_model_names:
   # - oshizo/sbert-jsnli-luke-japanese-base-lite
   # - sonoisa/sentence-bert-base-ja-mean-tokens-v2
   - models/Word2Vec/base_dict/kv.bin
-chunking_methods:
+chunk_methods:
   - chunk_split
   # - head_only
