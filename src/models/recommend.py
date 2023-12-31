@@ -3,16 +3,23 @@ import logging
 import click
 import mlflow
 
-from src.models.embedding import EmbeddingModel, SentenceTransformerEmbedding
+from src.models.embedding import EmbeddingModel
 from src.models.search_engine import SearchEngine
 from src.utils import get_device_info
 
 
 def recommend(kwargs):
+    # init logger
     logger = logging.getLogger(__name__)
-    embedding_model = EmbeddingModel(
-        SentenceTransformerEmbedding(kwargs["model_name_or_filepath"])
+
+    # make embedding_model
+    embedding_model = EmbeddingModel.make_embedding_model(
+        kwargs["embedding_storategy"],
+        kwargs["model_name_or_filepath"],
+        chunk_method=kwargs["chunk_method"],
     )
+
+    # load search engine
     engine = SearchEngine.load(kwargs["search_engine_filepath"])
     logger.info(f"engine summary: {engine}")
 
@@ -36,6 +43,8 @@ def recommend(kwargs):
     default="oshizo/sbert-jsnli-luke-japanese-base-lite",
 )
 @click.option("--mlflow_run_name", type=str, default="develop")
+@click.option("--chunk_method", type=str, default="chunk_split")
+@click.option("--embedding_storategy", type=str, default="SentenceTransformer")
 def main(**kwargs):
     """
     クエリ文字列に類似するテキストを計算する。

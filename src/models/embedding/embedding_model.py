@@ -47,8 +47,29 @@ class EmbeddingModel:
     def set_strategy(self, strategy: EmbeddingStrategy):
         self.strategy = strategy
 
-    def embed(self, sentences: List[str], **kwargs) -> np.ndarray:
-        return self.strategy.embed(sentences, **kwargs)
+    def embed(self, sentences: List[str]) -> np.ndarray:
+        return self.strategy.embed(sentences)
 
     def get_embed_dimension(self):
         return self.strategy.get_embed_dimension()
+
+    @classmethod
+    def make_embedding_model(cls, storategy: str, name: str, **kwargs):
+        """
+        EmbeddingModel インスタンスを返す
+        """
+        # ファイルの先頭に import を書くと循環参照になるため、利用時にインポートする
+        from . import SentenceTransformerEmbedding, Word2VecEmbedding
+
+        # make EmbeddingStorategy
+        if storategy == "SentenceTransformer":
+            embedding_storategy = SentenceTransformerEmbedding(name, **kwargs)
+        elif storategy == "Word2Vec":
+            embedding_storategy = Word2VecEmbedding(name, **kwargs)
+        else:
+            raise ValueError(
+                f"指定の embedding_storategy はサポートしていません: {storategy}"
+            )
+
+        # embedding
+        return EmbeddingModel(embedding_storategy)

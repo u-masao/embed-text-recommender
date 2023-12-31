@@ -6,7 +6,7 @@ import cloudpickle
 import mlflow
 import pandas as pd
 
-from src.models.embedding import EmbeddingModel, SentenceTransformerEmbedding
+from src.models.embedding import EmbeddingModel
 from src.utils import get_device_info
 
 
@@ -24,13 +24,15 @@ def embedding(kwargs):
     # make features
     df["sentence"] = df["title"] + "\n" + df["content"]
 
+    # make embedding_model
+    embedding_model = EmbeddingModel.make_embedding_model(
+        kwargs["embedding_storategy"],
+        kwargs["model_name_or_filepath"],
+        chunk_method=kwargs["chunk_method"],
+    )
+
     # embedding
-    embedding_model = EmbeddingModel(
-        SentenceTransformerEmbedding(kwargs["model_name_or_filepath"])
-    )
-    embeddings = embedding_model.embed(
-        df["sentence"], method=kwargs["embedding_method"]
-    )
+    embeddings = embedding_model.embed(df["sentence"])
 
     # output
     Path(kwargs["embeddings_filepath"]).parent.mkdir(
@@ -64,7 +66,8 @@ def embedding(kwargs):
     type=str,
     default="oshizo/sbert-jsnli-luke-japanese-base-lite",
 )
-@click.option("--embedding_method", type=str, default="chunk_split")
+@click.option("--embedding_storategy", type=str, default="SentenceTransformer")
+@click.option("--chunk_method", type=str, default="chunk_split")
 @click.option("--limit_sentence_size", type=int, default=0)
 @click.option("--mlflow_run_name", type=str, default="develop")
 def main(**kwargs):

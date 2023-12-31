@@ -18,6 +18,7 @@ class DummyEmbedding(EmbeddingStrategy):
         model_name: str = "random_embedding",
         dimension: int = 10,
         random_seed: int = 1234,
+        **kwargs,
     ):
         """
         モデルを初期化する。

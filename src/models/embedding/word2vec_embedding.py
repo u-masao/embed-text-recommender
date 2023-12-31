@@ -20,6 +20,7 @@ class Word2VecEmbedding(EmbeddingStrategy):
     def __init__(
         self,
         model_name_or_filepath: str,
+        **kwargs,
     ):
         """
         コンストラクタ。
