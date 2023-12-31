@@ -4,15 +4,15 @@ ui:
   # embedding_storategy: Word2Vec
   embedding_model_name:
     # models/Word2Vec/base_dict/kv.bin
-    intfloat/multilingual-e5-small
+    # intfloat/multilingual-e5-small
     # intfloat/multilingual-e5-base
     # intfloat/multilingual-e5-large
-    # oshizo/sbert-jsnli-luke-japanese-base-lite
+    oshizo/sbert-jsnli-luke-japanese-base-lite
   search_engine:
     # models/Word2Vec/models/Word2Vec/base_dict/kv.bin/engine_chunk_split.cloudpickle
     # models/oshizo/sbert-jsnli-luke-japanese-base-lite/engine_head_only.cloudpickle
-    # models/oshizo/sbert-jsnli-luke-japanese-base-lite/engine_chunk_split.cloudpickle
-    models/intfloat/multilingual-e5-small/engine_chunk_split.cloudpickle
+    models/oshizo/sbert-jsnli-luke-japanese-base-lite/engine_chunk_split.cloudpickle
+    # models/intfloat/multilingual-e5-small/engine_chunk_split.cloudpickle
     # models/intfloat/multilingual-e5-base/engine_chunk_split.cloudpickle
     # models/intfloat/multilingual-e5-large/engine_chunk_split.cloudpickle
   chunk_method: chunk_split
@@ -20,8 +20,8 @@ ui:
   sentences_data:
     # models/Word2Vec/models/Word2Vec/base_dict/kv.bin/sentences_chunk_split.cloudpickle
     # models/oshizo/sbert-jsnli-luke-japanese-base-lite/sentences_head_only.cloudpickle
-    # models/oshizo/sbert-jsnli-luke-japanese-base-lite/sentences_chunk_split.cloudpickle
-    models/intfloat/multilingual-e5-small/sentences_chunk_split.cloudpickle
+    models/oshizo/sbert-jsnli-luke-japanese-base-lite/sentences_chunk_split.cloudpickle
+    # models/intfloat/multilingual-e5-small/sentences_chunk_split.cloudpickle
     # models/intfloat/multilingual-e5-base/sentences_chunk_split.cloudpickle
     # models/intfloat/multilingual-e5-large/sentences_chunk_split.cloudpickle
   default_positive_query: エンジニア 転職

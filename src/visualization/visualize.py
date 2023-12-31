@@ -299,6 +299,7 @@ def main():
                 )
             top_n_number = gr.Number(value=config["default_top_n"])
             submit_button = gr.Button(value="検索")
+            exit_button = gr.Button(value="Exit")
             indicator_label = gr.Label(
                 label="indicator",
                 value=(
@@ -334,6 +335,11 @@ def main():
                 inputs=input_widgets,
                 outputs=output_widgets,
             )
+        exit_button.click(fn=shutdown_application, inputs=[], outputs=[])
+
+
+def shutdown_application():
+    exit()
 
 
 if __name__ == "__main__":
