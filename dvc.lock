@@ -773,12 +773,12 @@ stages:
     outs:
     - path: models/Word2Vec/base_dict/kv.bin
       hash: md5
-      md5: 2333b31415b10440cb16ea21e51ea43f
+      md5: d8d34ee64b08a417cea41ad3177df3ef
       size: 31001700
     - path: models/Word2Vec/base_dict/w2v.bin
       hash: md5
-      md5: df951e7df8e375ebb8f2d16883cdb10d
-      size: 62326615
+      md5: d45f060959f11e6328e4508150e979a6
+      size: 62326634
   build_sentences_and_embeddings@SentenceTransformer-oshizo/sbert-jsnli-luke-japanese-base-lite-chunk_split:
     cmd: poetry run python -m src.features.build_features data/interim/dataset.parquet
       models/SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite/sentences_chunk_split.cloudpickle
