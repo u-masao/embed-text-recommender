@@ -1,6 +1,6 @@
 ui:
   gradio_share: True
-  embedding_model:
+  embedding_model_name:
     # intfloat/multilingual-e5-small
     # intfloat/multilingual-e5-base
     # intfloat/multilingual-e5-large

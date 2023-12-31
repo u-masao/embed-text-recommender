@@ -204,7 +204,7 @@ def search(
         f"encode: {encode_elapsed_time:.3f} sec"
         f",\nsearch: {search_elapsed_time:.3f} sec"
         f",\ndf merge: {df_merge_elapsed_time:.3f} sec"
-        f",\nmodel: {config['embedding_model']}"
+        f",\nmodel: {config['embedding_model_name']}"
         f",\nmodel dimension: {embedding_model.get_embed_dimension()}"
     )
     return message, output_text
@@ -228,7 +228,7 @@ def main():
     # load models
     logger.info("load models")
     embedding_model = EmbeddingModel(
-        SentenceTransformerEmbedding(config["embedding_model"])
+        SentenceTransformerEmbedding(config["embedding_model_name"])
     )  # noqa: F841
     engine = SearchEngine.load(config["search_engine"])
     text_df = pd.read_parquet(config["sentences_data"])
@@ -298,7 +298,7 @@ def main():
             indicator_label = gr.Label(
                 label="indicator",
                 value=(
-                    f"model: {config['embedding_model']}, "
+                    f"model: {config['embedding_model_name']}, "
                     f"model dimension: {embedding_model.get_embed_dimension()}"
                 ),
             )
