@@ -773,31 +773,35 @@ stages:
     outs:
     - path: models/Word2Vec/base_dict/kv.bin
       hash: md5
-      md5: 2333b31415b10440cb16ea21e51ea43f
+      md5: 077fb4d454167c971c5582e53e6d2b85
       size: 31001700
     - path: models/Word2Vec/base_dict/w2v.bin
       hash: md5
-      md5: df951e7df8e375ebb8f2d16883cdb10d
+      md5: a5ea36c46ad91dc026ab23d86601e1e6
       size: 62326615
   build_sentences_and_embeddings@SentenceTransformer-oshizo/sbert-jsnli-luke-japanese-base-lite-chunk_split:
     cmd: poetry run python -m src.features.build_features data/interim/dataset.parquet
       models/SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite/sentences_chunk_split.cloudpickle
       models/SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite/embeddings_chunk_split.cloudpickle
       --mlflow_run_name=pipeline --model_name_or_filepath=oshizo/sbert-jsnli-luke-japanese-base-lite
-      --embedding_storategy=SentenceTransformer --chunking_method=chunk_split --limit_sentence_size=30
+      --embedding_storategy=SentenceTransformer --chunk_method=chunk_split --limit_sentence_size=30
     deps:
     - path: data/interim/dataset.parquet
       hash: md5
       md5: bc237833c9ceab972308b563cfaf3b11
       size: 15023178
+    - path: models/Word2Vec/base_dict/kv.bin
+      hash: md5
+      md5: 077fb4d454167c971c5582e53e6d2b85
+      size: 31001700
     - path: src/features/build_features.py
       hash: md5
-      md5: 630c5a7fcce7297d826c9d6ff317c503
-      size: 2741
+      md5: 21ab13d4b081a3e8ca7bee00082e6356
+      size: 2758
     - path: src/models/embedding/
       hash: md5
-      md5: b3b27f1213db488d1681ca79c0822fbd.dir
-      size: 33188
+      md5: 583751688d578553f985e1af4132e744.dir
+      size: 33405
       nfiles: 10
     - path: src/models/search_engine/
       hash: md5
@@ -899,6 +903,63 @@ stages:
       hash: md5
       md5: ef7bc930af1f73c099a16bcc9182324d.dir
       size: 33395
+      nfiles: 10
+    - path: src/models/recommend.py
+      hash: md5
+      md5: db13fc49e519fc8ff354bd37f7f2ef65
+      size: 2516
+    - path: src/models/search_engine/
+      hash: md5
+      md5: 40b82155d21ff673e69fbb296db12baf.dir
+      size: 32299
+      nfiles: 8
+  build_vector_db@SentenceTransformer-oshizo/sbert-jsnli-luke-japanese-base-lite-chunk_split:
+    cmd: poetry run python -m src.features.build_vector_db 
+      models/SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite/sentences_chunk_split.cloudpickle
+      models/SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite/embeddings_chunk_split.cloudpickle
+      models/SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite/engine_chunk_split.cloudpickle
+      --mlflow_run_name=pipeline
+    deps:
+    - path: 
+        models/SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite/embeddings_chunk_split.cloudpickle
+      hash: md5
+      md5: eb2b8475888c0ba5f11c7be24b289b7d
+      size: 184458
+    - path: 
+        models/SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite/sentences_chunk_split.cloudpickle
+      hash: md5
+      md5: c171ff2794839915ad207819c3ea2321
+      size: 151481
+    - path: src/features/build_vector_db.py
+      hash: md5
+      md5: edde72f0394b5b550920b5c8167be3fa
+      size: 1817
+    - path: src/models/search_engine/
+      hash: md5
+      md5: 40b82155d21ff673e69fbb296db12baf.dir
+      size: 32299
+      nfiles: 8
+    outs:
+    - path: 
+        models/SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite/engine_chunk_split.cloudpickle
+      hash: md5
+      md5: 6405f3ff1f18e487901d867af44d3134
+      size: 461754
+  recommend@SentenceTransformer-oshizo/sbert-jsnli-luke-japanese-base-lite-chunk_split:
+    cmd: poetry run python -m src.models.recommend 
+      models/SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite/engine_chunk_split.cloudpickle
+      --mlflow_run_name=pipeline --model_name_or_filepath=oshizo/sbert-jsnli-luke-japanese-base-lite
+      --embedding_storategy=SentenceTransformer
+    deps:
+    - path: 
+        models/SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite/engine_chunk_split.cloudpickle
+      hash: md5
+      md5: 6405f3ff1f18e487901d867af44d3134
+      size: 461754
+    - path: src/models/embedding/
+      hash: md5
+      md5: 583751688d578553f985e1af4132e744.dir
+      size: 33405
       nfiles: 10
     - path: src/models/recommend.py
       hash: md5
