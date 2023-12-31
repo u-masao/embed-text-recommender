@@ -14,6 +14,7 @@ from src.models.search_engine import SearchEngine  # noqa: E402
 from src.utils import get_device_info  # noqa: E402
 
 CONFIG_FILEPATH = "ui.yaml"
+demo = None  # for suppress gradio reload error
 
 
 def merge_embeddings(embeds_list):
@@ -133,6 +134,38 @@ def format_to_text(df):
         )
 
     return result
+
+
+def clear_widgets():
+    global config
+
+    return (
+        "",  # positive_query
+        1.0,  # positive_query_blend_ratio
+        "",  # negative_query
+        1.0,  # negative_query_blend_ratio
+        "",  # like_ids
+        1.0,  # like_blend_ratio
+        "",  # dislike_ids
+        1.0,  # dislike_blend_ratio
+        config["default_top_n"],  # top_n
+    )
+
+
+def set_example_widgets():
+    global config
+
+    return (
+        config["default_positive_query"],  # positive_query
+        1.0,  # positive_query_blend_ratio
+        config["default_negative_query"],  # negative_query
+        1.0,  # negative_query_blend_ratio
+        config["default_like_ids"],  # like_ids
+        1.0,  # like_blend_ratio
+        config["default_dislike_ids"],  # dislike_ids
+        1.0,  # dislike_blend_ratio
+        config["default_top_n"],  # top_n
+    )
 
 
 def search(
@@ -311,19 +344,19 @@ def init_widgets(config):
                 positive_query_text = gr.Textbox(
                     label="ポジティブ検索クエリ",
                     show_label=True,
-                    value=config["default_positive_query"],
+                    # value=config["default_positive_query"],
                     scale=left_column_scale,
                 )
                 positive_blend_ratio = gr.Slider(
                     label="pos 検索クエリ ブレンド倍率",
                     **slider_kwargs,
                 )
-            with gr.Accordion(label="詳細な検索条件", open=True):
+            with gr.Accordion(label="詳細な検索条件", open=False):
                 with gr.Row():
                     negative_query_text = gr.Textbox(
                         label="ネガティブ検索クエリ",
                         show_label=True,
-                        value=config["default_negative_query"],
+                        # value=config["default_negative_query"],
                         scale=left_column_scale,
                     )
                     negative_blend_ratio = gr.Slider(
@@ -334,7 +367,7 @@ def init_widgets(config):
                     like_ids = gr.Textbox(
                         label="お気に入り記事の id",
                         show_label=True,
-                        value=config["default_like_ids"],
+                        # value=config["default_like_ids"],
                         scale=left_column_scale,
                     )
                     like_ids_blend_ratio = gr.Slider(
@@ -345,7 +378,7 @@ def init_widgets(config):
                     dislike_ids = gr.Textbox(
                         label="見たくない記事の id",
                         show_label=True,
-                        value=config["default_dislike_ids"],
+                        # value=config["default_dislike_ids"],
                         scale=left_column_scale,
                     )
                     dislike_ids_blend_ratio = gr.Slider(
@@ -353,17 +386,19 @@ def init_widgets(config):
                         **slider_kwargs,
                     )
                 top_n_number = gr.Number(value=config["default_top_n"])
+                set_example_button = gr.Button(value="サンプル値をセット")
+                clear_button = gr.Button(value="クリア")
             submit_button = gr.Button(value="検索")
 
             # 設定情報
             with gr.Accordion(label="設定", open=False):
                 config_markdown = gr.Markdown(config_to_string(config))
                 initialize_button = gr.Button(value="設定ファイルのリロード")
-            # clear_button = gr.ClearButton()  # noqa:  F841
 
             # 出力 Widget
             indicator_markdown = gr.Markdown(
                 label="indicator",
+                show_label=True,
                 value=(
                     f"model: {config['embedding_model_name']}, "
                     f"model dimension: {embedding_model.get_embed_dimension()}"
@@ -398,7 +433,8 @@ def init_widgets(config):
                 outputs=output_widgets,
             )
         initialize_button.click(fn=reload, outputs=[config_markdown])
-        # clear_button.add(input_widgets)
+        clear_button.click(fn=clear_widgets, outputs=input_widgets)
+        set_example_button.click(fn=set_example_widgets, outputs=input_widgets)
     return demo
 
 
