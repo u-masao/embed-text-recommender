@@ -58,9 +58,9 @@ class SentenceTransformerEmbedding(EmbeddingStrategy):
 
         # _encode function を設定する
         if self.chunk_method == "head_only":
-            self._encode= self._head_only_encode
+            self._encode = self._head_only_encode
         elif self.chunk_method == "naive_chunk_split":
-            self._encode= self._naive_split_encode
+            self._encode = self._naive_split_encode
         elif self.chunk_method == "chunk_split":
             self._encode = self._make_chunk_averaged_encode
         else:
