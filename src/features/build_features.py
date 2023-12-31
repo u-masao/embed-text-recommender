@@ -29,7 +29,7 @@ def embedding(kwargs):
         SentenceTransformerEmbedding(kwargs["model_name_or_filepath"])
     )
     embeddings = embedding_model.embed(
-        df["sentence"], method=kwargs["embedding_method"]
+        df["sentence"], method=kwargs["chunking_method"]
     )
 
     # output
@@ -64,7 +64,7 @@ def embedding(kwargs):
     type=str,
     default="oshizo/sbert-jsnli-luke-japanese-base-lite",
 )
-@click.option("--embedding_method", type=str, default="chunk_split")
+@click.option("--chunking_method", type=str, default="chunk_split")
 @click.option("--limit_sentence_size", type=int, default=0)
 @click.option("--mlflow_run_name", type=str, default="develop")
 def main(**kwargs):
