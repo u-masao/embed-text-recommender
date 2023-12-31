@@ -832,8 +832,8 @@ stages:
       size: 31001700
     - path: src/features/build_features.py
       hash: md5
-      md5: 0e25d878ed9aa71731985a38a0d1e896
-      size: 2752
+      md5: 21ab13d4b081a3e8ca7bee00082e6356
+      size: 2758
     - path: src/models/embedding/
       hash: md5
       md5: ef7bc930af1f73c099a16bcc9182324d.dir
