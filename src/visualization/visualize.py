@@ -299,8 +299,11 @@ def main():
                 )
             top_n_number = gr.Number(value=config["default_top_n"])
             submit_button = gr.Button(value="検索")
-            exit_button = gr.Button(value="Exit")
-            indicator_label = gr.Label(
+            with gr.Accordion(label="configuration"):
+                initialize_button = gr.Button(value="initialize")
+                config_markdown = gr.Markdown(value=config)  # noqa: F841
+            clear_button = gr.ClearButton()  # noqa:  F841
+            indicator_markdown = gr.Markdown(
                 label="indicator",
                 value=(
                     f"model: {config['embedding_model_name']}, "
@@ -321,7 +324,7 @@ def main():
             dislike_ids_blend_ratio,
             top_n_number,
         ]
-        output_widgets = [indicator_label, output_text]
+        output_widgets = [indicator_markdown, output_text]
         for entry_point in [
             positive_query_text.submit,
             negative_query_text.submit,
@@ -335,11 +338,7 @@ def main():
                 inputs=input_widgets,
                 outputs=output_widgets,
             )
-        exit_button.click(fn=shutdown_application, inputs=[], outputs=[])
-
-
-def shutdown_application():
-    exit()
+        initialize_button.click(fn=main())
 
 
 if __name__ == "__main__":
