@@ -1,7 +1,7 @@
 import logging
 import sys
 import time
-from pprint import pprint
+from pprint import pformat, pprint
 
 import gradio as gr
 import numpy as np
@@ -264,44 +264,49 @@ def main():
                     label="ポジティブ検索クエリ ブレンド倍率",
                     **slider_kwargs,
                 )
-            with gr.Row():
-                negative_query_text = gr.Textbox(
-                    label="ネガティブ検索クエリ",
-                    show_label=True,
-                    value=config["default_negative_query"],
-                    scale=left_column_scale,
-                )
-                negative_blend_ratio = gr.Slider(
-                    label="ネガティブ検索クエリ ブレンド倍率",
-                    **slider_kwargs,
-                )
-            with gr.Row():
-                like_ids = gr.Textbox(
-                    label="お気に入り記事の id",
-                    show_label=True,
-                    value=config["default_like_ids"],
-                    scale=left_column_scale,
-                )
-                like_ids_blend_ratio = gr.Slider(
-                    label="お気に入り記事 ブレンド倍率",
-                    **slider_kwargs,
-                )
-            with gr.Row():
-                dislike_ids = gr.Textbox(
-                    label="見たくない記事の id",
-                    show_label=True,
-                    value=config["default_dislike_ids"],
-                    scale=left_column_scale,
-                )
-                dislike_ids_blend_ratio = gr.Slider(
-                    label="見たくない記事 ブレンド倍率",
-                    **slider_kwargs,
-                )
-            top_n_number = gr.Number(value=config["default_top_n"])
+            with gr.Accordion(label="詳細な検索条件", open=False):
+                with gr.Row():
+                    negative_query_text = gr.Textbox(
+                        label="ネガティブ検索クエリ",
+                        show_label=True,
+                        value=config["default_negative_query"],
+                        scale=left_column_scale,
+                    )
+                    negative_blend_ratio = gr.Slider(
+                        label="ネガティブ検索クエリ ブレンド倍率",
+                        **slider_kwargs,
+                    )
+                with gr.Row():
+                    like_ids = gr.Textbox(
+                        label="お気に入り記事の id",
+                        show_label=True,
+                        value=config["default_like_ids"],
+                        scale=left_column_scale,
+                    )
+                    like_ids_blend_ratio = gr.Slider(
+                        label="お気に入り記事 ブレンド倍率",
+                        **slider_kwargs,
+                    )
+                with gr.Row():
+                    dislike_ids = gr.Textbox(
+                        label="見たくない記事の id",
+                        show_label=True,
+                        value=config["default_dislike_ids"],
+                        scale=left_column_scale,
+                    )
+                    dislike_ids_blend_ratio = gr.Slider(
+                        label="見たくない記事 ブレンド倍率",
+                        **slider_kwargs,
+                    )
+                top_n_number = gr.Number(value=config["default_top_n"])
             submit_button = gr.Button(value="検索")
-            with gr.Accordion(label="configuration"):
-                initialize_button = gr.Button(value="initialize")
-                config_markdown = gr.Markdown(value=config)  # noqa: F841
+            with gr.Accordion(label="configuration", open=False):
+                initialize_button = gr.Button(
+                    value="initalize (experimental)"
+                )  # noqa: F841
+                config_markdown = gr.Markdown(  # noqa: F841
+                    value="```\n" + pformat(config) + "```"
+                )
             clear_button = gr.ClearButton()  # noqa:  F841
             indicator_markdown = gr.Markdown(
                 label="indicator",
@@ -338,7 +343,7 @@ def main():
                 inputs=input_widgets,
                 outputs=output_widgets,
             )
-        initialize_button.click(fn=main())
+        initialize_button.click(fn=main)
 
 
 if __name__ == "__main__":
