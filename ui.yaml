@@ -11,9 +11,8 @@ ui:
     models/oshizo/sbert-jsnli-luke-japanese-base-lite/engine_head_only.cloudpickle
     # models/oshizo/sbert-jsnli-luke-japanese-base-lite/engine_chunk_split.cloudpickle
     # models/intfloat/multilingual-e5-large/engine_chunk_split.cloudpickle
-  chunk_method:
-    - chunk_split
-    # - head_only
+  chunk_method: chunk_split
+  # chunk_method: head_only
   sentences_data:
     models/oshizo/sbert-jsnli-luke-japanese-base-lite/sentences_head_only.cloudpickle
     # models/oshizo/sbert-jsnli-luke-japanese-base-lite/sentences_chunk_split.cloudpickle
