@@ -43,6 +43,7 @@ def recommend(kwargs):
     default="oshizo/sbert-jsnli-luke-japanese-base-lite",
 )
 @click.option("--mlflow_run_name", type=str, default="develop")
+@click.option("--chunk_method", type=str, default="chunk_split")
 @click.option("--embedding_storategy", type=str, default="SentenceTransformer")
 def main(**kwargs):
     """
