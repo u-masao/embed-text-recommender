@@ -40,18 +40,18 @@ def test_basic(model):
 
 
 def test_sentence_transformer_embedding():
-    model = SentenceTransformerEmbedding(
-        "oshizo/sbert-jsnli-luke-japanese-base-lite"
-    )
-
-    # 初期化チェック
-    assert model is not None, "Embedding が正しく初期化されていません"
-
     sentences = ["日本" * 500, "東京" * 500, "シンガポール" * 500, "ジャカルタ" * 500]
-    methods = ["chunk_split", "head_only"]
-    for method in methods:
+    for chunk_method in ["chunk_split", "head_only"]:
+        # init model
+        model = SentenceTransformerEmbedding(
+            "oshizo/sbert-jsnli-luke-japanese-base-lite",
+            chunk_method=chunk_method,
+        )
+
+        # 初期化チェック
+        assert model is not None, "Embedding が正しく初期化されていません"
         # Embedding
-        embed = model.embed(sentences, method=method)
+        embed = model.embed(sentences)
         dimension = model.get_embed_dimension()
 
         # 返り値のチェック
