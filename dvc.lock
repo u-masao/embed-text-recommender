@@ -897,13 +897,13 @@ stages:
       size: 180945
     - path: src/models/embedding/
       hash: md5
-      md5: 1a10fc43dc504c114d86d9607e9b6eb4.dir
-      size: 33400
+      md5: ef7bc930af1f73c099a16bcc9182324d.dir
+      size: 33395
       nfiles: 10
     - path: src/models/recommend.py
       hash: md5
-      md5: 214345f4a92935510f933956d3a79c24
-      size: 2397
+      md5: db13fc49e519fc8ff354bd37f7f2ef65
+      size: 2516
     - path: src/models/search_engine/
       hash: md5
       md5: 40b82155d21ff673e69fbb296db12baf.dir
