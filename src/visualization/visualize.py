@@ -13,47 +13,79 @@ from src.models.embedding import EmbeddingModel  # noqa: E402
 from src.models.search_engine import SearchEngine  # noqa: E402
 from src.utils import get_device_info  # noqa: E402
 
+CONFIG_FILEPATH = "ui.yaml"
+
 
 def merge_embeddings(embeds_list):
+    """
+    複数の埋め込みベクトルの平均を返す。
+    """
     embeds = np.vstack(embeds_list)
     result = np.mean(embeds, axis=0)
     return result
 
 
 def split_text(input_text):
+    """
+    検索クエリ文字列を空文字で分割して文字列のリストを返す。
+    """
     return [x for x in input_text.replace("　", " ").strip().split(" ")]
 
 
-def embedding_query(query, cast_int=False):
+def embedding_query(query):
+    """
+    検索クエリ文字列を埋め込みベクトルに変換する。
+    """
+
     global embedding_model
     logger = logging.getLogger(__name__)
 
+    # 結果変数を初期化
     query_embeddings = np.zeros(engine.get_embed_dimension())
-    if query.strip():
-        sentences = split_text(query)
-        query_embeddings = embedding_model.embed(sentences)
-        logger.info(f"query_embed.shape: {query_embeddings.shape}")
-        logger.info(
-            "query_embeddings l2norm: "
-            f"{np.linalg.norm(query_embeddings, axis=1, ord=2)}"
-        )
+
+    # 入力文字列が空の場合はゼロベクトルを返す
+    if len(query.strip()) == 0:
+        return query_embeddings
+
+    # 検索クエリをベクトル化
+    sentences = split_text(query)
+    query_embeddings = embedding_model.embed(sentences)
+    logger.info(f"query_embed.shape: {query_embeddings.shape}")
+    logger.info(
+        "query_embeddings l2norm: "
+        f"{np.linalg.norm(query_embeddings, axis=1, ord=2)}"
+    )
 
     return query_embeddings
 
 
 def embedding_from_ids_string(like_ids):
+    """
+    id 一覧文字列をベクトルに変換する。
+    """
     global engine
+
+    # Logger を初期化
     logger = logging.getLogger(__name__)
+
+    # 結果のベクトルを初期化
     like_embeddings = np.zeros(engine.get_embed_dimension())
-    if like_ids.strip():
-        like_ids = [int(x) for x in split_text(like_ids)]
-        logger.info(f"found like_ids: {like_ids}")
-        like_embeddings = engine.ids_to_embeds(like_ids)
-        logger.info(f"like_embed.shape: {like_embeddings.shape}")
-        logger.info(
-            "like_embeddings l2norm: "
-            f"{np.linalg.norm(like_embeddings, axis=1, ord=2)}"
-        )
+
+    # ID 一覧が空の場合は ゼロベクトルを返す
+    if len(like_ids.strip()) == 0:
+        return like_embeddings
+
+    # int のリストに変換 (変換に失敗すると ValueError が出る)
+    like_ids = [int(x) for x in split_text(like_ids)]
+    logger.info(f"found like_ids: {like_ids}")
+
+    # 埋め込みを検索して取得
+    like_embeddings = engine.ids_to_embeds(like_ids)
+    logger.info(f"like_embed.shape: {like_embeddings.shape}")
+    logger.info(
+        "like_embeddings l2norm: "
+        f"{np.linalg.norm(like_embeddings, axis=1, ord=2)}"
+    )
     return like_embeddings
 
 
@@ -145,9 +177,9 @@ def search(
     str
         検索結果のテキスト
     """
+    global embedding_model
     global engine
     global text_df
-    global embedding_model
 
     # init logger
     logger = logging.getLogger(__name__)
@@ -209,20 +241,33 @@ def search(
     return message, output_text
 
 
-def main():
-    global demo
+def config_to_string(config):
+    """
+    設定情報を文字列表現にする。
+    Markdown Widgetで表示することを想定。
+    """
+    return f"```\n{pformat(config)}'''"
+
+
+def reload():
+    global config
     global embedding_model
     global engine
     global text_df
-    global config
 
+    config = load_config()
+    embedding_model, engine, text_df = init_models(config)
+    return config_to_string(config)
+
+
+def load_config():
+    return yaml.safe_load(open(CONFIG_FILEPATH, "r"))["ui"]
+
+
+def init_models(config):
     # init logging
     logger = logging.getLogger(__name__)
-
     logger.info(pprint(get_device_info()))
-
-    # load config
-    config = yaml.safe_load(open("ui.yaml", "r"))["ui"]
 
     # load embedding_model
     embedding_model = EmbeddingModel.make_embedding_model(
@@ -241,7 +286,14 @@ def main():
     logger.info(f"engine summary: {engine}")
     logger.info(f"embedding_model summary: {embedding_model}")
 
-    # make widgets
+    return embedding_model, engine, text_df
+
+
+def init_widgets(config):
+    """
+    Widget を配置しイベントリスナーを設定する。
+    """
+
     slider_kwargs = dict(
         minimum=0.0,
         maximum=2.0,
@@ -251,8 +303,10 @@ def main():
         scale=1,
     )
     left_column_scale = 2
+
     with gr.Blocks() as demo:
         with gr.Column():
+            # 入力 Widget
             with gr.Row():
                 positive_query_text = gr.Textbox(
                     label="ポジティブ検索クエリ",
@@ -261,10 +315,10 @@ def main():
                     scale=left_column_scale,
                 )
                 positive_blend_ratio = gr.Slider(
-                    label="ポジティブ検索クエリ ブレンド倍率",
+                    label="pos 検索クエリ ブレンド倍率",
                     **slider_kwargs,
                 )
-            with gr.Accordion(label="詳細な検索条件", open=False):
+            with gr.Accordion(label="詳細な検索条件", open=True):
                 with gr.Row():
                     negative_query_text = gr.Textbox(
                         label="ネガティブ検索クエリ",
@@ -273,7 +327,7 @@ def main():
                         scale=left_column_scale,
                     )
                     negative_blend_ratio = gr.Slider(
-                        label="ネガティブ検索クエリ ブレンド倍率",
+                        label="neg 検索クエリ ブレンド倍率",
                         **slider_kwargs,
                     )
                 with gr.Row():
@@ -284,7 +338,7 @@ def main():
                         scale=left_column_scale,
                     )
                     like_ids_blend_ratio = gr.Slider(
-                        label="お気に入り記事 ブレンド倍率",
+                        label="like ブレンド倍率",
                         **slider_kwargs,
                     )
                 with gr.Row():
@@ -295,19 +349,19 @@ def main():
                         scale=left_column_scale,
                     )
                     dislike_ids_blend_ratio = gr.Slider(
-                        label="見たくない記事 ブレンド倍率",
+                        label="dislike ブレンド倍率",
                         **slider_kwargs,
                     )
                 top_n_number = gr.Number(value=config["default_top_n"])
             submit_button = gr.Button(value="検索")
-            with gr.Accordion(label="configuration", open=False):
-                initialize_button = gr.Button(
-                    value="initalize (experimental)"
-                )  # noqa: F841
-                config_markdown = gr.Markdown(  # noqa: F841
-                    value="```\n" + pformat(config) + "```"
-                )
-            clear_button = gr.ClearButton()  # noqa:  F841
+
+            # 設定情報
+            with gr.Accordion(label="設定", open=False):
+                config_markdown = gr.Markdown(config_to_string(config))
+                initialize_button = gr.Button(value="設定ファイルのリロード")
+            # clear_button = gr.ClearButton()  # noqa:  F841
+
+            # 出力 Widget
             indicator_markdown = gr.Markdown(
                 label="indicator",
                 value=(
@@ -343,11 +397,15 @@ def main():
                 inputs=input_widgets,
                 outputs=output_widgets,
             )
-        initialize_button.click(fn=main)
+        initialize_button.click(fn=reload, outputs=[config_markdown])
+        # clear_button.add(input_widgets)
+    return demo
 
 
 if __name__ == "__main__":
     log_fmt = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
     logging.basicConfig(level=logging.INFO, format=log_fmt)
-    main()
+    config = load_config()
+    embedding_model, engine, text_df = init_models(config)
+    demo = init_widgets(config)
     demo.launch(share=config["gradio_share"], debug=True)
