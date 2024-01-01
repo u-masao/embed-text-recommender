@@ -2,25 +2,17 @@
 flowchart TD
 	node1["build_sentences"]
 	node2["build_token_list"]
-	node3["build_vector_db@SentenceTransformer-models/Word2Vec/base_dict/kv.bin-head_only"]
-	node4["build_vector_db@SentenceTransformer-oshizo/sbert-jsnli-luke-japanese-base-lite-head_only"]
-	node5["embed_sentences@SentenceTransformer-models/Word2Vec/base_dict/kv.bin-head_only"]
-	node6["embed_sentences@SentenceTransformer-oshizo/sbert-jsnli-luke-japanese-base-lite-head_only"]
-	node7["make_dataset"]
-	node8["recommend@SentenceTransformer-models/Word2Vec/base_dict/kv.bin-head_only"]
-	node9["recommend@SentenceTransformer-oshizo/sbert-jsnli-luke-japanese-base-lite-head_only"]
-	node10["train_word2vec"]
+	node3["build_vector_db@SentenceTransformer-oshizo/sbert-jsnli-luke-japanese-base-lite-head_only"]
+	node4["embed_sentences@SentenceTransformer-oshizo/sbert-jsnli-luke-japanese-base-lite-head_only"]
+	node5["make_dataset"]
+	node6["recommend@SentenceTransformer-oshizo/sbert-jsnli-luke-japanese-base-lite-head_only"]
+	node7["train_word2vec"]
 	node1-->node3
 	node1-->node4
-	node1-->node5
-	node1-->node6
-	node2-->node10
-	node3-->node8
-	node4-->node9
-	node5-->node3
-	node6-->node4
-	node7-->node1
-	node7-->node2
-	node10-->node5
-	node10-->node6
+	node2-->node7
+	node3-->node6
+	node4-->node3
+	node5-->node1
+	node5-->node2
+	node7-->node4
 ```
