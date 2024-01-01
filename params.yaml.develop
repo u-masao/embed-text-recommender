@@ -1,0 +1,16 @@
+limit_sentence_size: 30
+embedding_storategies:
+  - SentenceTransformer
+  # - Word2Vec
+embedding_model_names:
+  # - intfloat/multilingual-e5-small
+  # - intfloat/multilingual-e5-base
+  # - intfloat/multilingual-e5-large
+  # - sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+  # - sentence-transformers/paraphrase-multilingual-mpnet-base-v2
+  # - sonoisa/sentence-bert-base-ja-mean-tokens-v2
+  - oshizo/sbert-jsnli-luke-japanese-base-lite
+  - models/Word2Vec/base_dict/kv.bin
+chunk_methods:
+  # - chunk_split
+  - head_only
