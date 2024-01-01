@@ -17,13 +17,6 @@ def embedding(kwargs):
     # load dataset
     df = pd.read_parquet(kwargs["input_filepath"])
 
-    # limit sentence size
-    if kwargs["limit_sentence_size"] > 0:
-        df = df.head(kwargs["limit_sentence_size"])
-
-    # make features
-    df["sentence"] = df["title"] + "\n" + df["content"]
-
     # make embedding_model
     embedding_model = EmbeddingModel.make_embedding_model(
         kwargs["embedding_storategy"],
@@ -35,15 +28,9 @@ def embedding(kwargs):
     embeddings = embedding_model.embed(df["sentence"])
 
     # output
-    Path(kwargs["embeddings_filepath"]).parent.mkdir(
-        exist_ok=True, parents=True
-    )
-    Path(kwargs["sentences_filepath"]).parent.mkdir(
-        exist_ok=True, parents=True
-    )
-    with open(kwargs["embeddings_filepath"], "wb") as fo:
+    Path(kwargs["output_filepath"]).parent.mkdir(exist_ok=True, parents=True)
+    with open(kwargs["output_filepath"], "wb") as fo:
         cloudpickle.dump(embeddings, fo)
-    df.to_parquet(kwargs["sentences_filepath"])
 
     # logging
     log_params = {
@@ -59,8 +46,7 @@ def embedding(kwargs):
 
 @click.command()
 @click.argument("input_filepath", type=click.Path(exists=True))
-@click.argument("sentences_filepath", type=click.Path())
-@click.argument("embeddings_filepath", type=click.Path())
+@click.argument("output_filepath", type=click.Path())
 @click.option(
     "--model_name_or_filepath",
     type=str,
@@ -68,13 +54,12 @@ def embedding(kwargs):
 )
 @click.option("--embedding_storategy", type=str, default="SentenceTransformer")
 @click.option("--chunk_method", type=str, default="chunk_split")
-@click.option("--limit_sentence_size", type=int, default=0)
 @click.option("--mlflow_run_name", type=str, default="develop")
 def main(**kwargs):
     # init logging
     logger = logging.getLogger(__name__)
     logger.info("start process")
-    mlflow.set_experiment("recommend")
+    mlflow.set_experiment("build_features")
     mlflow.start_run(run_name="mlflow_run_name")
 
     # log cli options
