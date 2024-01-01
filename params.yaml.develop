@@ -10,7 +10,7 @@ embedding_model_names:
   # - sentence-transformers/paraphrase-multilingual-mpnet-base-v2
   # - sonoisa/sentence-bert-base-ja-mean-tokens-v2
   - oshizo/sbert-jsnli-luke-japanese-base-lite
-  - models/Word2Vec/base_dict/kv.bin
+  # - models/Word2Vec/base_dict/kv.bin
 chunk_methods:
   # - chunk_split
   - head_only
