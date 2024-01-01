@@ -41,6 +41,7 @@ stages:
       data/interim/dataset.parquet
       data/interim/sentences.parquet
       --mlflow_run_name=pipeline
+      --limit_sentence_size=${limit_sentence_size}
     deps:
     - src/features/build_sentences.py
     - data/interim/dataset.parquet
@@ -60,7 +61,6 @@ stages:
       --model_name_or_filepath=${item.embedding_model_name}
       --embedding_storategy=${item.embedding_storategy}
       --chunk_method=${item.chunk_method}
-      --limit_sentence_size=${limit_sentence_size}
     deps:
     - src/features/embed_sentences.py
     - src/models/embedding/

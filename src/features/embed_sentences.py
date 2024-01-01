@@ -17,10 +17,6 @@ def embedding(kwargs):
     # load dataset
     df = pd.read_parquet(kwargs["input_filepath"])
 
-    # limit sentence size
-    if kwargs["limit_sentence_size"] > 0:
-        df = df.head(kwargs["limit_sentence_size"])
-
     # make embedding_model
     embedding_model = EmbeddingModel.make_embedding_model(
         kwargs["embedding_storategy"],
@@ -58,7 +54,6 @@ def embedding(kwargs):
 )
 @click.option("--embedding_storategy", type=str, default="SentenceTransformer")
 @click.option("--chunk_method", type=str, default="chunk_split")
-@click.option("--limit_sentence_size", type=int, default=0)
 @click.option("--mlflow_run_name", type=str, default="develop")
 def main(**kwargs):
     # init logging
