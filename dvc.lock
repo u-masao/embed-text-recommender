@@ -987,3 +987,37 @@ stages:
       hash: md5
       md5: 100f5980cd44f4a4a201471be8ac6076
       size: 29648264
+  embed_sentences@SentenceTransformer-oshizo/sbert-jsnli-luke-japanese-base-lite-head_only:
+    cmd: poetry run python -m src.features.embed_sentences data/interim/sentences.parquet
+      models/SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite/embeddings_head_only.cloudpickle
+      --mlflow_run_name=pipeline --model_name_or_filepath=oshizo/sbert-jsnli-luke-japanese-base-lite
+      --embedding_storategy=SentenceTransformer --chunk_method=head_only --limit_sentence_size=30
+    deps:
+    - path: data/interim/sentences.parquet
+      hash: md5
+      md5: 100f5980cd44f4a4a201471be8ac6076
+      size: 29648264
+    - path: models/Word2Vec/base_dict/kv.bin
+      hash: md5
+      md5: 988260506cc3a5d3d1123b591c63a32b
+      size: 31001700
+    - path: src/features/embed_sentences.py
+      hash: md5
+      md5: 963705ac4fec92ed4c09f4769f0dd3fc
+      size: 2460
+    - path: src/models/embedding/
+      hash: md5
+      md5: f0f13d2ed383f5f430a3576ea9040d37.dir
+      size: 33400
+      nfiles: 10
+    - path: src/models/search_engine/
+      hash: md5
+      md5: 435569cfbf19228102063042b8a3e281.dir
+      size: 32311
+      nfiles: 8
+    outs:
+    - path: 
+        models/SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite/embeddings_head_only.cloudpickle
+      hash: md5
+      md5: 41abb40ac2b92a2bae0cafab1c2c1f4d
+      size: 92298
