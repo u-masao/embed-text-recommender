@@ -12,10 +12,6 @@ def build_sentences(kwargs):
     # load dataset
     df = pd.read_parquet(kwargs["input_filepath"])
 
-    # limit sentence size
-    if kwargs["limit_sentence_size"] > 0:
-        df = df.head(kwargs["limit_sentence_size"])
-
     # make features
     df["sentence"] = df["title"] + "\n" + df["content"]
 
