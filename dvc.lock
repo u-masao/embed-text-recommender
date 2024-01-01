@@ -751,8 +751,8 @@ stages:
       size: 15023178
     - path: src/features/build_token_list.py
       hash: md5
-      md5: 2ac8e25d47a5019c0d437723d93cc1a8
-      size: 2425
+      md5: 201af465fd18320c5af86368218d259d
+      size: 2431
     outs:
     - path: data/interim/tokens.cloudpickle
       hash: md5
@@ -768,17 +768,17 @@ stages:
       size: 18872150
     - path: src/models/train_w2v_model.py
       hash: md5
-      md5: 28de95c604b1b005814741365a4a7f7e
-      size: 1966
+      md5: 7c4b648c819194f8a255b45d8f9f565e
+      size: 1972
     outs:
     - path: models/Word2Vec/base_dict/kv.bin
       hash: md5
-      md5: 077fb4d454167c971c5582e53e6d2b85
+      md5: 988260506cc3a5d3d1123b591c63a32b
       size: 31001700
     - path: models/Word2Vec/base_dict/w2v.bin
       hash: md5
-      md5: a5ea36c46ad91dc026ab23d86601e1e6
-      size: 62326615
+      md5: bfb9877fdd035f3ce5404ab9f9b0fb2a
+      size: 62326634
   build_sentences_and_embeddings@SentenceTransformer-oshizo/sbert-jsnli-luke-japanese-base-lite-chunk_split:
     cmd: poetry run python -m src.features.build_features data/interim/dataset.parquet
       models/SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite/sentences_chunk_split.cloudpickle
