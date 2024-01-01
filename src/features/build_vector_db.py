@@ -42,7 +42,7 @@ def main(**kwargs):
     # init logging
     logger = logging.getLogger(__name__)
     logger.info("start process")
-    mlflow.set_experiment("recommend")
+    mlflow.set_experiment("build_features")
     mlflow.start_run(run_name="mlflow_run_name")
 
     # log cli options
