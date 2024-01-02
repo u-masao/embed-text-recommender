@@ -62,6 +62,7 @@ stages:
       --mlflow_run_name=pipeline
       --embedding_model_string=${item.embedding_model_string}
       --chunk_method=${item.chunk_method}
+      --batch_size=${batch_size}
     deps:
     - src/features/embed_sentences.py
     - src/models/embedding/
