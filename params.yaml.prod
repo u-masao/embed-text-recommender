@@ -10,4 +10,4 @@ embedding_model_strings:
   - Word2Vec/models/Word2Vec/base_dict/kv.bin
 chunk_methods:
   - chunk_split
-batch_size: 128
+batch_size: 256
