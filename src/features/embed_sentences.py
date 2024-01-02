@@ -19,8 +19,7 @@ def embedding(kwargs):
 
     # make embedding_model
     embedding_model = EmbeddingModel.make_embedding_model(
-        kwargs["embedding_storategy"],
-        kwargs["model_name_or_filepath"],
+        kwargs["embedding_model_string"],
         chunk_method=kwargs["chunk_method"],
     )
 
@@ -48,11 +47,10 @@ def embedding(kwargs):
 @click.argument("input_filepath", type=click.Path(exists=True))
 @click.argument("output_filepath", type=click.Path())
 @click.option(
-    "--model_name_or_filepath",
+    "--embedding_model_string",
     type=str,
-    default="oshizo/sbert-jsnli-luke-japanese-base-lite",
+    default="SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite",
 )
-@click.option("--embedding_storategy", type=str, default="SentenceTransformer")
 @click.option("--chunk_method", type=str, default="chunk_split")
 @click.option("--mlflow_run_name", type=str, default="develop")
 def main(**kwargs):

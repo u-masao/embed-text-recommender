@@ -1,29 +1,24 @@
 ui:
   gradio_share: False
 
-  embedding_storategy: SentenceTransformer
-  # embedding_storategy: Word2Vec
-
-  embedding_model_name:
-    # models/Word2Vec/base_dict/kv.bin
-    oshizo/sbert-jsnli-luke-japanese-base-lite
-    # intfloat/multilingual-e5-small
-    # intfloat/multilingual-e5-base
-    # intfloat/multilingual-e5-large
+  embedding_model_string:
+    - SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite
+    - Word2Vec/models/Word2Vec/base_dict/kv.bin
 
   search_engine:
-    # models/Word2Vec/models/Word2Vec/base_dict/kv.bin/engine_chunk_split.cloudpickle
-    models/SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite/engine_chunk_split.cloudpickle
+    - models/SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite/engine_limit-30_head_only.cloudpickle
+    - models/Word2Vec/models/Word2Vec/base_dict/kv.bin/engine_limit-30_head_only.cloudpickle
+    # models/SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite/engine_limit-30_chunk_split.cloudpickle
     # models/SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite/engine_head_only.cloudpickle
     # models/SentenceTransformer/intfloat/multilingual-e5-small/engine_chunk_split.cloudpickle
     # models/SentenceTransformer/intfloat/multilingual-e5-base/engine_chunk_split.cloudpickle
     # models/SentenceTransformer/intfloat/multilingual-e5-large/engine_chunk_split.cloudpickle
 
-  chunk_method: chunk_split
-  # chunk_method: head_only
+  # chunk_method: chunk_split
+  chunk_method: head_only
 
   sentences_data:
-    data/interim/sentences.parquet
+    data/interim/sentences-limit-30.parquet
 
   default_positive_query: エンジニア 転職
   default_negative_query: 旅行 カメラ

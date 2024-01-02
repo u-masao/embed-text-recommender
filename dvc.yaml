@@ -36,73 +36,72 @@ stages:
     - models/Word2Vec/base_dict/kv.bin
 
   build_sentences:
+    matrix:
+      limit_sentences_size: ${limit_sentences_sizes}
     cmd: >-
       poetry run python -m src.features.build_sentences
       data/interim/dataset.parquet
-      data/interim/sentences.parquet
+      data/interim/sentences-limit-${item.limit_sentences_size}.parquet
       --mlflow_run_name=pipeline
-      --limit_sentence_size=${limit_sentence_size}
+      --limit_sentences_size=${item.limit_sentences_size}
     deps:
     - src/features/build_sentences.py
     - data/interim/dataset.parquet
     outs:
-    - data/interim/sentences.parquet
+    - data/interim/sentences-limit-${item.limit_sentences_size}.parquet
 
   embed_sentences:
     matrix:
-      embedding_storategy: ${embedding_storategies}
-      embedding_model_name: ${embedding_model_names}
+      limit_sentences_size: ${limit_sentences_sizes}
+      embedding_model_string: ${embedding_model_strings}
       chunk_method: ${chunk_methods}
     cmd: >-
       poetry run python -m src.features.embed_sentences
-      data/interim/sentences.parquet
-      models/${item.embedding_storategy}/${item.embedding_model_name}/embeddings_${item.chunk_method}.cloudpickle
+      data/interim/sentences-limit-${item.limit_sentences_size}.parquet
+      models/${item.embedding_model_string}/embeds_limit-${item.limit_sentences_size}_${item.chunk_method}.cloudpickle
       --mlflow_run_name=pipeline
-      --model_name_or_filepath=${item.embedding_model_name}
-      --embedding_storategy=${item.embedding_storategy}
+      --embedding_model_string=${item.embedding_model_string}
       --chunk_method=${item.chunk_method}
     deps:
     - src/features/embed_sentences.py
     - src/models/embedding/
     - src/models/search_engine/
-    - data/interim/sentences.parquet
+    - data/interim/sentences-limit-${item.limit_sentences_size}.parquet
     - models/Word2Vec/base_dict/kv.bin
     outs:
-    - models/${item.embedding_storategy}/${item.embedding_model_name}/embeddings_${item.chunk_method}.cloudpickle
+    - models/${item.embedding_model_string}/embeds_limit-${item.limit_sentences_size}_${item.chunk_method}.cloudpickle
 
   build_vector_db:
     matrix:
-      embedding_storategy: ${embedding_storategies}
-      embedding_model_name: ${embedding_model_names}
+      limit_sentences_size: ${limit_sentences_sizes}
+      embedding_model_string: ${embedding_model_strings}
       chunk_method: ${chunk_methods}
     cmd: >-
       poetry run python -m src.features.build_vector_db
-      data/interim/sentences.parquet
-      models/${item.embedding_storategy}/${item.embedding_model_name}/embeddings_${item.chunk_method}.cloudpickle
-      models/${item.embedding_storategy}/${item.embedding_model_name}/engine_${item.chunk_method}.cloudpickle
+      data/interim/sentences-limit-${item.limit_sentences_size}.parquet
+      models/${item.embedding_model_string}/embeds_limit-${item.limit_sentences_size}_${item.chunk_method}.cloudpickle
+      models/${item.embedding_model_string}/engine_limit-${item.limit_sentences_size}_${item.chunk_method}.cloudpickle
       --mlflow_run_name=pipeline
     deps:
     - src/features/build_vector_db.py
     - src/models/search_engine/
-    - data/interim/sentences.parquet
-    - models/${item.embedding_storategy}/${item.embedding_model_name}/embeddings_${item.chunk_method}.cloudpickle
+    - data/interim/sentences-limit-${item.limit_sentences_size}.parquet
+    - models/${item.embedding_model_string}/embeds_limit-${item.limit_sentences_size}_${item.chunk_method}.cloudpickle
     outs:
-    - models/${item.embedding_storategy}/${item.embedding_model_name}/engine_${item.chunk_method}.cloudpickle
+    - models/${item.embedding_model_string}/engine_limit-${item.limit_sentences_size}_${item.chunk_method}.cloudpickle
 
   recommend:
     matrix:
-      embedding_storategy: ${embedding_storategies}
-      embedding_model_name: ${embedding_model_names}
+      limit_sentences_size: ${limit_sentences_sizes}
+      embedding_model_string: ${embedding_model_strings}
       chunk_method: ${chunk_methods}
     cmd: >-
       poetry run python -m src.models.recommend
-      models/${item.embedding_storategy}/${item.embedding_model_name}/engine_${item.chunk_method}.cloudpickle
+      models/${item.embedding_model_string}/engine_limit-${item.limit_sentences_size}_${item.chunk_method}.cloudpickle
+      --embedding_model_string=${item.embedding_model_string}
       --mlflow_run_name=pipeline
-      --model_name_or_filepath=${item.embedding_model_name}
-      --embedding_storategy=${item.embedding_storategy}
     deps:
     - src/models/recommend.py
     - src/models/embedding/
     - src/models/search_engine/
-    - models/${item.embedding_storategy}/${item.embedding_model_name}/engine_${item.chunk_method}.cloudpickle
-
+    - models/${item.embedding_model_string}/engine_limit-${item.limit_sentences_size}_${item.chunk_method}.cloudpickle

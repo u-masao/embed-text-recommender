@@ -13,8 +13,8 @@ def build_sentences(kwargs):
     df = pd.read_parquet(kwargs["input_filepath"])
 
     # limit sentence size
-    if kwargs["limit_sentence_size"] > 0:
-        df = df.head(kwargs["limit_sentence_size"])
+    if kwargs["limit_sentences_size"] > 0:
+        df = df.head(kwargs["limit_sentences_size"])
 
     # make features
     df["sentence"] = df["title"] + "\n" + df["content"]
@@ -36,7 +36,7 @@ def build_sentences(kwargs):
 @click.command()
 @click.argument("input_filepath", type=click.Path(exists=True))
 @click.argument("output_filepath", type=click.Path())
-@click.option("--limit_sentence_size", type=int, default=0)
+@click.option("--limit_sentences_size", type=int, default=0)
 @click.option("--mlflow_run_name", type=str, default="develop")
 def main(**kwargs):
     # init logging

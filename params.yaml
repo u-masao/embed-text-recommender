@@ -1,4 +1,7 @@
-limit_sentence_size: 30
+limit_sentences_sizes: [30]
+embedding_model_strings:
+  - SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite
+  - Word2Vec/models/Word2Vec/base_dict/kv.bin
 embedding_storategies:
   - SentenceTransformer
   # - Word2Vec
