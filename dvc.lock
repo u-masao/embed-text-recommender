@@ -1076,3 +1076,20 @@ stages:
       md5: 435569cfbf19228102063042b8a3e281.dir
       size: 32311
       nfiles: 8
+  build_sentences@30:
+    cmd: poetry run python -m src.features.build_sentences data/interim/dataset.parquet
+      data/interim/sentences-limit-30.parquet --mlflow_run_name=pipeline --limit_sentences_size=30
+    deps:
+    - path: data/interim/dataset.parquet
+      hash: md5
+      md5: bc237833c9ceab972308b563cfaf3b11
+      size: 15023178
+    - path: src/features/build_sentences.py
+      hash: md5
+      md5: 331efa40643c66bbee803e59b9d51adf
+      size: 1642
+    outs:
+    - path: data/interim/sentences-limit-30.parquet
+      hash: md5
+      md5: c171ff2794839915ad207819c3ea2321
+      size: 151481
