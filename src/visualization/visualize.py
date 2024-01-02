@@ -303,14 +303,18 @@ def init_models(config):
     logger.info(pprint(get_device_info()))
 
     # load embedding_model
+    active_embedding_model_index = config.get(
+        "active_embedding_model_index", 0
+    )
     embedding_model = EmbeddingModel.make_embedding_model(
-        config["embedding_storategy"],
-        config["embedding_model_name"],
+        config["embedding_model_string"][active_embedding_model_index],
         chunk_method=config["chunk_method"],
     )  # noqa: F841
 
     # init search engin
-    engine = SearchEngine.load(config["search_engine"])
+    engine = SearchEngine.load(
+        config["search_engine"][active_embedding_model_index]
+    )
 
     # load text data
     text_df = pd.read_parquet(config["sentences_data"])
