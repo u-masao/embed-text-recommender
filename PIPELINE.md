@@ -1,14 +1,14 @@
 ```mermaid
 flowchart TD
-	node1["build_sentences@0 30"]
+	node1["build_sentences@30"]
 	node2["build_token_list"]
-	node3["build_vector_db@0 30-SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite-head_only"]
-	node4["build_vector_db@0 30-Word2Vec/models/Word2Vec/base_dict/kv.bin-head_only"]
-	node5["embed_sentences@0 30-SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite-head_only"]
-	node6["embed_sentences@0 30-Word2Vec/models/Word2Vec/base_dict/kv.bin-head_only"]
+	node3["build_vector_db@30-SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite-head_only"]
+	node4["build_vector_db@30-Word2Vec/models/Word2Vec/base_dict/kv.bin-head_only"]
+	node5["embed_sentences@30-SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite-head_only"]
+	node6["embed_sentences@30-Word2Vec/models/Word2Vec/base_dict/kv.bin-head_only"]
 	node7["make_dataset"]
-	node8["recommend@0 30-SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite-head_only"]
-	node9["recommend@0 30-Word2Vec/models/Word2Vec/base_dict/kv.bin-head_only"]
+	node8["recommend@30-SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite-head_only"]
+	node9["recommend@30-Word2Vec/models/Word2Vec/base_dict/kv.bin-head_only"]
 	node10["train_word2vec"]
 	node1-->node3
 	node1-->node4
