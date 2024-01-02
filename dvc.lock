@@ -1276,7 +1276,7 @@ stages:
       models/SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite/embeds_limit-30_chunk_split.cloudpickle
       --mlflow_run_name=pipeline 
       --embedding_model_string=SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite
-      --chunk_method=chunk_split
+      --chunk_method=chunk_split --batch_size=128
     deps:
     - path: data/interim/sentences-limit-30.parquet
       hash: md5
@@ -1288,8 +1288,8 @@ stages:
       size: 31001700
     - path: src/features/embed_sentences.py
       hash: md5
-      md5: dbf880019a69569a3c99886ae4778467
-      size: 2180
+      md5: debc14fe245e4efe7a2b91f473a40f0e
+      size: 2273
     - path: src/models/embedding/
       hash: md5
       md5: e3bae16be07a3f3b9b1ec5a4ee4971a9.dir
@@ -1310,7 +1310,7 @@ stages:
     cmd: poetry run python -m src.features.embed_sentences data/interim/sentences-limit-30.parquet
       models/Word2Vec/models/Word2Vec/base_dict/kv.bin/embeds_limit-30_chunk_split.cloudpickle
       --mlflow_run_name=pipeline --embedding_model_string=Word2Vec/models/Word2Vec/base_dict/kv.bin
-      --chunk_method=chunk_split
+      --chunk_method=chunk_split --batch_size=128
     deps:
     - path: data/interim/sentences-limit-30.parquet
       hash: md5
@@ -1322,8 +1322,8 @@ stages:
       size: 31001700
     - path: src/features/embed_sentences.py
       hash: md5
-      md5: dbf880019a69569a3c99886ae4778467
-      size: 2180
+      md5: debc14fe245e4efe7a2b91f473a40f0e
+      size: 2273
     - path: src/models/embedding/
       hash: md5
       md5: e3bae16be07a3f3b9b1ec5a4ee4971a9.dir
