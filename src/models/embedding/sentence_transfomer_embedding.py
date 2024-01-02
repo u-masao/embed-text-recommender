@@ -24,6 +24,7 @@ class SentenceTransformerEmbedding(EmbeddingStrategy):
         chunk_overlap: int = 50,
         tokens_par_chunk: Optional[int] = None,
         chunk_method: str = "chunk_split",
+        batch_size: str = 32,
         **kwargs,
     ):
         """
@@ -46,6 +47,8 @@ class SentenceTransformerEmbedding(EmbeddingStrategy):
             - head_only
               - チャンクに分割せずに埋め込みモデルで処理する。
               - モデルの max_tokens のみの埋め込みを計算する
+        batch_size: int
+            embedding 時のバッチサイズ
         """
         self.model_name_or_filepath = model_name_or_filepath
         self.model = SentenceTransformer(model_name_or_filepath)
