@@ -24,6 +24,7 @@ class SentenceTransformerEmbedding(EmbeddingStrategy):
         chunk_overlap: int = 50,
         tokens_par_chunk: Optional[int] = None,
         chunk_method: str = "chunk_split",
+        batch_size: str = 32,
         **kwargs,
     ):
         """
@@ -46,6 +47,8 @@ class SentenceTransformerEmbedding(EmbeddingStrategy):
             - head_only
               - チャンクに分割せずに埋め込みモデルで処理する。
               - モデルの max_tokens のみの埋め込みを計算する
+        batch_size: int
+            embedding 時のバッチサイズ
         """
         self.model_name_or_filepath = model_name_or_filepath
         self.model = SentenceTransformer(model_name_or_filepath)
@@ -55,6 +58,7 @@ class SentenceTransformerEmbedding(EmbeddingStrategy):
             tokens_per_chunk=tokens_par_chunk,
         )
         self.chunk_method = chunk_method
+        self.batch_size = batch_size
 
         # _encode function を設定する
         if self.chunk_method == "head_only":
@@ -123,12 +127,14 @@ class SentenceTransformerEmbedding(EmbeddingStrategy):
         return self._encode(sentences)
 
     def _head_only_encode(self, sentences):
-        return self.model.encode(sentences)
+        return self.model.encode(sentences, batch_size=self.batch_size)
 
     def _naive_split_encode(self, sentences):
         embeddings = []
         for sentence in sentences:
-            vectors = self.model.encode(self.splitter.split_text(sentence))
+            vectors = self.model.encode(
+                self.splitter.split_text(sentence), batch_size=self.batch_size
+            )
             mean_vector = np.mean(vectors, axis=0)
             assert (
                 mean_vector.shape[0]
@@ -181,7 +187,9 @@ class SentenceTransformerEmbedding(EmbeddingStrategy):
 
         # 埋め込みを計算
         logger.info("encode chunks")
-        chunk_embeddings = self.model.encode(chunk_list)
+        chunk_embeddings = self.model.encode(
+            chunk_list, batch_size=self.batch_size
+        )
         assert chunk_embeddings.shape[0] == weight_matrix.shape[1]
         assert chunk_embeddings.shape[1] == d_size
 
