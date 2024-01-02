@@ -6,7 +6,7 @@ ui:
   default_negative_query: "\u65C5\u884C \u30AB\u30E1\u30E9"
   default_positive_query: "\u30A8\u30F3\u30B8\u30CB\u30A2 \u8EE2\u8077"
   default_top_n: 10
-  embedding_model_string:
+  embedding_model_strings:
   - SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite
   - Word2Vec/models/Word2Vec/base_dict/kv.bin
   gradio_share: false
