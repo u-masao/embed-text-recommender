@@ -151,6 +151,14 @@ def clear_widgets():
     )
 
 
+def get_ui_header():
+    return """
+# Embed Text Recommender
+
+様々な埋め込みモデルを利用して文書を検索することができます。リッチなモデルの場合は、否定表現に対応します。
+    """
+
+
 def set_example_widgets():
     global config
 
@@ -371,6 +379,7 @@ def init_widgets(config):
     left_column_scale = 2
 
     with gr.Blocks() as demo:
+        gr.Markdown(value=get_ui_header())
         with gr.Column():
             # 入力 Widget
             with gr.Row():
