@@ -93,3 +93,6 @@ target/
 
 # models
 /models/
+
+# gradio ui configuration file
+/ui.yaml
