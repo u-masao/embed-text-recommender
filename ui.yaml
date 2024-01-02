@@ -1,6 +1,10 @@
 ui:
   gradio_share: False
 
+  embedding_model_string:
+    - SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite/engine_chunk_split.cloudpickle
+    - Word2Vec/models/Word2Vec/base_dict/kv.bin
+
   embedding_storategy: SentenceTransformer
   # embedding_storategy: Word2Vec
 
