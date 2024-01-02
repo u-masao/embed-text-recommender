@@ -54,7 +54,7 @@ class EmbeddingModel:
         return self.strategy.get_embed_dimension()
 
     @classmethod
-    def make_embedding_model(cls, model_string: str, name: str, **kwargs):
+    def make_embedding_model(cls, model_string: str, **kwargs):
         """
         EmbeddingModel インスタンスを返す
         """
