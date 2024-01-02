@@ -80,7 +80,7 @@ stages:
       poetry run python -m src.features.build_vector_db
       data/interim/sentences-limit-${item.limit_sentences_size}.parquet
       models/${item.embedding_model_string}/embeds_limit-${item.limit_sentences_size}_${item.chunk_method}.cloudpickle
-      models/${item.embedding_model_string}/engine_${item.chunk_method}.cloudpickle
+      models/${item.embedding_model_string}/engine_limit-${item.limit_sentences_size}_${item.chunk_method}.cloudpickle
       --mlflow_run_name=pipeline
     deps:
     - src/features/build_vector_db.py
