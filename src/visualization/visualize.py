@@ -1,6 +1,7 @@
 import logging
 import sys
 import time
+from pathlib import Path
 from pprint import pformat, pprint
 
 import gradio as gr
@@ -268,7 +269,7 @@ def search(
         f"encode: {encode_elapsed_time:.3f} sec"
         f",\nsearch: {search_elapsed_time:.3f} sec"
         f",\ndf merge: {df_merge_elapsed_time:.3f} sec"
-        f",\nmodel: {config['embedding_model_name']}"
+        f",\nmodel: {get_active_model_name()}"
         f",\nmodel dimension: {embedding_model.get_embed_dimension()}"
     )
     return message, output_text
@@ -282,14 +283,23 @@ def config_to_string(config):
     return f"```\n{pformat(config)}'''"
 
 
-def reload():
+def save_config():
+    global config
+
+    yaml.dump({"ui": config}, open(CONFIG_FILEPATH, "w", encoding="utf-8"))
+
+
+def update_config(selected_model):
     global config
     global embedding_model
     global engine
     global text_df
 
     config = load_config()
-    embedding_model, engine, text_df = init_models(config)
+    embedding_model, engine, text_df = init_models(
+        config, model_index=selected_model
+    )
+    save_config()
     return config_to_string(config)
 
 
@@ -297,24 +307,57 @@ def load_config():
     return yaml.safe_load(open(CONFIG_FILEPATH, "r"))["ui"]
 
 
-def init_models(config):
+def get_active_model_name(model_index=None):
+    global config
+
+    print(f"{model_index=}")
+
+    if model_index is None:
+        active_embedding_model_index = config.get(
+            "active_embedding_model_index", 0
+        )
+    else:
+        if model_index >= len(config["embedding_model_string"]):
+            raise ValueError("invalid model index")
+
+        active_embedding_model_index = model_index
+
+    config["active_embedding_model_index"] = active_embedding_model_index
+
+    embedding_model_string = config["embedding_model_string"][
+        active_embedding_model_index
+    ]
+
+    search_engine_filename = config["search_engine"][
+        active_embedding_model_index
+    ]
+    search_engine_filepath = (
+        Path(config["models_directory"])
+        / embedding_model_string
+        / search_engine_filename
+    )
+
+    return embedding_model_string, search_engine_filepath
+
+
+def init_models(config, model_index=0):
     # init logging
     logger = logging.getLogger(__name__)
     logger.info(pprint(get_device_info()))
 
-    # load embedding_model
-    active_embedding_model_index = config.get(
-        "active_embedding_model_index", 0
+    # get active model
+    embedding_model_string, search_engine_filepath = get_active_model_name(
+        model_index=model_index
     )
+
+    # load embedding_model
     embedding_model = EmbeddingModel.make_embedding_model(
-        config["embedding_model_string"][active_embedding_model_index],
+        embedding_model_string,
         chunk_method=config["chunk_method"],
-    )  # noqa: F841
+    )
 
     # init search engin
-    engine = SearchEngine.load(
-        config["search_engine"][active_embedding_model_index]
-    )
+    engine = SearchEngine.load(search_engine_filepath)
 
     # load text data
     text_df = pd.read_parquet(config["sentences_data"])
@@ -396,17 +439,22 @@ def init_widgets(config):
 
             # 設定情報
             with gr.Accordion(label="設定", open=False):
+                active_model_string, _ = get_active_model_name()
+                model_selector = gr.Dropdown(
+                    choices=config["embedding_model_string"],
+                    value=active_model_string,
+                    type="index",
+                    label="model select",
+                    show_label=True,
+                )
                 config_markdown = gr.Markdown(config_to_string(config))
-                initialize_button = gr.Button(value="設定ファイルのリロード")
+                initialize_button = gr.Button(value="設定変更")
 
             # 出力 Widget
             indicator_markdown = gr.Markdown(
                 label="indicator",
                 show_label=True,
-                value=(
-                    f"model: {config['embedding_model_name']}, "
-                    f"model dimension: {embedding_model.get_embed_dimension()}"
-                ),
+                value="",
             )
             output_text = gr.Markdown(label="検索結果", show_label=True)
 
@@ -436,7 +484,11 @@ def init_widgets(config):
                 inputs=input_widgets,
                 outputs=output_widgets,
             )
-        initialize_button.click(fn=reload, outputs=[config_markdown])
+        initialize_button.click(
+            fn=update_config,
+            inputs=[model_selector],
+            outputs=[config_markdown],
+        )
         clear_button.click(fn=clear_widgets, outputs=input_widgets)
         set_example_button.click(fn=set_example_widgets, outputs=input_widgets)
     return demo
