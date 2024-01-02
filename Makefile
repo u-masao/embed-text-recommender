@@ -16,14 +16,14 @@ PYTHON_INTERPRETER = python3
 
 ## dvc reproduction
 repro: check_commit PIPELINE.md
-	sed -i 's/^\(limit_sentence_size:\).*/\1 0/' params.yaml
+	sed -i 's/^\(limit_sentences_sizes:\).*/\1 [0]/' params.yaml
 	git commit params.yaml -m '[update] limit 解除' || true
 	poetry run dvc repro
 	git commit dvc.lock -m '[update] dvc repro' || true
 
 ## dvc dev reproduction
 dev_repro: check_commit PIPELINE.md
-	sed -i 's/^\(limit_sentence_size:\).*/\1 30/' params.yaml
+	sed -i 's/^\(limit_sentences_sizes:\).*/\1 [30]/' params.yaml
 	git commit params.yaml -m '[update] limit 設定' || true
 	poetry run dvc repro
 	git commit dvc.lock -m '[update] dvc repro' || true
