@@ -1093,3 +1093,72 @@ stages:
       hash: md5
       md5: c171ff2794839915ad207819c3ea2321
       size: 151481
+  embed_sentences@30-SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite-head_only:
+    cmd: poetry run python -m src.features.embed_sentences data/interim/sentences-limit-30.parquet
+      models/SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite/embeds_limit-30_head_only.cloudpickle
+      --mlflow_run_name=pipeline 
+      --embedding_model_string=SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite
+      --chunk_method=head_only
+    deps:
+    - path: data/interim/sentences-limit-30.parquet
+      hash: md5
+      md5: c171ff2794839915ad207819c3ea2321
+      size: 151481
+    - path: models/Word2Vec/base_dict/kv.bin
+      hash: md5
+      md5: 988260506cc3a5d3d1123b591c63a32b
+      size: 31001700
+    - path: src/features/embed_sentences.py
+      hash: md5
+      md5: dbf880019a69569a3c99886ae4778467
+      size: 2180
+    - path: src/models/embedding/
+      hash: md5
+      md5: a8589561be908f6f50861d2b26c9f12e.dir
+      size: 33695
+      nfiles: 10
+    - path: src/models/search_engine/
+      hash: md5
+      md5: 435569cfbf19228102063042b8a3e281.dir
+      size: 32311
+      nfiles: 8
+    outs:
+    - path: 
+        models/SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite/embeds_limit-30_head_only.cloudpickle
+      hash: md5
+      md5: 41abb40ac2b92a2bae0cafab1c2c1f4d
+      size: 92298
+  embed_sentences@30-Word2Vec/models/Word2Vec/base_dict/kv.bin-head_only:
+    cmd: poetry run python -m src.features.embed_sentences data/interim/sentences-limit-30.parquet
+      models/Word2Vec/models/Word2Vec/base_dict/kv.bin/embeds_limit-30_head_only.cloudpickle
+      --mlflow_run_name=pipeline --embedding_model_string=Word2Vec/models/Word2Vec/base_dict/kv.bin
+      --chunk_method=head_only
+    deps:
+    - path: data/interim/sentences-limit-30.parquet
+      hash: md5
+      md5: c171ff2794839915ad207819c3ea2321
+      size: 151481
+    - path: models/Word2Vec/base_dict/kv.bin
+      hash: md5
+      md5: 988260506cc3a5d3d1123b591c63a32b
+      size: 31001700
+    - path: src/features/embed_sentences.py
+      hash: md5
+      md5: dbf880019a69569a3c99886ae4778467
+      size: 2180
+    - path: src/models/embedding/
+      hash: md5
+      md5: a8589561be908f6f50861d2b26c9f12e.dir
+      size: 33695
+      nfiles: 10
+    - path: src/models/search_engine/
+      hash: md5
+      md5: 435569cfbf19228102063042b8a3e281.dir
+      size: 32311
+      nfiles: 8
+    outs:
+    - path: 
+        models/Word2Vec/models/Word2Vec/base_dict/kv.bin/embeds_limit-30_head_only.cloudpickle
+      hash: md5
+      md5: 7d78ed2191cad4ebb0bad69bb550f860
+      size: 72138
