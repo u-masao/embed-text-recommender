@@ -21,6 +21,7 @@ def embedding(kwargs):
     embedding_model = EmbeddingModel.make_embedding_model(
         kwargs["embedding_model_string"],
         chunk_method=kwargs["chunk_method"],
+        batch_size=kwargs["batch_size"],
     )
 
     # embedding
@@ -52,6 +53,7 @@ def embedding(kwargs):
     default="SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite",
 )
 @click.option("--chunk_method", type=str, default="chunk_split")
+@click.option("--batch_size", type=int, default=32)
 @click.option("--mlflow_run_name", type=str, default="develop")
 def main(**kwargs):
     # init logging
