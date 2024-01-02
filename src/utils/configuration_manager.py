@@ -31,12 +31,15 @@ class ConfigurationManager:
                     "設定ファイルもデフォルトファイルもロードできません: "
                     f"{self._default_config_filepath}"
                 )
+        return self
 
     def save(self, filepath):
         yaml.dump(
             {ConfigurationManager._config_prefix: self.config},
             open(filepath, "w", encoding="utf-8"),
         )
+
+        return self
 
     def __getitem__(self, key):
         return self.config.get(key, None)
