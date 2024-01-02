@@ -1,17 +1,16 @@
 import logging
 import sys
 import time
-from pprint import pformat, pprint
+from pathlib import Path
 
 import gradio as gr
 import numpy as np
 import pandas as pd
-import yaml
 
 sys.path.append(".")
 from src.models.embedding import EmbeddingModel  # noqa: E402
 from src.models.search_engine import SearchEngine  # noqa: E402
-from src.utils import get_device_info  # noqa: E402
+from src.utils import ConfigurationManager, get_device_info  # noqa: E402
 
 CONFIG_FILEPATH = "ui.yaml"
 demo = None  # for suppress gradio reload error
@@ -268,7 +267,7 @@ def search(
         f"encode: {encode_elapsed_time:.3f} sec"
         f",\nsearch: {search_elapsed_time:.3f} sec"
         f",\ndf merge: {df_merge_elapsed_time:.3f} sec"
-        f",\nmodel: {config['embedding_model_name']}"
+        f",\nmodel: {get_active_model_name()}"
         f",\nmodel dimension: {embedding_model.get_embed_dimension()}"
     )
     return message, output_text
@@ -279,42 +278,72 @@ def config_to_string(config):
     設定情報を文字列表現にする。
     Markdown Widgetで表示することを想定。
     """
-    return f"```\n{pformat(config)}'''"
+    return f"```\n{config}\n```"
 
 
-def reload():
+def update_config(selected_model):
     global config
     global embedding_model
     global engine
     global text_df
 
-    config = load_config()
-    embedding_model, engine, text_df = init_models(config)
+    config = ConfigurationManager().load(CONFIG_FILEPATH)
+    embedding_model, engine, text_df = init_models(
+        config, model_index=selected_model
+    )
+    config.save(CONFIG_FILEPATH)
     return config_to_string(config)
 
 
-def load_config():
-    return yaml.safe_load(open(CONFIG_FILEPATH, "r"))["ui"]
+def get_active_model_name(model_index=None):
+    global config
+
+    print(f"{model_index=}")
+
+    if model_index is None:
+        active_embedding_model_index = config["active_embedding_model_index"]
+    else:
+        if model_index >= len(config["embedding_model_strings"]):
+            raise ValueError("invalid model index")
+
+        active_embedding_model_index = model_index
+
+    config["active_embedding_model_index"] = active_embedding_model_index
+
+    embedding_model_string = config["embedding_model_strings"][
+        active_embedding_model_index
+    ]
+
+    search_engine_filename = config["search_engine"][
+        active_embedding_model_index
+    ]
+    search_engine_filepath = (
+        Path(config["models_directory"])
+        / embedding_model_string
+        / search_engine_filename
+    )
+
+    return embedding_model_string, search_engine_filepath
 
 
-def init_models(config):
+def init_models(config, model_index=0):
     # init logging
     logger = logging.getLogger(__name__)
-    logger.info(pprint(get_device_info()))
+    logger.info(get_device_info())
+
+    # get active model
+    embedding_model_string, search_engine_filepath = get_active_model_name(
+        model_index=model_index
+    )
 
     # load embedding_model
-    active_embedding_model_index = config.get(
-        "active_embedding_model_index", 0
-    )
     embedding_model = EmbeddingModel.make_embedding_model(
-        config["embedding_model_string"][active_embedding_model_index],
+        embedding_model_string,
         chunk_method=config["chunk_method"],
-    )  # noqa: F841
+    )
 
     # init search engin
-    engine = SearchEngine.load(
-        config["search_engine"][active_embedding_model_index]
-    )
+    engine = SearchEngine.load(search_engine_filepath)
 
     # load text data
     text_df = pd.read_parquet(config["sentences_data"])
@@ -348,8 +377,8 @@ def init_widgets(config):
                 positive_query_text = gr.Textbox(
                     label="ポジティブ検索クエリ",
                     show_label=True,
-                    # value=config["default_positive_query"],
                     scale=left_column_scale,
+                    autofocus=True,
                 )
                 positive_blend_ratio = gr.Slider(
                     label="pos 検索クエリ ブレンド倍率",
@@ -360,7 +389,6 @@ def init_widgets(config):
                     negative_query_text = gr.Textbox(
                         label="ネガティブ検索クエリ",
                         show_label=True,
-                        # value=config["default_negative_query"],
                         scale=left_column_scale,
                     )
                     negative_blend_ratio = gr.Slider(
@@ -371,7 +399,6 @@ def init_widgets(config):
                     like_ids = gr.Textbox(
                         label="お気に入り記事の id",
                         show_label=True,
-                        # value=config["default_like_ids"],
                         scale=left_column_scale,
                     )
                     like_ids_blend_ratio = gr.Slider(
@@ -382,7 +409,6 @@ def init_widgets(config):
                     dislike_ids = gr.Textbox(
                         label="見たくない記事の id",
                         show_label=True,
-                        # value=config["default_dislike_ids"],
                         scale=left_column_scale,
                     )
                     dislike_ids_blend_ratio = gr.Slider(
@@ -396,17 +422,22 @@ def init_widgets(config):
 
             # 設定情報
             with gr.Accordion(label="設定", open=False):
+                active_model_string, _ = get_active_model_name()
+                model_selector = gr.Dropdown(
+                    choices=config["embedding_model_strings"],
+                    value=active_model_string,
+                    type="index",
+                    label="model select",
+                    show_label=True,
+                )
                 config_markdown = gr.Markdown(config_to_string(config))
-                initialize_button = gr.Button(value="設定ファイルのリロード")
+                update_config_button = gr.Button(value="設定変更")
 
             # 出力 Widget
             indicator_markdown = gr.Markdown(
                 label="indicator",
                 show_label=True,
-                value=(
-                    f"model: {config['embedding_model_name']}, "
-                    f"model dimension: {embedding_model.get_embed_dimension()}"
-                ),
+                value="",
             )
             output_text = gr.Markdown(label="検索結果", show_label=True)
 
@@ -436,7 +467,11 @@ def init_widgets(config):
                 inputs=input_widgets,
                 outputs=output_widgets,
             )
-        initialize_button.click(fn=reload, outputs=[config_markdown])
+        update_config_button.click(
+            fn=update_config,
+            inputs=[model_selector],
+            outputs=[config_markdown],
+        )
         clear_button.click(fn=clear_widgets, outputs=input_widgets)
         set_example_button.click(fn=set_example_widgets, outputs=input_widgets)
     return demo
@@ -445,7 +480,7 @@ def init_widgets(config):
 if __name__ == "__main__":
     log_fmt = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
     logging.basicConfig(level=logging.INFO, format=log_fmt)
-    config = load_config()
+    config = ConfigurationManager().load(CONFIG_FILEPATH)
     embedding_model, engine, text_df = init_models(config)
     demo = init_widgets(config)
     demo.launch(share=config["gradio_share"], debug=True)

@@ -1,5 +1,9 @@
 import torch
 
+from .configuration_manager import ConfigurationManager
+
+__all__ = ["ConfigurationManager", "get_device_info"]
+
 
 def get_device_info():
     """
