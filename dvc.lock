@@ -773,12 +773,12 @@ stages:
     outs:
     - path: models/Word2Vec/base_dict/kv.bin
       hash: md5
-      md5: 988260506cc3a5d3d1123b591c63a32b
+      md5: a85af7234342767f2c02e218901c9b25
       size: 31001700
     - path: models/Word2Vec/base_dict/w2v.bin
       hash: md5
-      md5: bfb9877fdd035f3ce5404ab9f9b0fb2a
-      size: 62326634
+      md5: b69f038cce1b8687854906e87497c2fc
+      size: 62326615
   build_sentences_and_embeddings@SentenceTransformer-oshizo/sbert-jsnli-luke-japanese-base-lite-chunk_split:
     cmd: poetry run python -m src.features.build_features data/interim/dataset.parquet
       models/SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite/sentences_chunk_split.cloudpickle
@@ -1270,4 +1270,182 @@ stages:
       hash: md5
       md5: 435569cfbf19228102063042b8a3e281.dir
       size: 32311
+      nfiles: 8
+  embed_sentences@30-SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite-chunk_split:
+    cmd: poetry run python -m src.features.embed_sentences data/interim/sentences-limit-30.parquet
+      models/SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite/embeds_limit-30_chunk_split.cloudpickle
+      --mlflow_run_name=pipeline 
+      --embedding_model_string=SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite
+      --chunk_method=chunk_split
+    deps:
+    - path: data/interim/sentences-limit-30.parquet
+      hash: md5
+      md5: c171ff2794839915ad207819c3ea2321
+      size: 151481
+    - path: models/Word2Vec/base_dict/kv.bin
+      hash: md5
+      md5: a85af7234342767f2c02e218901c9b25
+      size: 31001700
+    - path: src/features/embed_sentences.py
+      hash: md5
+      md5: dbf880019a69569a3c99886ae4778467
+      size: 2180
+    - path: src/models/embedding/
+      hash: md5
+      md5: e3bae16be07a3f3b9b1ec5a4ee4971a9.dir
+      size: 34149
+      nfiles: 10
+    - path: src/models/search_engine/
+      hash: md5
+      md5: 40b82155d21ff673e69fbb296db12baf.dir
+      size: 32299
+      nfiles: 8
+    outs:
+    - path: 
+        models/SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite/embeds_limit-30_chunk_split.cloudpickle
+      hash: md5
+      md5: eb2b8475888c0ba5f11c7be24b289b7d
+      size: 184458
+  embed_sentences@30-Word2Vec/models/Word2Vec/base_dict/kv.bin-chunk_split:
+    cmd: poetry run python -m src.features.embed_sentences data/interim/sentences-limit-30.parquet
+      models/Word2Vec/models/Word2Vec/base_dict/kv.bin/embeds_limit-30_chunk_split.cloudpickle
+      --mlflow_run_name=pipeline --embedding_model_string=Word2Vec/models/Word2Vec/base_dict/kv.bin
+      --chunk_method=chunk_split
+    deps:
+    - path: data/interim/sentences-limit-30.parquet
+      hash: md5
+      md5: c171ff2794839915ad207819c3ea2321
+      size: 151481
+    - path: models/Word2Vec/base_dict/kv.bin
+      hash: md5
+      md5: a85af7234342767f2c02e218901c9b25
+      size: 31001700
+    - path: src/features/embed_sentences.py
+      hash: md5
+      md5: dbf880019a69569a3c99886ae4778467
+      size: 2180
+    - path: src/models/embedding/
+      hash: md5
+      md5: e3bae16be07a3f3b9b1ec5a4ee4971a9.dir
+      size: 34149
+      nfiles: 10
+    - path: src/models/search_engine/
+      hash: md5
+      md5: 40b82155d21ff673e69fbb296db12baf.dir
+      size: 32299
+      nfiles: 8
+    outs:
+    - path: 
+        models/Word2Vec/models/Word2Vec/base_dict/kv.bin/embeds_limit-30_chunk_split.cloudpickle
+      hash: md5
+      md5: 27ad566495d7dfe01ca212cb228aa13f
+      size: 72138
+  build_vector_db@30-SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite-chunk_split:
+    cmd: poetry run python -m src.features.build_vector_db data/interim/sentences-limit-30.parquet
+      models/SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite/embeds_limit-30_chunk_split.cloudpickle
+      models/SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite/engine_limit-30_chunk_split.cloudpickle
+      --mlflow_run_name=pipeline
+    deps:
+    - path: data/interim/sentences-limit-30.parquet
+      hash: md5
+      md5: c171ff2794839915ad207819c3ea2321
+      size: 151481
+    - path: 
+        models/SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite/embeds_limit-30_chunk_split.cloudpickle
+      hash: md5
+      md5: eb2b8475888c0ba5f11c7be24b289b7d
+      size: 184458
+    - path: src/features/build_vector_db.py
+      hash: md5
+      md5: 9ff43b2e25ced3d03357dbeb0a4a122c
+      size: 1822
+    - path: src/models/search_engine/
+      hash: md5
+      md5: 40b82155d21ff673e69fbb296db12baf.dir
+      size: 32299
+      nfiles: 8
+    outs:
+    - path: 
+        models/SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite/engine_limit-30_chunk_split.cloudpickle
+      hash: md5
+      md5: 6405f3ff1f18e487901d867af44d3134
+      size: 461754
+  build_vector_db@30-Word2Vec/models/Word2Vec/base_dict/kv.bin-chunk_split:
+    cmd: poetry run python -m src.features.build_vector_db data/interim/sentences-limit-30.parquet
+      models/Word2Vec/models/Word2Vec/base_dict/kv.bin/embeds_limit-30_chunk_split.cloudpickle
+      models/Word2Vec/models/Word2Vec/base_dict/kv.bin/engine_limit-30_chunk_split.cloudpickle
+      --mlflow_run_name=pipeline
+    deps:
+    - path: data/interim/sentences-limit-30.parquet
+      hash: md5
+      md5: c171ff2794839915ad207819c3ea2321
+      size: 151481
+    - path: 
+        models/Word2Vec/models/Word2Vec/base_dict/kv.bin/embeds_limit-30_chunk_split.cloudpickle
+      hash: md5
+      md5: 27ad566495d7dfe01ca212cb228aa13f
+      size: 72138
+    - path: src/features/build_vector_db.py
+      hash: md5
+      md5: 9ff43b2e25ced3d03357dbeb0a4a122c
+      size: 1822
+    - path: src/models/search_engine/
+      hash: md5
+      md5: 40b82155d21ff673e69fbb296db12baf.dir
+      size: 32299
+      nfiles: 8
+    outs:
+    - path: 
+        models/Word2Vec/models/Word2Vec/base_dict/kv.bin/engine_limit-30_chunk_split.cloudpickle
+      hash: md5
+      md5: a88bb0131574a907f7317585ba3b2b49
+      size: 180945
+  recommend@30-SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite-chunk_split:
+    cmd: poetry run python -m src.models.recommend 
+      models/SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite/engine_limit-30_chunk_split.cloudpickle
+      --embedding_model_string=SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite
+      --mlflow_run_name=pipeline
+    deps:
+    - path: 
+        models/SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite/engine_limit-30_chunk_split.cloudpickle
+      hash: md5
+      md5: 6405f3ff1f18e487901d867af44d3134
+      size: 461754
+    - path: src/models/embedding/
+      hash: md5
+      md5: e3bae16be07a3f3b9b1ec5a4ee4971a9.dir
+      size: 34149
+      nfiles: 10
+    - path: src/models/recommend.py
+      hash: md5
+      md5: 577474d2993bbe977eeabe3345a4a511
+      size: 2346
+    - path: src/models/search_engine/
+      hash: md5
+      md5: 40b82155d21ff673e69fbb296db12baf.dir
+      size: 32299
+      nfiles: 8
+  recommend@30-Word2Vec/models/Word2Vec/base_dict/kv.bin-chunk_split:
+    cmd: poetry run python -m src.models.recommend 
+      models/Word2Vec/models/Word2Vec/base_dict/kv.bin/engine_limit-30_chunk_split.cloudpickle
+      --embedding_model_string=Word2Vec/models/Word2Vec/base_dict/kv.bin --mlflow_run_name=pipeline
+    deps:
+    - path: 
+        models/Word2Vec/models/Word2Vec/base_dict/kv.bin/engine_limit-30_chunk_split.cloudpickle
+      hash: md5
+      md5: a88bb0131574a907f7317585ba3b2b49
+      size: 180945
+    - path: src/models/embedding/
+      hash: md5
+      md5: e3bae16be07a3f3b9b1ec5a4ee4971a9.dir
+      size: 34149
+      nfiles: 10
+    - path: src/models/recommend.py
+      hash: md5
+      md5: 577474d2993bbe977eeabe3345a4a511
+      size: 2346
+    - path: src/models/search_engine/
+      hash: md5
+      md5: 40b82155d21ff673e69fbb296db12baf.dir
+      size: 32299
       nfiles: 8
