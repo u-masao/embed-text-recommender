@@ -14,8 +14,7 @@ def recommend(kwargs):
 
     # make embedding_model
     embedding_model = EmbeddingModel.make_embedding_model(
-        kwargs["embedding_storategy"],
-        kwargs["model_name_or_filepath"],
+        kwargs["embedding_model_string"],
         chunk_method=kwargs["chunk_method"],
     )
 
@@ -38,13 +37,12 @@ def recommend(kwargs):
 @click.command()
 @click.argument("search_engine_filepath", type=click.Path(exists=True))
 @click.option(
-    "--model_name_or_filepath",
+    "--embedding_model_string",
     type=str,
-    default="oshizo/sbert-jsnli-luke-japanese-base-lite",
+    default="SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite",
 )
-@click.option("--mlflow_run_name", type=str, default="develop")
 @click.option("--chunk_method", type=str, default="chunk_split")
-@click.option("--embedding_storategy", type=str, default="SentenceTransformer")
+@click.option("--mlflow_run_name", type=str, default="develop")
 def main(**kwargs):
     """
     クエリ文字列に類似するテキストを計算する。
@@ -53,10 +51,8 @@ def main(**kwargs):
     ------
     kwargs: Dict[str, any]
         CLI オプション
-        - search_engine_filepath
-            ベクトルエンジンバイナリのファイルパス
-        - model_name_or_filepath
-            埋め込み作成モデル名
+        - embedding_model_string
+            埋め込み作成モデルの指定(Storategy / モデル名)
         - mlflow_run_name
             MLflow の run_name
     """

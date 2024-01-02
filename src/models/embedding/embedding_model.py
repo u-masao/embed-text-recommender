@@ -54,12 +54,18 @@ class EmbeddingModel:
         return self.strategy.get_embed_dimension()
 
     @classmethod
-    def make_embedding_model(cls, storategy: str, name: str, **kwargs):
+    def make_embedding_model(cls, model_string: str, name: str, **kwargs):
         """
         EmbeddingModel インスタンスを返す
         """
         # ファイルの先頭に import を書くと循環参照になるため、利用時にインポートする
         from . import SentenceTransformerEmbedding, Word2VecEmbedding
+
+        # 最初の / までが Storategy 名
+        storategy = model_string.strip().split("/")[0]
+
+        # 最初の / 以降が model_name_or_filepath
+        name = "/".join(model_string.strip().split("/")[1:])
 
         # make EmbeddingStorategy
         if storategy == "SentenceTransformer":
