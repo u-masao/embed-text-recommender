@@ -1,4 +1,4 @@
-limit_sentences_sizes: [0]
+limit_sentences_sizes: [30]
 embedding_model_strings:
   - SentenceTransformer/intfloat/multilingual-e5-large
   - SentenceTransformer/intfloat/multilingual-e5-base
