@@ -128,7 +128,7 @@ def format_to_text(df):
 
 """
     result = ""
-    for index, row in df.fillna("").iterrows():
+    for index, row in df.iterrows():
         result += template.format(
             index=index,
             id=row["id"],
@@ -270,9 +270,11 @@ def search(
     # 結果を整形
     start_ts = time.perf_counter()
     result_df = pd.DataFrame({"id": ids[0], "similarity": similarities[0]})
-    result_df = pd.merge(result_df, text_df, on="id", how="left").loc[
-        :, ["id", "similarity", "sentence", "url"]
-    ]
+    result_df = (
+        pd.merge(result_df, text_df, on="id", how="left")
+        .loc[:, ["id", "similarity", "sentence", "url"]]
+        .fillna("")
+    )  # sentence, url が無い場合に作動
     df_merge_elapsed_time = time.perf_counter() - start_ts
 
     # log result
@@ -328,14 +330,21 @@ def search(
 
 
 def log_search_result(result):
+    """
+    検索結果をファイルに保存する。
+    """
+    # make dirs
     log_dir = Path(config["log_dir"])
     log_dir.mkdir(exist_ok=True)
 
+    # バイナリで上書き保存
     cloudpickle.dump(
-        result, open(log_dir / "search_result_detail.cloudpickle", "wb")
+        result, open(log_dir / "last_search_result_detail.cloudpickle", "wb")
     )
+
+    # JSON で 保存
     ts = datetime.now()
-    filename = ts.strftime("log_%Y%m%d_%H%M%S_%f.json")
+    filename = ts.strftime("search_result_%Y%m%d_%H%M%S_%f.json")
     json.dump(make_log_dict(result), open(log_dir / filename, "w"), indent=2)
 
 
