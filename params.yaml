@@ -1,13 +1,13 @@
-limit_sentences_sizes: [30]
+limit_sentences_sizes: [0]
 embedding_model_strings:
-  - SentenceTransformer/intfloat/multilingual-e5-large
-  - SentenceTransformer/intfloat/multilingual-e5-base
-  - SentenceTransformer/intfloat/multilingual-e5-small
+  # - SentenceTransformer/intfloat/multilingual-e5-large
+  # - SentenceTransformer/intfloat/multilingual-e5-base
+  # - SentenceTransformer/intfloat/multilingual-e5-small
   - SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite
-  - SentenceTransformer/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
-  - SentenceTransformer/sentence-transformers/paraphrase-multilingual-mpnet-base-v2
-  - SentenceTransformer/sonoisa/sentence-bert-base-ja-mean-tokens-v2
+  # - SentenceTransformer/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+  # - SentenceTransformer/sentence-transformers/paraphrase-multilingual-mpnet-base-v2
+  # - SentenceTransformer/sonoisa/sentence-bert-base-ja-mean-tokens-v2
   - Word2Vec/models/Word2Vec/base_dict/kv.bin
 chunk_methods:
   - chunk_split
-batch_size: 256
+batch_size: 32
