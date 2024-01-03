@@ -2,6 +2,7 @@ import logging
 import sys
 import time
 from pathlib import Path
+from pprint import pformat
 
 import gradio as gr
 import numpy as np
@@ -278,7 +279,36 @@ def search(
         f",\nmodel: {get_active_model_name()}"
         f",\nmodel dimension: {embedding_model.get_embed_dimension()}"
     )
+
+    # log result
+    log_search_result(
+        {
+            "inputs": {
+                "positive_query": positive_query,
+                "positive_query_blend_ratio": positive_query_blend_ratio,
+                "negative_query": negative_query,
+                "negative_query_blend_ratio": negative_query_blend_ratio,
+                "like_ids": like_ids,
+                "like_blend_ratio": like_blend_ratio,
+                "dislike_ids": dislike_ids,
+                "dislike_blend_ratio": dislike_blend_ratio,
+                "top_n": top_n,
+            },
+            "embeds": {
+                "positive_query_embeddings": positive_query_embeddings,
+                "negative_query_embeddings": negative_query_embeddings,
+                "like_embeddings": like_embeddings,
+                "dislike_embeddings": dislike_embeddings,
+                "total_embedding": total_embedding,
+            },
+            "outputs": result_df,
+        }
+    )
     return message, output_text
+
+
+def log_search_result(result):
+    print(pformat(result))
 
 
 def config_to_string(config):
