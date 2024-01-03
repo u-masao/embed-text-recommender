@@ -1,8 +1,11 @@
+import json
 import logging
 import sys
 import time
+from datetime import datetime
 from pathlib import Path
 
+import cloudpickle
 import gradio as gr
 import numpy as np
 import pandas as pd
@@ -10,9 +13,12 @@ import pandas as pd
 sys.path.append(".")
 from src.models.embedding import EmbeddingModel  # noqa: E402
 from src.models.search_engine import SearchEngine  # noqa: E402
-from src.utils import ConfigurationManager, get_device_info  # noqa: E402
+from src.utils import ConfigurationManager  # noqa: E402
+from src.utils import get_device_info  # noqa: E402
+from src.utils import make_log_dict  # noqa: E402
 
 CONFIG_FILEPATH = "ui.yaml"
+MINIMUM_L2_NORM = 0.000001
 demo = None  # for suppress gradio reload error
 
 
@@ -253,7 +259,7 @@ def search(
     logger.info(f"total_embedding l2norm: {total_embedding_l2norm}")
 
     # 合成ベクトルが 0 の場合
-    if total_embedding_l2norm < 0.000001:
+    if total_embedding_l2norm < MINIMUM_L2_NORM:
         return "検索できません。検索キーのベクトルの長さが 0 になってしまいました。", None
 
     # 検索
@@ -264,21 +270,82 @@ def search(
     # 結果を整形
     start_ts = time.perf_counter()
     result_df = pd.DataFrame({"id": ids[0], "similarity": similarities[0]})
-    result_df = pd.merge(result_df, text_df, on="id", how="left").loc[
-        :, ["id", "similarity", "sentence", "url"]
-    ]
+    result_df = (
+        pd.merge(result_df, text_df, on="id", how="left")
+        .loc[:, ["id", "similarity", "sentence", "url"]]
+        .fillna("")
+    )  # sentence, url が無い場合に作動
     df_merge_elapsed_time = time.perf_counter() - start_ts
-    output_text = format_to_text(result_df)
+
+    # log result
+    log_search_result(
+        {
+            "inputs": {
+                "positive_query": positive_query,
+                "positive_query_blend_ratio": positive_query_blend_ratio,
+                "negative_query": negative_query,
+                "negative_query_blend_ratio": negative_query_blend_ratio,
+                "like_ids": like_ids,
+                "like_blend_ratio": like_blend_ratio,
+                "dislike_ids": dislike_ids,
+                "dislike_blend_ratio": dislike_blend_ratio,
+                "top_n": top_n,
+            },
+            "embeds": {
+                "positive_query_embeddings": positive_query_embeddings,
+                "negative_query_embeddings": negative_query_embeddings,
+                "like_embeddings": like_embeddings,
+                "dislike_embeddings": dislike_embeddings,
+                "total_embedding": total_embedding,
+            },
+            "outputs": {"result": result_df},
+            "elapsed_time": {
+                "embeddindg": encode_elapsed_time,
+                "search": search_elapsed_time,
+                "df_merge": df_merge_elapsed_time,
+            },
+            "meta": {
+                "timestamp": time.time(),
+            },
+            "configuration": {
+                "embedding_model": str(embedding_model),
+                "engine": str(engine),
+            },
+        }
+    )
 
     # 動作状況メッセージを作成
     message = (
+        "```"
         f"encode: {encode_elapsed_time:.3f} sec"
-        f",\nsearch: {search_elapsed_time:.3f} sec"
-        f",\ndf merge: {df_merge_elapsed_time:.3f} sec"
-        f",\nmodel: {get_active_model_name()}"
-        f",\nmodel dimension: {embedding_model.get_embed_dimension()}"
+        f"\nsearch: {search_elapsed_time:.3f} sec"
+        f"\ntext merge: {df_merge_elapsed_time:.3f} sec"
+        f"\nmodel: {str(embedding_model)}"
+        f"\nengine: {str(engine)}"
+        f"\nmodel dimension: {embedding_model.get_embed_dimension()}"
+        "```"
     )
+    output_text = format_to_text(result_df)
     return message, output_text
+
+
+def log_search_result(result):
+    """
+    検索結果をファイルに保存する。
+    """
+    # make dirs
+    log_dir = Path(config["log_dir"])
+    log_dir.mkdir(exist_ok=True)
+
+    # バイナリで上書き保存
+    cloudpickle.dump(
+        result, open(log_dir / "last_search_result_detail.cloudpickle", "wb")
+    )
+
+    # JSON で 保存
+    ts = datetime.now()
+    filename = ts.strftime("search_result_%Y%m%d_%H%M%S_%f.json")
+    json.dump(make_log_dict(result), open(log_dir / filename, "w"), indent=2)
 
 
 def config_to_string(config):

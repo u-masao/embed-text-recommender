@@ -15,3 +15,4 @@ ui:
   - engine_limit-30_head_only.cloudpickle
   - engine_limit-30_head_only.cloudpickle
   sentences_data: data/interim/sentences-limit-30.parquet
+  log_dir: data/processed/log/

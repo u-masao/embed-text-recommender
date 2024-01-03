@@ -106,5 +106,6 @@ class Word2VecEmbedding(EmbeddingStrategy):
         params = {
             "model": self.model,
             "model_name_or_filepath": self.model_name_or_filepath,
+            "tagger": self.tagger,
         }
         return pformat(params)

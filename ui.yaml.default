@@ -7,10 +7,10 @@ ui:
   default_positive_query: "\u30A8\u30F3\u30B8\u30CB\u30A2 \u8EE2\u8077"
   default_top_n: 10
   embedding_model_strings:
+  - SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite
   - SentenceTransformer/intfloat/multilingual-e5-large
   - SentenceTransformer/intfloat/multilingual-e5-base
   - SentenceTransformer/intfloat/multilingual-e5-small
-  - SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite
   - SentenceTransformer/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
   - SentenceTransformer/sentence-transformers/paraphrase-multilingual-mpnet-base-v2
   - SentenceTransformer/sonoisa/sentence-bert-base-ja-mean-tokens-v2
@@ -27,3 +27,4 @@ ui:
   - engine_limit-0_chunk_split.cloudpickle
   - engine_limit-0_chunk_split.cloudpickle
   sentences_data: data/interim/sentences-limit-0.parquet
+  log_dir: data/processed/log/
