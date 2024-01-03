@@ -1,9 +1,11 @@
+import json
 import logging
 import sys
 import time
+from datetime import datetime
 from pathlib import Path
-from pprint import pformat
 
+import cloudpickle
 import gradio as gr
 import numpy as np
 import pandas as pd
@@ -11,9 +13,12 @@ import pandas as pd
 sys.path.append(".")
 from src.models.embedding import EmbeddingModel  # noqa: E402
 from src.models.search_engine import SearchEngine  # noqa: E402
-from src.utils import ConfigurationManager, get_device_info  # noqa: E402
+from src.utils import ConfigurationManager  # noqa: E402
+from src.utils import get_device_info  # noqa: E402
+from src.utils import make_log_dict  # noqa: E402
 
 CONFIG_FILEPATH = "ui.yaml"
+MINIMUM_L2_NORM = 0.000001
 demo = None  # for suppress gradio reload error
 
 
@@ -123,7 +128,7 @@ def format_to_text(df):
 
 """
     result = ""
-    for index, row in df.iterrows():
+    for index, row in df.fillna("").iterrows():
         result += template.format(
             index=index,
             id=row["id"],
@@ -254,7 +259,7 @@ def search(
     logger.info(f"total_embedding l2norm: {total_embedding_l2norm}")
 
     # 合成ベクトルが 0 の場合
-    if total_embedding_l2norm < 0.000001:
+    if total_embedding_l2norm < MINIMUM_L2_NORM:
         return "検索できません。検索キーのベクトルの長さが 0 になってしまいました。", None
 
     # 検索
@@ -269,16 +274,6 @@ def search(
         :, ["id", "similarity", "sentence", "url"]
     ]
     df_merge_elapsed_time = time.perf_counter() - start_ts
-    output_text = format_to_text(result_df)
-
-    # 動作状況メッセージを作成
-    message = (
-        f"encode: {encode_elapsed_time:.3f} sec"
-        f",\nsearch: {search_elapsed_time:.3f} sec"
-        f",\ndf merge: {df_merge_elapsed_time:.3f} sec"
-        f",\nmodel: {get_active_model_name()}"
-        f",\nmodel dimension: {embedding_model.get_embed_dimension()}"
-    )
 
     # log result
     log_search_result(
@@ -301,14 +296,47 @@ def search(
                 "dislike_embeddings": dislike_embeddings,
                 "total_embedding": total_embedding,
             },
-            "outputs": result_df,
+            "outputs": {"result": result_df},
+            "elapsed_time": {
+                "embeddindg": encode_elapsed_time,
+                "search": search_elapsed_time,
+                "df_merge": df_merge_elapsed_time,
+            },
+            "meta": {
+                "timestamp": time.time(),
+            },
+            "configuration": {
+                "embedding_model": str(embedding_model),
+                "engine": str(engine),
+            },
         }
     )
+
+    # 動作状況メッセージを作成
+    message = (
+        "```"
+        f"encode: {encode_elapsed_time:.3f} sec"
+        f"\nsearch: {search_elapsed_time:.3f} sec"
+        f"\ntext merge: {df_merge_elapsed_time:.3f} sec"
+        f"\nmodel: {str(embedding_model)}"
+        f"\nengine: {str(engine)}"
+        f"\nmodel dimension: {embedding_model.get_embed_dimension()}"
+        "```"
+    )
+    output_text = format_to_text(result_df)
     return message, output_text
 
 
 def log_search_result(result):
-    print(pformat(result))
+    log_dir = Path(config["log_dir"])
+    log_dir.mkdir(exist_ok=True)
+
+    cloudpickle.dump(
+        result, open(log_dir / "search_result_detail.cloudpickle", "wb")
+    )
+    ts = datetime.now()
+    filename = ts.strftime("log_%Y%m%d_%H%M%S_%f.json")
+    json.dump(make_log_dict(result), open(log_dir / filename, "w"), indent=2)
 
 
 def config_to_string(config):
