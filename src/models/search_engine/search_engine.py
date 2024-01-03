@@ -87,6 +87,12 @@ class SearchEngine:
         """
         self.strategy.save(filepath)
 
+    def __str__(self):
+        """
+        インスタンスの文字列表現を返す
+        """
+        return self.strategy.__str__()
+
     @classmethod
     def load(cls, filepath: str):
         """

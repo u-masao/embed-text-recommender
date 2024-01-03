@@ -53,6 +53,9 @@ class EmbeddingModel:
     def get_embed_dimension(self):
         return self.strategy.get_embed_dimension()
 
+    def __str__(self):
+        return self.strategy.__str__()
+
     @classmethod
     def make_embedding_model(cls, model_string: str, **kwargs):
         """
