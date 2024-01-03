@@ -1,8 +1,9 @@
 import torch
 
 from .configuration_manager import ConfigurationManager
+from .logging import make_log_dict
 
-__all__ = ["ConfigurationManager", "get_device_info"]
+__all__ = ["ConfigurationManager", "get_device_info", "make_log_dict"]
 
 
 def get_device_info():
