@@ -1,17 +1,29 @@
 ui:
   active_embedding_model_index: 0
-  chunk_method: head_only
+  chunk_method: chunk_split
   default_dislike_ids: 4674693 4839374
   default_like_ids: 6588884 6592773
   default_negative_query: "\u65C5\u884C \u30AB\u30E1\u30E9"
   default_positive_query: "\u30A8\u30F3\u30B8\u30CB\u30A2 \u8EE2\u8077"
   default_top_n: 10
   embedding_model_strings:
+  - SentenceTransformer/intfloat/multilingual-e5-large
+  - SentenceTransformer/intfloat/multilingual-e5-base
+  - SentenceTransformer/intfloat/multilingual-e5-small
   - SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite
+  - SentenceTransformer/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+  - SentenceTransformer/sentence-transformers/paraphrase-multilingual-mpnet-base-v2
+  - SentenceTransformer/sonoisa/sentence-bert-base-ja-mean-tokens-v2
   - Word2Vec/models/Word2Vec/base_dict/kv.bin
-  gradio_share: false
+  gradio_share: true
   models_directory: models
   search_engine:
-  - engine_limit-30_head_only.cloudpickle
-  - engine_limit-30_head_only.cloudpickle
-  sentences_data: data/interim/sentences-limit-30.parquet
+  - engine_limit-0_chunk_split.cloudpickle
+  - engine_limit-0_chunk_split.cloudpickle
+  - engine_limit-0_chunk_split.cloudpickle
+  - engine_limit-0_chunk_split.cloudpickle
+  - engine_limit-0_chunk_split.cloudpickle
+  - engine_limit-0_chunk_split.cloudpickle
+  - engine_limit-0_chunk_split.cloudpickle
+  - engine_limit-0_chunk_split.cloudpickle
+  sentences_data: data/interim/sentences-limit-0.parquet
