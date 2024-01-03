@@ -773,12 +773,12 @@ stages:
     outs:
     - path: models/Word2Vec/base_dict/kv.bin
       hash: md5
-      md5: a85af7234342767f2c02e218901c9b25
+      md5: f2f16bc41ac42fd118d08cec4ff91da3
       size: 31001700
     - path: models/Word2Vec/base_dict/w2v.bin
       hash: md5
-      md5: b69f038cce1b8687854906e87497c2fc
-      size: 62326615
+      md5: 674984fa513b0107256f191a66e60df0
+      size: 62326607
   build_sentences_and_embeddings@SentenceTransformer-oshizo/sbert-jsnli-luke-japanese-base-lite-chunk_split:
     cmd: poetry run python -m src.features.build_features data/interim/dataset.parquet
       models/SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite/sentences_chunk_split.cloudpickle
@@ -1448,4 +1448,735 @@ stages:
       hash: md5
       md5: 40b82155d21ff673e69fbb296db12baf.dir
       size: 32299
+      nfiles: 8
+  build_sentences@0:
+    cmd: poetry run python -m src.features.build_sentences data/interim/dataset.parquet
+      data/interim/sentences-limit-0.parquet --mlflow_run_name=pipeline --limit_sentences_size=0
+    deps:
+    - path: data/interim/dataset.parquet
+      hash: md5
+      md5: bc237833c9ceab972308b563cfaf3b11
+      size: 15023178
+    - path: src/features/build_sentences.py
+      hash: md5
+      md5: 331efa40643c66bbee803e59b9d51adf
+      size: 1642
+    outs:
+    - path: data/interim/sentences-limit-0.parquet
+      hash: md5
+      md5: 100f5980cd44f4a4a201471be8ac6076
+      size: 29648264
+  embed_sentences@0-SentenceTransformer/intfloat/multilingual-e5-large-chunk_split:
+    cmd: poetry run python -m src.features.embed_sentences data/interim/sentences-limit-0.parquet
+      models/SentenceTransformer/intfloat/multilingual-e5-large/embeds_limit-0_chunk_split.cloudpickle
+      --mlflow_run_name=pipeline --embedding_model_string=SentenceTransformer/intfloat/multilingual-e5-large
+      --chunk_method=chunk_split --batch_size=256
+    deps:
+    - path: data/interim/sentences-limit-0.parquet
+      hash: md5
+      md5: 100f5980cd44f4a4a201471be8ac6076
+      size: 29648264
+    - path: models/Word2Vec/base_dict/kv.bin
+      hash: md5
+      md5: f2f16bc41ac42fd118d08cec4ff91da3
+      size: 31001700
+    - path: src/features/embed_sentences.py
+      hash: md5
+      md5: debc14fe245e4efe7a2b91f473a40f0e
+      size: 2273
+    - path: src/models/embedding/
+      hash: md5
+      md5: 4aa0b509fb7576cbac75fd5869fe142b.dir
+      size: 34108
+      nfiles: 10
+    - path: src/models/search_engine/
+      hash: md5
+      md5: 4683ec17e8295f0bf834fb07fc7c500e.dir
+      size: 32279
+      nfiles: 8
+    outs:
+    - path: 
+        models/SentenceTransformer/intfloat/multilingual-e5-large/embeds_limit-0_chunk_split.cloudpickle
+      hash: md5
+      md5: 8c3414c8fccbcd5a736a2e6f1f09ded9
+      size: 60350603
+  embed_sentences@0-SentenceTransformer/intfloat/multilingual-e5-base-chunk_split:
+    cmd: poetry run python -m src.features.embed_sentences data/interim/sentences-limit-0.parquet
+      models/SentenceTransformer/intfloat/multilingual-e5-base/embeds_limit-0_chunk_split.cloudpickle
+      --mlflow_run_name=pipeline --embedding_model_string=SentenceTransformer/intfloat/multilingual-e5-base
+      --chunk_method=chunk_split --batch_size=256
+    deps:
+    - path: data/interim/sentences-limit-0.parquet
+      hash: md5
+      md5: 100f5980cd44f4a4a201471be8ac6076
+      size: 29648264
+    - path: models/Word2Vec/base_dict/kv.bin
+      hash: md5
+      md5: f2f16bc41ac42fd118d08cec4ff91da3
+      size: 31001700
+    - path: src/features/embed_sentences.py
+      hash: md5
+      md5: debc14fe245e4efe7a2b91f473a40f0e
+      size: 2273
+    - path: src/models/embedding/
+      hash: md5
+      md5: 4aa0b509fb7576cbac75fd5869fe142b.dir
+      size: 34108
+      nfiles: 10
+    - path: src/models/search_engine/
+      hash: md5
+      md5: 4683ec17e8295f0bf834fb07fc7c500e.dir
+      size: 32279
+      nfiles: 8
+    outs:
+    - path: 
+        models/SentenceTransformer/intfloat/multilingual-e5-base/embeds_limit-0_chunk_split.cloudpickle
+      hash: md5
+      md5: b1c5e22a667bd40e1f80e8c917ed8047
+      size: 45262987
+  embed_sentences@0-SentenceTransformer/intfloat/multilingual-e5-small-chunk_split:
+    cmd: poetry run python -m src.features.embed_sentences data/interim/sentences-limit-0.parquet
+      models/SentenceTransformer/intfloat/multilingual-e5-small/embeds_limit-0_chunk_split.cloudpickle
+      --mlflow_run_name=pipeline --embedding_model_string=SentenceTransformer/intfloat/multilingual-e5-small
+      --chunk_method=chunk_split --batch_size=256
+    deps:
+    - path: data/interim/sentences-limit-0.parquet
+      hash: md5
+      md5: 100f5980cd44f4a4a201471be8ac6076
+      size: 29648264
+    - path: models/Word2Vec/base_dict/kv.bin
+      hash: md5
+      md5: f2f16bc41ac42fd118d08cec4ff91da3
+      size: 31001700
+    - path: src/features/embed_sentences.py
+      hash: md5
+      md5: debc14fe245e4efe7a2b91f473a40f0e
+      size: 2273
+    - path: src/models/embedding/
+      hash: md5
+      md5: 4aa0b509fb7576cbac75fd5869fe142b.dir
+      size: 34108
+      nfiles: 10
+    - path: src/models/search_engine/
+      hash: md5
+      md5: 4683ec17e8295f0bf834fb07fc7c500e.dir
+      size: 32279
+      nfiles: 8
+    outs:
+    - path: 
+        models/SentenceTransformer/intfloat/multilingual-e5-small/embeds_limit-0_chunk_split.cloudpickle
+      hash: md5
+      md5: c14cef05f823313cbccbe2129e3d3cf9
+      size: 22631563
+  embed_sentences@0-SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite-chunk_split:
+    cmd: poetry run python -m src.features.embed_sentences data/interim/sentences-limit-0.parquet
+      models/SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite/embeds_limit-0_chunk_split.cloudpickle
+      --mlflow_run_name=pipeline 
+      --embedding_model_string=SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite
+      --chunk_method=chunk_split --batch_size=256
+    deps:
+    - path: data/interim/sentences-limit-0.parquet
+      hash: md5
+      md5: 100f5980cd44f4a4a201471be8ac6076
+      size: 29648264
+    - path: models/Word2Vec/base_dict/kv.bin
+      hash: md5
+      md5: f2f16bc41ac42fd118d08cec4ff91da3
+      size: 31001700
+    - path: src/features/embed_sentences.py
+      hash: md5
+      md5: debc14fe245e4efe7a2b91f473a40f0e
+      size: 2273
+    - path: src/models/embedding/
+      hash: md5
+      md5: 4aa0b509fb7576cbac75fd5869fe142b.dir
+      size: 34108
+      nfiles: 10
+    - path: src/models/search_engine/
+      hash: md5
+      md5: 4683ec17e8295f0bf834fb07fc7c500e.dir
+      size: 32279
+      nfiles: 8
+    outs:
+    - path: 
+        models/SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite/embeds_limit-0_chunk_split.cloudpickle
+      hash: md5
+      md5: 80ffff38ec4ab57ff953e682758a1ffe
+      size: 45262987
+  embed_sentences@0-SentenceTransformer/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2-chunk_split:
+    cmd: poetry run python -m src.features.embed_sentences data/interim/sentences-limit-0.parquet
+      models/SentenceTransformer/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2/embeds_limit-0_chunk_split.cloudpickle
+      --mlflow_run_name=pipeline 
+      --embedding_model_string=SentenceTransformer/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+      --chunk_method=chunk_split --batch_size=256
+    deps:
+    - path: data/interim/sentences-limit-0.parquet
+      hash: md5
+      md5: 100f5980cd44f4a4a201471be8ac6076
+      size: 29648264
+    - path: models/Word2Vec/base_dict/kv.bin
+      hash: md5
+      md5: f2f16bc41ac42fd118d08cec4ff91da3
+      size: 31001700
+    - path: src/features/embed_sentences.py
+      hash: md5
+      md5: debc14fe245e4efe7a2b91f473a40f0e
+      size: 2273
+    - path: src/models/embedding/
+      hash: md5
+      md5: 4aa0b509fb7576cbac75fd5869fe142b.dir
+      size: 34108
+      nfiles: 10
+    - path: src/models/search_engine/
+      hash: md5
+      md5: 4683ec17e8295f0bf834fb07fc7c500e.dir
+      size: 32279
+      nfiles: 8
+    outs:
+    - path: 
+        models/SentenceTransformer/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2/embeds_limit-0_chunk_split.cloudpickle
+      hash: md5
+      md5: 0056bbbb3e9d2836828ccd9163be53a9
+      size: 22631563
+  embed_sentences@0-SentenceTransformer/sentence-transformers/paraphrase-multilingual-mpnet-base-v2-chunk_split:
+    cmd: poetry run python -m src.features.embed_sentences data/interim/sentences-limit-0.parquet
+      models/SentenceTransformer/sentence-transformers/paraphrase-multilingual-mpnet-base-v2/embeds_limit-0_chunk_split.cloudpickle
+      --mlflow_run_name=pipeline 
+      --embedding_model_string=SentenceTransformer/sentence-transformers/paraphrase-multilingual-mpnet-base-v2
+      --chunk_method=chunk_split --batch_size=256
+    deps:
+    - path: data/interim/sentences-limit-0.parquet
+      hash: md5
+      md5: 100f5980cd44f4a4a201471be8ac6076
+      size: 29648264
+    - path: models/Word2Vec/base_dict/kv.bin
+      hash: md5
+      md5: f2f16bc41ac42fd118d08cec4ff91da3
+      size: 31001700
+    - path: src/features/embed_sentences.py
+      hash: md5
+      md5: debc14fe245e4efe7a2b91f473a40f0e
+      size: 2273
+    - path: src/models/embedding/
+      hash: md5
+      md5: 4aa0b509fb7576cbac75fd5869fe142b.dir
+      size: 34108
+      nfiles: 10
+    - path: src/models/search_engine/
+      hash: md5
+      md5: 4683ec17e8295f0bf834fb07fc7c500e.dir
+      size: 32279
+      nfiles: 8
+    outs:
+    - path: 
+        models/SentenceTransformer/sentence-transformers/paraphrase-multilingual-mpnet-base-v2/embeds_limit-0_chunk_split.cloudpickle
+      hash: md5
+      md5: 36b13de0f2ee01b7aee64cb729737b58
+      size: 45262987
+  embed_sentences@0-SentenceTransformer/sonoisa/sentence-bert-base-ja-mean-tokens-v2-chunk_split:
+    cmd: poetry run python -m src.features.embed_sentences data/interim/sentences-limit-0.parquet
+      models/SentenceTransformer/sonoisa/sentence-bert-base-ja-mean-tokens-v2/embeds_limit-0_chunk_split.cloudpickle
+      --mlflow_run_name=pipeline 
+      --embedding_model_string=SentenceTransformer/sonoisa/sentence-bert-base-ja-mean-tokens-v2
+      --chunk_method=chunk_split --batch_size=256
+    deps:
+    - path: data/interim/sentences-limit-0.parquet
+      hash: md5
+      md5: 100f5980cd44f4a4a201471be8ac6076
+      size: 29648264
+    - path: models/Word2Vec/base_dict/kv.bin
+      hash: md5
+      md5: f2f16bc41ac42fd118d08cec4ff91da3
+      size: 31001700
+    - path: src/features/embed_sentences.py
+      hash: md5
+      md5: debc14fe245e4efe7a2b91f473a40f0e
+      size: 2273
+    - path: src/models/embedding/
+      hash: md5
+      md5: 4aa0b509fb7576cbac75fd5869fe142b.dir
+      size: 34108
+      nfiles: 10
+    - path: src/models/search_engine/
+      hash: md5
+      md5: 4683ec17e8295f0bf834fb07fc7c500e.dir
+      size: 32279
+      nfiles: 8
+    outs:
+    - path: 
+        models/SentenceTransformer/sonoisa/sentence-bert-base-ja-mean-tokens-v2/embeds_limit-0_chunk_split.cloudpickle
+      hash: md5
+      md5: 0164c356d2e2ddbaef4e086676693423
+      size: 45262987
+  embed_sentences@0-Word2Vec/models/Word2Vec/base_dict/kv.bin-chunk_split:
+    cmd: poetry run python -m src.features.embed_sentences data/interim/sentences-limit-0.parquet
+      models/Word2Vec/models/Word2Vec/base_dict/kv.bin/embeds_limit-0_chunk_split.cloudpickle
+      --mlflow_run_name=pipeline --embedding_model_string=Word2Vec/models/Word2Vec/base_dict/kv.bin
+      --chunk_method=chunk_split --batch_size=256
+    deps:
+    - path: data/interim/sentences-limit-0.parquet
+      hash: md5
+      md5: 100f5980cd44f4a4a201471be8ac6076
+      size: 29648264
+    - path: models/Word2Vec/base_dict/kv.bin
+      hash: md5
+      md5: f2f16bc41ac42fd118d08cec4ff91da3
+      size: 31001700
+    - path: src/features/embed_sentences.py
+      hash: md5
+      md5: debc14fe245e4efe7a2b91f473a40f0e
+      size: 2273
+    - path: src/models/embedding/
+      hash: md5
+      md5: 4aa0b509fb7576cbac75fd5869fe142b.dir
+      size: 34108
+      nfiles: 10
+    - path: src/models/search_engine/
+      hash: md5
+      md5: 4683ec17e8295f0bf834fb07fc7c500e.dir
+      size: 32279
+      nfiles: 8
+    outs:
+    - path: 
+        models/Word2Vec/models/Word2Vec/base_dict/kv.bin/embeds_limit-0_chunk_split.cloudpickle
+      hash: md5
+      md5: 4bb09d791b03199b470b1067dddb8c2c
+      size: 17680939
+  build_vector_db@0-SentenceTransformer/intfloat/multilingual-e5-large-chunk_split:
+    cmd: poetry run python -m src.features.build_vector_db data/interim/sentences-limit-0.parquet
+      models/SentenceTransformer/intfloat/multilingual-e5-large/embeds_limit-0_chunk_split.cloudpickle
+      models/SentenceTransformer/intfloat/multilingual-e5-large/engine_limit-0_chunk_split.cloudpickle
+      --mlflow_run_name=pipeline
+    deps:
+    - path: data/interim/sentences-limit-0.parquet
+      hash: md5
+      md5: 100f5980cd44f4a4a201471be8ac6076
+      size: 29648264
+    - path: 
+        models/SentenceTransformer/intfloat/multilingual-e5-large/embeds_limit-0_chunk_split.cloudpickle
+      hash: md5
+      md5: 8c3414c8fccbcd5a736a2e6f1f09ded9
+      size: 60350603
+    - path: src/features/build_vector_db.py
+      hash: md5
+      md5: 9ff43b2e25ced3d03357dbeb0a4a122c
+      size: 1822
+    - path: src/models/search_engine/
+      hash: md5
+      md5: 4683ec17e8295f0bf834fb07fc7c500e.dir
+      size: 32279
+      nfiles: 8
+    outs:
+    - path: 
+        models/SentenceTransformer/intfloat/multilingual-e5-large/engine_limit-0_chunk_split.cloudpickle
+      hash: md5
+      md5: f0983050fe8603dbf310e4b273037c88
+      size: 150972511
+  build_vector_db@0-SentenceTransformer/intfloat/multilingual-e5-base-chunk_split:
+    cmd: poetry run python -m src.features.build_vector_db data/interim/sentences-limit-0.parquet
+      models/SentenceTransformer/intfloat/multilingual-e5-base/embeds_limit-0_chunk_split.cloudpickle
+      models/SentenceTransformer/intfloat/multilingual-e5-base/engine_limit-0_chunk_split.cloudpickle
+      --mlflow_run_name=pipeline
+    deps:
+    - path: data/interim/sentences-limit-0.parquet
+      hash: md5
+      md5: 100f5980cd44f4a4a201471be8ac6076
+      size: 29648264
+    - path: 
+        models/SentenceTransformer/intfloat/multilingual-e5-base/embeds_limit-0_chunk_split.cloudpickle
+      hash: md5
+      md5: b1c5e22a667bd40e1f80e8c917ed8047
+      size: 45262987
+    - path: src/features/build_vector_db.py
+      hash: md5
+      md5: 9ff43b2e25ced3d03357dbeb0a4a122c
+      size: 1822
+    - path: src/models/search_engine/
+      hash: md5
+      md5: 4683ec17e8295f0bf834fb07fc7c500e.dir
+      size: 32279
+      nfiles: 8
+    outs:
+    - path: 
+        models/SentenceTransformer/intfloat/multilingual-e5-base/engine_limit-0_chunk_split.cloudpickle
+      hash: md5
+      md5: fe1dbbf187be347a6f42845b608b5c6c
+      size: 113253471
+  build_vector_db@0-SentenceTransformer/intfloat/multilingual-e5-small-chunk_split:
+    cmd: poetry run python -m src.features.build_vector_db data/interim/sentences-limit-0.parquet
+      models/SentenceTransformer/intfloat/multilingual-e5-small/embeds_limit-0_chunk_split.cloudpickle
+      models/SentenceTransformer/intfloat/multilingual-e5-small/engine_limit-0_chunk_split.cloudpickle
+      --mlflow_run_name=pipeline
+    deps:
+    - path: data/interim/sentences-limit-0.parquet
+      hash: md5
+      md5: 100f5980cd44f4a4a201471be8ac6076
+      size: 29648264
+    - path: 
+        models/SentenceTransformer/intfloat/multilingual-e5-small/embeds_limit-0_chunk_split.cloudpickle
+      hash: md5
+      md5: c14cef05f823313cbccbe2129e3d3cf9
+      size: 22631563
+    - path: src/features/build_vector_db.py
+      hash: md5
+      md5: 9ff43b2e25ced3d03357dbeb0a4a122c
+      size: 1822
+    - path: src/models/search_engine/
+      hash: md5
+      md5: 4683ec17e8295f0bf834fb07fc7c500e.dir
+      size: 32279
+      nfiles: 8
+    outs:
+    - path: 
+        models/SentenceTransformer/intfloat/multilingual-e5-small/engine_limit-0_chunk_split.cloudpickle
+      hash: md5
+      md5: 5967c248edd26aabe182aa5d9be4e792
+      size: 56674911
+  build_vector_db@0-SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite-chunk_split:
+    cmd: poetry run python -m src.features.build_vector_db data/interim/sentences-limit-0.parquet
+      models/SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite/embeds_limit-0_chunk_split.cloudpickle
+      models/SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite/engine_limit-0_chunk_split.cloudpickle
+      --mlflow_run_name=pipeline
+    deps:
+    - path: data/interim/sentences-limit-0.parquet
+      hash: md5
+      md5: 100f5980cd44f4a4a201471be8ac6076
+      size: 29648264
+    - path: 
+        models/SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite/embeds_limit-0_chunk_split.cloudpickle
+      hash: md5
+      md5: 80ffff38ec4ab57ff953e682758a1ffe
+      size: 45262987
+    - path: src/features/build_vector_db.py
+      hash: md5
+      md5: 9ff43b2e25ced3d03357dbeb0a4a122c
+      size: 1822
+    - path: src/models/search_engine/
+      hash: md5
+      md5: 4683ec17e8295f0bf834fb07fc7c500e.dir
+      size: 32279
+      nfiles: 8
+    outs:
+    - path: 
+        models/SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite/engine_limit-0_chunk_split.cloudpickle
+      hash: md5
+      md5: 2a53aa05202259a3671e96c84549c8f0
+      size: 113253471
+  build_vector_db@0-SentenceTransformer/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2-chunk_split:
+    cmd: poetry run python -m src.features.build_vector_db data/interim/sentences-limit-0.parquet
+      models/SentenceTransformer/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2/embeds_limit-0_chunk_split.cloudpickle
+      models/SentenceTransformer/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2/engine_limit-0_chunk_split.cloudpickle
+      --mlflow_run_name=pipeline
+    deps:
+    - path: data/interim/sentences-limit-0.parquet
+      hash: md5
+      md5: 100f5980cd44f4a4a201471be8ac6076
+      size: 29648264
+    - path: 
+        models/SentenceTransformer/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2/embeds_limit-0_chunk_split.cloudpickle
+      hash: md5
+      md5: 0056bbbb3e9d2836828ccd9163be53a9
+      size: 22631563
+    - path: src/features/build_vector_db.py
+      hash: md5
+      md5: 9ff43b2e25ced3d03357dbeb0a4a122c
+      size: 1822
+    - path: src/models/search_engine/
+      hash: md5
+      md5: 4683ec17e8295f0bf834fb07fc7c500e.dir
+      size: 32279
+      nfiles: 8
+    outs:
+    - path: 
+        models/SentenceTransformer/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2/engine_limit-0_chunk_split.cloudpickle
+      hash: md5
+      md5: 57017b0aa6b2fb7ac80803b7e49d11c3
+      size: 56674911
+  build_vector_db@0-SentenceTransformer/sentence-transformers/paraphrase-multilingual-mpnet-base-v2-chunk_split:
+    cmd: poetry run python -m src.features.build_vector_db data/interim/sentences-limit-0.parquet
+      models/SentenceTransformer/sentence-transformers/paraphrase-multilingual-mpnet-base-v2/embeds_limit-0_chunk_split.cloudpickle
+      models/SentenceTransformer/sentence-transformers/paraphrase-multilingual-mpnet-base-v2/engine_limit-0_chunk_split.cloudpickle
+      --mlflow_run_name=pipeline
+    deps:
+    - path: data/interim/sentences-limit-0.parquet
+      hash: md5
+      md5: 100f5980cd44f4a4a201471be8ac6076
+      size: 29648264
+    - path: 
+        models/SentenceTransformer/sentence-transformers/paraphrase-multilingual-mpnet-base-v2/embeds_limit-0_chunk_split.cloudpickle
+      hash: md5
+      md5: 36b13de0f2ee01b7aee64cb729737b58
+      size: 45262987
+    - path: src/features/build_vector_db.py
+      hash: md5
+      md5: 9ff43b2e25ced3d03357dbeb0a4a122c
+      size: 1822
+    - path: src/models/search_engine/
+      hash: md5
+      md5: 4683ec17e8295f0bf834fb07fc7c500e.dir
+      size: 32279
+      nfiles: 8
+    outs:
+    - path: 
+        models/SentenceTransformer/sentence-transformers/paraphrase-multilingual-mpnet-base-v2/engine_limit-0_chunk_split.cloudpickle
+      hash: md5
+      md5: ba47f1adb5d95e1d658d19dd591c8982
+      size: 113253471
+  build_vector_db@0-SentenceTransformer/sonoisa/sentence-bert-base-ja-mean-tokens-v2-chunk_split:
+    cmd: poetry run python -m src.features.build_vector_db data/interim/sentences-limit-0.parquet
+      models/SentenceTransformer/sonoisa/sentence-bert-base-ja-mean-tokens-v2/embeds_limit-0_chunk_split.cloudpickle
+      models/SentenceTransformer/sonoisa/sentence-bert-base-ja-mean-tokens-v2/engine_limit-0_chunk_split.cloudpickle
+      --mlflow_run_name=pipeline
+    deps:
+    - path: data/interim/sentences-limit-0.parquet
+      hash: md5
+      md5: 100f5980cd44f4a4a201471be8ac6076
+      size: 29648264
+    - path: 
+        models/SentenceTransformer/sonoisa/sentence-bert-base-ja-mean-tokens-v2/embeds_limit-0_chunk_split.cloudpickle
+      hash: md5
+      md5: 0164c356d2e2ddbaef4e086676693423
+      size: 45262987
+    - path: src/features/build_vector_db.py
+      hash: md5
+      md5: 9ff43b2e25ced3d03357dbeb0a4a122c
+      size: 1822
+    - path: src/models/search_engine/
+      hash: md5
+      md5: 4683ec17e8295f0bf834fb07fc7c500e.dir
+      size: 32279
+      nfiles: 8
+    outs:
+    - path: 
+        models/SentenceTransformer/sonoisa/sentence-bert-base-ja-mean-tokens-v2/engine_limit-0_chunk_split.cloudpickle
+      hash: md5
+      md5: 6b26a0bb9484bdd4d8639acd1121f5ff
+      size: 113253471
+  build_vector_db@0-Word2Vec/models/Word2Vec/base_dict/kv.bin-chunk_split:
+    cmd: poetry run python -m src.features.build_vector_db data/interim/sentences-limit-0.parquet
+      models/Word2Vec/models/Word2Vec/base_dict/kv.bin/embeds_limit-0_chunk_split.cloudpickle
+      models/Word2Vec/models/Word2Vec/base_dict/kv.bin/engine_limit-0_chunk_split.cloudpickle
+      --mlflow_run_name=pipeline
+    deps:
+    - path: data/interim/sentences-limit-0.parquet
+      hash: md5
+      md5: 100f5980cd44f4a4a201471be8ac6076
+      size: 29648264
+    - path: 
+        models/Word2Vec/models/Word2Vec/base_dict/kv.bin/embeds_limit-0_chunk_split.cloudpickle
+      hash: md5
+      md5: 4bb09d791b03199b470b1067dddb8c2c
+      size: 17680939
+    - path: src/features/build_vector_db.py
+      hash: md5
+      md5: 9ff43b2e25ced3d03357dbeb0a4a122c
+      size: 1822
+    - path: src/models/search_engine/
+      hash: md5
+      md5: 4683ec17e8295f0bf834fb07fc7c500e.dir
+      size: 32279
+      nfiles: 8
+    outs:
+    - path: 
+        models/Word2Vec/models/Word2Vec/base_dict/kv.bin/engine_limit-0_chunk_split.cloudpickle
+      hash: md5
+      md5: 862247067ff8ebe6f30fd91d69936d8a
+      size: 44298351
+  recommend@0-SentenceTransformer/intfloat/multilingual-e5-large-chunk_split:
+    cmd: poetry run python -m src.models.recommend 
+      models/SentenceTransformer/intfloat/multilingual-e5-large/engine_limit-0_chunk_split.cloudpickle
+      --embedding_model_string=SentenceTransformer/intfloat/multilingual-e5-large
+      --mlflow_run_name=pipeline
+    deps:
+    - path: 
+        models/SentenceTransformer/intfloat/multilingual-e5-large/engine_limit-0_chunk_split.cloudpickle
+      hash: md5
+      md5: f0983050fe8603dbf310e4b273037c88
+      size: 150972511
+    - path: src/models/embedding/
+      hash: md5
+      md5: 4aa0b509fb7576cbac75fd5869fe142b.dir
+      size: 34108
+      nfiles: 10
+    - path: src/models/recommend.py
+      hash: md5
+      md5: 577474d2993bbe977eeabe3345a4a511
+      size: 2346
+    - path: src/models/search_engine/
+      hash: md5
+      md5: 4683ec17e8295f0bf834fb07fc7c500e.dir
+      size: 32279
+      nfiles: 8
+  recommend@0-SentenceTransformer/intfloat/multilingual-e5-base-chunk_split:
+    cmd: poetry run python -m src.models.recommend 
+      models/SentenceTransformer/intfloat/multilingual-e5-base/engine_limit-0_chunk_split.cloudpickle
+      --embedding_model_string=SentenceTransformer/intfloat/multilingual-e5-base --mlflow_run_name=pipeline
+    deps:
+    - path: 
+        models/SentenceTransformer/intfloat/multilingual-e5-base/engine_limit-0_chunk_split.cloudpickle
+      hash: md5
+      md5: fe1dbbf187be347a6f42845b608b5c6c
+      size: 113253471
+    - path: src/models/embedding/
+      hash: md5
+      md5: 4aa0b509fb7576cbac75fd5869fe142b.dir
+      size: 34108
+      nfiles: 10
+    - path: src/models/recommend.py
+      hash: md5
+      md5: 577474d2993bbe977eeabe3345a4a511
+      size: 2346
+    - path: src/models/search_engine/
+      hash: md5
+      md5: 4683ec17e8295f0bf834fb07fc7c500e.dir
+      size: 32279
+      nfiles: 8
+  recommend@0-SentenceTransformer/intfloat/multilingual-e5-small-chunk_split:
+    cmd: poetry run python -m src.models.recommend 
+      models/SentenceTransformer/intfloat/multilingual-e5-small/engine_limit-0_chunk_split.cloudpickle
+      --embedding_model_string=SentenceTransformer/intfloat/multilingual-e5-small
+      --mlflow_run_name=pipeline
+    deps:
+    - path: 
+        models/SentenceTransformer/intfloat/multilingual-e5-small/engine_limit-0_chunk_split.cloudpickle
+      hash: md5
+      md5: 5967c248edd26aabe182aa5d9be4e792
+      size: 56674911
+    - path: src/models/embedding/
+      hash: md5
+      md5: 4aa0b509fb7576cbac75fd5869fe142b.dir
+      size: 34108
+      nfiles: 10
+    - path: src/models/recommend.py
+      hash: md5
+      md5: 577474d2993bbe977eeabe3345a4a511
+      size: 2346
+    - path: src/models/search_engine/
+      hash: md5
+      md5: 4683ec17e8295f0bf834fb07fc7c500e.dir
+      size: 32279
+      nfiles: 8
+  recommend@0-SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite-chunk_split:
+    cmd: poetry run python -m src.models.recommend 
+      models/SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite/engine_limit-0_chunk_split.cloudpickle
+      --embedding_model_string=SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite
+      --mlflow_run_name=pipeline
+    deps:
+    - path: 
+        models/SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite/engine_limit-0_chunk_split.cloudpickle
+      hash: md5
+      md5: 2a53aa05202259a3671e96c84549c8f0
+      size: 113253471
+    - path: src/models/embedding/
+      hash: md5
+      md5: 4aa0b509fb7576cbac75fd5869fe142b.dir
+      size: 34108
+      nfiles: 10
+    - path: src/models/recommend.py
+      hash: md5
+      md5: 577474d2993bbe977eeabe3345a4a511
+      size: 2346
+    - path: src/models/search_engine/
+      hash: md5
+      md5: 4683ec17e8295f0bf834fb07fc7c500e.dir
+      size: 32279
+      nfiles: 8
+  recommend@0-SentenceTransformer/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2-chunk_split:
+    cmd: poetry run python -m src.models.recommend 
+      models/SentenceTransformer/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2/engine_limit-0_chunk_split.cloudpickle
+      --embedding_model_string=SentenceTransformer/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+      --mlflow_run_name=pipeline
+    deps:
+    - path: 
+        models/SentenceTransformer/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2/engine_limit-0_chunk_split.cloudpickle
+      hash: md5
+      md5: 57017b0aa6b2fb7ac80803b7e49d11c3
+      size: 56674911
+    - path: src/models/embedding/
+      hash: md5
+      md5: 4aa0b509fb7576cbac75fd5869fe142b.dir
+      size: 34108
+      nfiles: 10
+    - path: src/models/recommend.py
+      hash: md5
+      md5: 577474d2993bbe977eeabe3345a4a511
+      size: 2346
+    - path: src/models/search_engine/
+      hash: md5
+      md5: 4683ec17e8295f0bf834fb07fc7c500e.dir
+      size: 32279
+      nfiles: 8
+  recommend@0-SentenceTransformer/sentence-transformers/paraphrase-multilingual-mpnet-base-v2-chunk_split:
+    cmd: poetry run python -m src.models.recommend 
+      models/SentenceTransformer/sentence-transformers/paraphrase-multilingual-mpnet-base-v2/engine_limit-0_chunk_split.cloudpickle
+      --embedding_model_string=SentenceTransformer/sentence-transformers/paraphrase-multilingual-mpnet-base-v2
+      --mlflow_run_name=pipeline
+    deps:
+    - path: 
+        models/SentenceTransformer/sentence-transformers/paraphrase-multilingual-mpnet-base-v2/engine_limit-0_chunk_split.cloudpickle
+      hash: md5
+      md5: ba47f1adb5d95e1d658d19dd591c8982
+      size: 113253471
+    - path: src/models/embedding/
+      hash: md5
+      md5: 4aa0b509fb7576cbac75fd5869fe142b.dir
+      size: 34108
+      nfiles: 10
+    - path: src/models/recommend.py
+      hash: md5
+      md5: 577474d2993bbe977eeabe3345a4a511
+      size: 2346
+    - path: src/models/search_engine/
+      hash: md5
+      md5: 4683ec17e8295f0bf834fb07fc7c500e.dir
+      size: 32279
+      nfiles: 8
+  recommend@0-SentenceTransformer/sonoisa/sentence-bert-base-ja-mean-tokens-v2-chunk_split:
+    cmd: poetry run python -m src.models.recommend 
+      models/SentenceTransformer/sonoisa/sentence-bert-base-ja-mean-tokens-v2/engine_limit-0_chunk_split.cloudpickle
+      --embedding_model_string=SentenceTransformer/sonoisa/sentence-bert-base-ja-mean-tokens-v2
+      --mlflow_run_name=pipeline
+    deps:
+    - path: 
+        models/SentenceTransformer/sonoisa/sentence-bert-base-ja-mean-tokens-v2/engine_limit-0_chunk_split.cloudpickle
+      hash: md5
+      md5: 6b26a0bb9484bdd4d8639acd1121f5ff
+      size: 113253471
+    - path: src/models/embedding/
+      hash: md5
+      md5: 4aa0b509fb7576cbac75fd5869fe142b.dir
+      size: 34108
+      nfiles: 10
+    - path: src/models/recommend.py
+      hash: md5
+      md5: 577474d2993bbe977eeabe3345a4a511
+      size: 2346
+    - path: src/models/search_engine/
+      hash: md5
+      md5: 4683ec17e8295f0bf834fb07fc7c500e.dir
+      size: 32279
+      nfiles: 8
+  recommend@0-Word2Vec/models/Word2Vec/base_dict/kv.bin-chunk_split:
+    cmd: poetry run python -m src.models.recommend 
+      models/Word2Vec/models/Word2Vec/base_dict/kv.bin/engine_limit-0_chunk_split.cloudpickle
+      --embedding_model_string=Word2Vec/models/Word2Vec/base_dict/kv.bin --mlflow_run_name=pipeline
+    deps:
+    - path: 
+        models/Word2Vec/models/Word2Vec/base_dict/kv.bin/engine_limit-0_chunk_split.cloudpickle
+      hash: md5
+      md5: 862247067ff8ebe6f30fd91d69936d8a
+      size: 44298351
+    - path: src/models/embedding/
+      hash: md5
+      md5: 4aa0b509fb7576cbac75fd5869fe142b.dir
+      size: 34108
+      nfiles: 10
+    - path: src/models/recommend.py
+      hash: md5
+      md5: 577474d2993bbe977eeabe3345a4a511
+      size: 2346
+    - path: src/models/search_engine/
+      hash: md5
+      md5: 4683ec17e8295f0bf834fb07fc7c500e.dir
+      size: 32279
       nfiles: 8
