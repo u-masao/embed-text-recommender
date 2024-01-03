@@ -27,3 +27,4 @@ ui:
   - engine_limit-0_chunk_split.cloudpickle
   - engine_limit-0_chunk_split.cloudpickle
   sentences_data: data/interim/sentences-limit-0.parquet
+  log_dir: data/processed/log/
