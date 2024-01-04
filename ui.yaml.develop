@@ -1,6 +1,6 @@
 ui:
   active_embedding_model_index: 0
-  chunk_method: head_only
+  chunk_method: chunk_split
   default_dislike_ids: 4674693 4839374
   default_like_ids: 6588884 6592773
   default_negative_query: "\u65C5\u884C \u30AB\u30E1\u30E9"
@@ -9,8 +9,8 @@ ui:
   embedding_model_strings:
   - SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite
   - Word2Vec/models/Word2Vec/base_dict/kv.bin
-  gradio_share: false
+  gradio_share: true
   models_directory: models
-  search_engine: engine_limit-30_head_only.cloudpickle
+  search_engine: engine_limit-30_chunk_split.cloudpickle
   sentences_data: data/interim/sentences-limit-30.parquet
   log_dir: data/processed/log/
