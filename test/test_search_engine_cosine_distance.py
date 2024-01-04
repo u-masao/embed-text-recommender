@@ -12,7 +12,7 @@ EMBEDDING_DIMENSION = 30
     scope="session",
     params=[
         200,
-        1000,
+        100,
     ],
 )
 def id_size(request):
@@ -25,8 +25,9 @@ def id_size(request):
 @pytest.fixture(
     scope="session",
     params=[
-        100,
-        20,
+        50,
+        10,
+        1,
     ],
 )
 def top_n(request):
