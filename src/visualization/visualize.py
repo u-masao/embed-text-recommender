@@ -19,7 +19,6 @@ from src.utils import make_log_dict  # noqa: E402
 
 CONFIG_FILEPATH = "ui.yaml"
 MINIMUM_L2_NORM = 0.000001
-demo = None  # for suppress gradio reload error
 
 
 def merge_embeddings(embeds_list):
@@ -44,6 +43,7 @@ def embedding_query(query):
     """
 
     global embedding_model
+    global engine
     logger = logging.getLogger(__name__)
 
     # 結果変数を初期化
@@ -142,7 +142,7 @@ def format_to_text(df):
 
 
 def clear_widgets():
-    global config
+    config = ConfigurationManager().load(CONFIG_FILEPATH)
 
     return (
         "",  # positive_query
@@ -166,7 +166,7 @@ def get_ui_header():
 
 
 def set_example_widgets():
-    global config
+    config = ConfigurationManager().load(CONFIG_FILEPATH)
 
     return (
         config["default_positive_query"],  # positive_query
@@ -333,6 +333,8 @@ def log_search_result(result):
     """
     検索結果をファイルに保存する。
     """
+    config = ConfigurationManager().load(CONFIG_FILEPATH)
+
     # make dirs
     log_dir = Path(config["log_dir"])
     log_dir.mkdir(exist_ok=True)
@@ -357,23 +359,20 @@ def config_to_string(config):
 
 
 def update_config(selected_model):
-    global config
     global embedding_model
     global engine
     global text_df
 
     config = ConfigurationManager().load(CONFIG_FILEPATH)
     embedding_model, engine, text_df = init_models(
-        config, model_index=selected_model
+        config, odel_index=selected_model
     )
     config.save(CONFIG_FILEPATH)
     return config_to_string(config)
 
 
 def get_active_model_name(model_index=None):
-    global config
-
-    print(f"{model_index=}")
+    config = ConfigurationManager().load(CONFIG_FILEPATH)
 
     if model_index is None:
         active_embedding_model_index = config["active_embedding_model_index"]
@@ -398,7 +397,8 @@ def get_active_model_name(model_index=None):
     return embedding_model_string, search_engine_filepath
 
 
-def init_models(config, model_index=0):
+def init_models(model_index=0):
+    config = ConfigurationManager().load(CONFIG_FILEPATH)
     # init logging
     logger = logging.getLogger(__name__)
     logger.info(get_device_info())
@@ -427,10 +427,12 @@ def init_models(config, model_index=0):
     return embedding_model, engine, text_df
 
 
-def init_widgets(config):
+def init_widgets():
     """
     Widget を配置しイベントリスナーを設定する。
     """
+
+    config = ConfigurationManager().load(CONFIG_FILEPATH)
 
     slider_kwargs = dict(
         minimum=0.0,
@@ -550,10 +552,20 @@ def init_widgets(config):
     return demo
 
 
+# init logging
+log_fmt = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+logging.basicConfig(level=logging.INFO, format=log_fmt)
+logging.info(f"{__name__=}")
+
 if __name__ == "__main__":
-    log_fmt = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-    logging.basicConfig(level=logging.INFO, format=log_fmt)
+    # ウィジェットは作成前の初期化
+    # これを if の外側にもっていってもエラー
+    embedding_model, engine, text_df = init_models()
+
+# __name__ == "__main__" 意外でも呼び出されるのでここに記載
+demo = init_widgets()
+
+if __name__ == "__main__":
     config = ConfigurationManager().load(CONFIG_FILEPATH)
-    embedding_model, engine, text_df = init_models(config)
-    demo = init_widgets(config)
+    # gradio launch
     demo.launch(share=config["gradio_share"], debug=True)
