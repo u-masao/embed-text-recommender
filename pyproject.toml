@@ -34,4 +34,5 @@ build-backend = "poetry.core.masonry.api"
 [tool.pytest.ini_options]
 filterwarnings = [
   "ignore:distutils Version classes are deprecated. Use packaging.version instead.",
+  "ignore:Support for class-based .config. is deprecated, use ConfigDict instead.",
 ]
