@@ -389,13 +389,10 @@ def get_active_model_name(model_index=None):
         active_embedding_model_index
     ]
 
-    search_engine_filename = config["search_engine"][
-        active_embedding_model_index
-    ]
     search_engine_filepath = (
         Path(config["models_directory"])
         / embedding_model_string
-        / search_engine_filename
+        / config["search_engine"]
     )
 
     return embedding_model_string, search_engine_filepath
