@@ -22,13 +22,52 @@ MINIMUM_L2_NORM = 0.000001
 demo = None  # for suppress gradio reload error
 
 
-def merge_embeddings(embeds_list):
+def mask_not_zero_vector(input_matrix):
+    """
+    return not zero vector, bool array.
+    """
+    return np.linalg.norm(input_matrix, axis=-1, ord=2) > 1e-10
+
+
+def merge_embeddings(
+    positive_query_embeddings,
+    positive_query_blend_ratio,
+    negative_query_embeddings,
+    negative_query_blend_ratio,
+    like_embeddings,
+    like_blend_ratio,
+    dislike_embeddings,
+    dislike_blend_ratio,
+):
     """
     複数の埋め込みベクトルの平均を返す。
     """
-    embeds = np.vstack(embeds_list)
-    result = np.mean(embeds, axis=0)
-    return result
+    embeds_list = []
+
+    for embeds, ratio in zip(
+        [
+            positive_query_embeddings,
+            negative_query_embeddings,
+            like_embeddings,
+            dislike_embeddings,
+        ],
+        [
+            positive_query_blend_ratio,
+            -negative_query_blend_ratio,
+            like_blend_ratio,
+            -dislike_blend_ratio,
+        ],
+    ):
+        # L2norm がゼロではないベクトルだけを登録する
+        mask = mask_not_zero_vector(embeds)
+        if mask.sum() > 0:
+            if embeds[mask].flatten().shape[0] > 0:
+                embeds_list.append(
+                    embeds[mask] * ratio,
+                )
+
+    # calc mean
+    return np.mean(np.vstack(embeds_list), axis=0)
 
 
 def split_text(input_text):
@@ -47,7 +86,7 @@ def embedding_query(query):
     logger = logging.getLogger(__name__)
 
     # 結果変数を初期化
-    query_embeddings = np.zeros(engine.get_embed_dimension())
+    query_embeddings = np.zeros(embedding_model.get_embed_dimension())
 
     # 入力文字列が空の場合はゼロベクトルを返す
     if len(query.strip()) == 0:
@@ -246,12 +285,14 @@ def search(
 
     # ベクトル合成
     total_embedding = merge_embeddings(
-        [
-            positive_query_embeddings * positive_query_blend_ratio,
-            -negative_query_embeddings * negative_query_blend_ratio,
-            like_embeddings * like_blend_ratio,
-            -dislike_embeddings * dislike_blend_ratio,
-        ]
+        positive_query_embeddings,
+        positive_query_blend_ratio,
+        negative_query_embeddings,
+        negative_query_blend_ratio,
+        like_embeddings,
+        like_blend_ratio,
+        dislike_embeddings,
+        dislike_blend_ratio,
     )
 
     # L2ノルム計算(長さ計算)
