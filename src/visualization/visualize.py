@@ -91,7 +91,7 @@ def init_widgets():
                 model_selector = gr.Dropdown(
                     choices=query_handler.config["embedding_model_strings"],
                     value=active_model_string,
-                    type="index",
+                    type="value",
                     label="モデル選択",
                     show_label=True,
                 )

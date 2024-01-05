@@ -25,12 +25,12 @@ class QueryHandler:
         self.config = ConfigurationManager().load(config_filepath)
         self.embedding_model, self.engine, self.text_df = self.init_models()
 
-    def init_models(self, model_index=0):
+    def init_models(self, model_name=None):
         # init logging
         logger = logging.getLogger(__name__)
         logger.info(get_device_info())
 
-        self.set_active_model_index(model_index)
+        self.set_active_model(model_name)
 
         # get active model
         (
@@ -55,6 +55,48 @@ class QueryHandler:
         logger.info(f"embedding_model summary: {embedding_model}")
 
         return embedding_model, engine, text_df
+
+    def update_config(self, new_model_name):
+        # reload config
+        self.config = ConfigurationManager().load(CONFIG_FILEPATH)
+
+        # cleanup
+        del self.embedding_model, self.engine, self.text_df
+
+        # init models
+        self.embedding_model, self.engine, self.text_df = self.init_models(
+            new_model_name
+        )
+
+        # save config
+        self.config.save(CONFIG_FILEPATH)
+        return self.config_to_string()
+
+    def set_active_model(self, model_name=None):
+        model_list = self.config["embedding_model_strings"]
+
+        if len(model_list) == 0:
+            raise ValueError("model_list is empty")
+
+        if model_name is None:
+            self.config["active_embedding_model_name"] = model_list[0]
+            return
+
+        if model_name not in model_list:
+            raise ValueError(f"指定されたモデルはありません: {model_name}")
+
+        self.config["active_embedding_model_name"] = model_name
+
+    def get_active_model_name(self):
+        embedding_model_string = self.config["active_embedding_model_name"]
+
+        search_engine_filepath = (
+            Path(self.config["models_directory"])
+            / embedding_model_string
+            / self.config["search_engine"]
+        )
+
+        return embedding_model_string, search_engine_filepath
 
     def mask_not_zero_vector(self, input_matrix):
         """
@@ -384,41 +426,6 @@ class QueryHandler:
         Markdown Widgetで表示することを想定。
         """
         return f"```\n{self.config}\n```"
-
-    def update_config(self, selected_model):
-        # reload config
-        self.config = ConfigurationManager().load(CONFIG_FILEPATH)
-
-        # cleanup
-        del self.embedding_model, self.engine, self.text_df
-
-        # init models
-        self.embedding_model, self.engine, self.text_df = self.init_models(
-            model_index=selected_model
-        )
-
-        # save config
-        self.config.save(CONFIG_FILEPATH)
-        return self.config_to_string()
-
-    def set_active_model_index(self, model_index):
-        if model_index >= len(self.config["embedding_model_strings"]):
-            raise ValueError(f"invalid model index: {model_index}")
-
-        self.config["active_embedding_model_index"] = model_index
-
-    def get_active_model_name(self):
-        embedding_model_string = self.config["embedding_model_strings"][
-            self.config["active_embedding_model_index"]
-        ]
-
-        search_engine_filepath = (
-            Path(self.config["models_directory"])
-            / embedding_model_string
-            / self.config["search_engine"]
-        )
-
-        return embedding_model_string, search_engine_filepath
 
 
 if __name__ == "__main__":
