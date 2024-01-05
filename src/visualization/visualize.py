@@ -95,7 +95,12 @@ def init_widgets():
                     label="モデル選択",
                     show_label=True,
                 )
-                config_markdown = gr.Markdown(query_handler.config_to_string())
+                config_markdown = gr.Markdown(
+                    query_handler.config_to_string(), label="現在の設定情報"
+                )
+
+            # オリジナルテキスト表示
+            display_original_text()
 
             # 出力 Widget
             with gr.Accordion(label="モデルの詳細情報", open=False):
@@ -176,6 +181,34 @@ def set_example_widgets():
         1.0,  # dislike_blend_ratio
         query_handler.config["default_top_n"],  # top_n
     )
+
+
+def display_original_text(
+    sample_size=1000,
+    text_length=200,
+):
+    # 表示対象の DataFrame を変数に保存
+    target_df = query_handler.text_df
+
+    # サンプリングと整形
+    df_size = target_df.shape[0]
+    sample_size = min(sample_size, df_size)
+    sampled_df = (
+        target_df.loc[:, ["id", "sentence"]]
+        .sample(sample_size)
+        .sort_values("id")
+    )
+    sampled_df["sentence_length"] = sampled_df["sentence"].str.len()
+    sampled_df["sentence"] = sampled_df["sentence"].str[:text_length]
+
+    # widget 表示
+    with gr.Accordion(label="オリジナルテキスト", open=False):
+        gr.Dataframe(
+            sampled_df,
+            label=f"{len(sampled_df)} / {df_size} 件をサンプリングしています",
+            show_label=True,
+            interactive=True,
+        )
 
 
 if __name__ == "__main__":
