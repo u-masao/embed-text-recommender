@@ -9,12 +9,26 @@ scenarios:
     top_n: 30
   - positive_query: スマホ
     top_n: 30
+  - positive_query: サーキット
+    top_n: 30
+
 ui:
-  chunk_method: head_only
+  search_engine: engine_limit-30_chunk_split.cloudpickle
+  # search_engine: engine_limit-0_chunk_split.cloudpickle
+
+  sentences_data: data/interim/sentences-limit-30.parquet
+  # sentences_data: data/interim/sentences-limit-0.parquet
+
   embedding_model_strings:
   - SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite
+  - SentenceTransformer/intfloat/multilingual-e5-large
+  - SentenceTransformer/intfloat/multilingual-e5-base
+  - SentenceTransformer/intfloat/multilingual-e5-small
+  - SentenceTransformer/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+  - SentenceTransformer/sentence-transformers/paraphrase-multilingual-mpnet-base-v2
+  - SentenceTransformer/sonoisa/sentence-bert-base-ja-mean-tokens-v2
   - Word2Vec/models/Word2Vec/base_dict/kv.bin
+
+  chunk_method: chunk_split
   log_dir: data/processed/log/
   models_directory: models
-  search_engine: engine_limit-30_head_only.cloudpickle
-  sentences_data: data/interim/sentences-limit-30.parquet
