@@ -3,8 +3,10 @@ import json
 
 import japanize_matplotlib  # noqa: F401
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 import streamlit as st
+from scipy.cluster.hierarchy import dendrogram, linkage
 
 
 @st.cache_data
@@ -47,20 +49,40 @@ def make_features(raw_df):
     return pd.concat(rankings)
 
 
-def _plot_ranking_chart(df, title=""):
-    fig, ax = plt.subplots(1, 1, figsize=(8, 6))
-    for index, cols in df.T.iterrows():
-        ax.plot(cols.values, cols.index, label=cols.name)
-    ax.set_title(title)
+def _plot_dendrogram(temp_df, title=""):
+    labels = temp_df.index
+    linked = linkage(temp_df.map(lambda x: np.log10(x)), method="ward")
+
+    fig, ax = plt.subplots(2, 1, figsize=(8, 8))
+    ax = ax.flatten()
+    dendrogram_result = dendrogram(
+        linked,
+        orientation="right",
+        distance_sort="descending",
+        show_leaf_counts=True,
+        ax=ax[0],
+        labels=labels,
+    )
+    ax[0].set_title(title + "のデンドログラム")
+    ax[0].set_ylabel("index")
+    ax[0].set_ylabel("distance")
+
+    sorted_df = temp_df.iloc[dendrogram_result["leaves"]]
+
+    for index, cols in sorted_df.T.iterrows():
+        ax[1].plot(cols.values, cols.index, label=cols.name)
+    ax[1].set_title(title + "のランキング")
+
     st.pyplot(fig)
-    st.dataframe(df)
+
+    st.dataframe(sorted_df)
 
 
 def plot_ranking(
     df, y_axis="model_name", x_axis="rank", groupby="query", id_column="id"
 ):
     for cut_key in df[groupby].unique():
-        title = f"「{cut_key}」のランキング"
+        title = f"「{cut_key}」"
         temp_df = df[df[groupby] == cut_key]
         temp_df = (
             temp_df.sort_values(id_column)
@@ -69,7 +91,7 @@ def plot_ranking(
             .unstack()[x_axis]
         )
 
-        _plot_ranking_chart(temp_df, title=title)
+        _plot_dendrogram(temp_df, title)
 
 
 def main():
@@ -82,7 +104,6 @@ def main():
     plot_ranking(
         ranking_df, y_axis="query", x_axis="rank", groupby="model_name"
     )
-    st.dataframe(ranking_df)
 
 
 if __name__ == "__main__":
