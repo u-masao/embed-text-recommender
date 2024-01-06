@@ -104,8 +104,8 @@ class Word2VecEmbedding(EmbeddingStrategy):
 
     def __str__(self) -> str:
         params = {
-            "model": self.model,
+            "model": str(self.model),
             "model_name_or_filepath": self.model_name_or_filepath,
-            "tagger": self.tagger,
+            "tagger": str(self.tagger),
         }
         return json.dumps(params)

@@ -203,8 +203,8 @@ class SentenceTransformerEmbedding(EmbeddingStrategy):
 
     def __str__(self) -> str:
         params = {
-            "model": self.model,
-            "splitter": self.splitter,
+            "model": str(self.model),
+            "splitter": str(self.splitter),
             "model_name_or_filepath": self.model_name_or_filepath,
             "chunk_method": self.chunk_method,
             "batch_size": self.batch_size,

@@ -298,7 +298,7 @@ class FaissSearchEngine(SearchEngineStrategy):
 
     def __str__(self) -> str:
         params = {
-            "indexer": self.index,
+            "indexer": str(self.index),
             "ids length": len(self.ids),
             "embeddings shape": self.embeds.shape,
             "normalized_embeddings shape": self.normalized_embeds.shape,
