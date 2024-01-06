@@ -2180,3 +2180,76 @@ stages:
       md5: 4683ec17e8295f0bf834fb07fc7c500e.dir
       size: 32279
       nfiles: 8
+  query_simulation@30-SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite-chunk_split:
+    cmd: poetry run python -m src.models.query_simulator 
+      models/SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite/engine_limit-30_chunk_split.cloudpickle
+      data/processed/SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite/limit-30_chunk_split/
+      --embedding_model_string=SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite
+      --scenario_filepath=scenario.yaml --mlflow_run_name=pipeline
+    deps:
+    - path: 
+        models/SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite/engine_limit-30_chunk_split.cloudpickle
+      hash: md5
+      md5: 44380f5838a2e463cf6037605c08f94e
+      size: 461749
+    - path: scenario.yaml
+      hash: md5
+      md5: 238169bf01f79d053353573d386c4690
+      size: 586
+    - path: src/models/embedding/
+      hash: md5
+      md5: df2dc53616b190c21075be021cdb7337.dir
+      size: 34514
+      nfiles: 10
+    - path: src/models/query_simulator.py
+      hash: md5
+      md5: 4d68c662a4a8f17ff1863969f9ee731c
+      size: 2641
+    - path: src/models/search_engine/
+      hash: md5
+      md5: 54b0efd26de9cfd4a957f30438bbcfa8.dir
+      size: 32639
+      nfiles: 8
+    outs:
+    - path: 
+        data/processed/SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite/limit-30_chunk_split/
+      hash: md5
+      md5: 9e67a5a5fb8234d82b2b2a5df2e37e2d.dir
+      size: 770274
+      nfiles: 4
+  query_simulation@30-Word2Vec/models/Word2Vec/base_dict/kv.bin-chunk_split:
+    cmd: poetry run python -m src.models.query_simulator 
+      models/Word2Vec/models/Word2Vec/base_dict/kv.bin/engine_limit-30_chunk_split.cloudpickle
+      data/processed/Word2Vec/models/Word2Vec/base_dict/kv.bin/limit-30_chunk_split/
+      --embedding_model_string=Word2Vec/models/Word2Vec/base_dict/kv.bin --scenario_filepath=scenario.yaml
+      --mlflow_run_name=pipeline
+    deps:
+    - path: 
+        models/Word2Vec/models/Word2Vec/base_dict/kv.bin/engine_limit-30_chunk_split.cloudpickle
+      hash: md5
+      md5: f790674b350cf71279db83a904f6c0a9
+      size: 180940
+    - path: scenario.yaml
+      hash: md5
+      md5: 238169bf01f79d053353573d386c4690
+      size: 586
+    - path: src/models/embedding/
+      hash: md5
+      md5: df2dc53616b190c21075be021cdb7337.dir
+      size: 34514
+      nfiles: 10
+    - path: src/models/query_simulator.py
+      hash: md5
+      md5: 4d68c662a4a8f17ff1863969f9ee731c
+      size: 2641
+    - path: src/models/search_engine/
+      hash: md5
+      md5: 54b0efd26de9cfd4a957f30438bbcfa8.dir
+      size: 32639
+      nfiles: 8
+    outs:
+    - path: data/processed/Word2Vec/models/Word2Vec/base_dict/kv.bin/limit-30_chunk_split/
+      hash: md5
+      md5: f56b1f16052d1c47306a60a4ce39627b.dir
+      size: 770277
+      nfiles: 4
