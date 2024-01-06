@@ -1,6 +1,7 @@
 """
 このモジュールは FaissSearchEngine モデルを実装します
 """
+import json
 from pathlib import Path
 from typing import List, Optional, Tuple
 
@@ -304,4 +305,4 @@ class FaissSearchEngine(SearchEngineStrategy):
             "embedding dimension": self.dimension,
             "metric_space_distance": self.metric_space_distance,
         }
-        return str(params)
+        return json.dumps(params)

@@ -1,6 +1,7 @@
 """
 このモジュールは Word2VecEmbedding モデルを実装します
 """
+import json
 from typing import List
 
 import fugashi
@@ -107,4 +108,4 @@ class Word2VecEmbedding(EmbeddingStrategy):
             "model_name_or_filepath": self.model_name_or_filepath,
             "tagger": self.tagger,
         }
-        return str(params)
+        return json.dumps(params)

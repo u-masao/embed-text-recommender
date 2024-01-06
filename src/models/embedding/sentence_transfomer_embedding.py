@@ -1,6 +1,7 @@
 """
-このモジュールは DummyEmbedding モデルを実装します
+このモジュールは SentenceTransformerEmbedding モデルを実装します
 """
+import json
 import logging
 from typing import List, Optional
 
@@ -208,7 +209,7 @@ class SentenceTransformerEmbedding(EmbeddingStrategy):
             "chunk_method": self.chunk_method,
             "batch_size": self.batch_size,
         }
-        return str(params)
+        return json.dumps(params)
 
 
 def make_weight_matrix(chunks_list: List[List[str]]) -> np.ndarray:

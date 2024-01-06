@@ -26,7 +26,7 @@ def main():
     raw_df = pd.DataFrame(runs)
     df = pd.DataFrame()
     df["model_name"] = raw_df["configuration"].map(
-        lambda x: x["embedding_model"]
+        lambda x: json.loads(x["embedding_model"])
     )
     df["id"] = pd.DataFrame(raw_df["outputs"]).map(lambda x: x["result"]["id"])
     df["query"] = pd.DataFrame(raw_df["inputs"]).map(
