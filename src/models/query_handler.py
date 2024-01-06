@@ -405,7 +405,7 @@ class QueryHandler:
         """
         # make dirs
         log_dir = Path(self.config["log_dir"])
-        log_dir.mkdir(exist_ok=True)
+        log_dir.mkdir(exist_ok=True, parents=True)
 
         # バイナリで上書き保存
         cloudpickle.dump(
