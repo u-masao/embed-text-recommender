@@ -1,7 +1,6 @@
 """
 このモジュールは Word2VecEmbedding モデルを実装します
 """
-from pprint import pformat
 from typing import List
 
 import fugashi
@@ -108,4 +107,4 @@ class Word2VecEmbedding(EmbeddingStrategy):
             "model_name_or_filepath": self.model_name_or_filepath,
             "tagger": self.tagger,
         }
-        return pformat(params)
+        return str(params)

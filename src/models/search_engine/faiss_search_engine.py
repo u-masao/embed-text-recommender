@@ -2,7 +2,6 @@
 このモジュールは FaissSearchEngine モデルを実装します
 """
 from pathlib import Path
-from pprint import pformat
 from typing import List, Optional, Tuple
 
 import cloudpickle
@@ -305,4 +304,4 @@ class FaissSearchEngine(SearchEngineStrategy):
             "embedding dimension": self.dimension,
             "metric_space_distance": self.metric_space_distance,
         }
-        return pformat(params)
+        return str(params)

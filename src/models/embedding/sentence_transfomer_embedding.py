@@ -2,7 +2,6 @@
 このモジュールは DummyEmbedding モデルを実装します
 """
 import logging
-from pprint import pformat
 from typing import List, Optional
 
 import numpy as np
@@ -209,7 +208,7 @@ class SentenceTransformerEmbedding(EmbeddingStrategy):
             "chunk_method": self.chunk_method,
             "batch_size": self.batch_size,
         }
-        return pformat(params)
+        return str(params)
 
 
 def make_weight_matrix(chunks_list: List[List[str]]) -> np.ndarray:
