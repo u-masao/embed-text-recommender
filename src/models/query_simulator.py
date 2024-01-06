@@ -20,6 +20,7 @@ def query_simulator(kwargs):
 
     # init QueryHandler
     handler = QueryHandler(kwargs["scenario_filepath"])
+    handler.init_models(kwargs["embedding_model_string"])
     handler.config["log_dir"] = kwargs["log_output_dir"]
 
     for scenario in scenarios:
