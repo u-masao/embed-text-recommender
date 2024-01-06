@@ -2194,8 +2194,8 @@ stages:
       size: 461749
     - path: scenario.yaml
       hash: md5
-      md5: 238169bf01f79d053353573d386c4690
-      size: 586
+      md5: b4593f901f8fbf2a1645d66a73b8fbe0
+      size: 1162
     - path: src/models/embedding/
       hash: md5
       md5: df2dc53616b190c21075be021cdb7337.dir
@@ -2203,8 +2203,8 @@ stages:
       nfiles: 10
     - path: src/models/query_simulator.py
       hash: md5
-      md5: 4d68c662a4a8f17ff1863969f9ee731c
-      size: 2641
+      md5: 44c38cb544b814909b599d561c3c1824
+      size: 2627
     - path: src/models/search_engine/
       hash: md5
       md5: 54b0efd26de9cfd4a957f30438bbcfa8.dir
@@ -2214,9 +2214,9 @@ stages:
     - path: 
         data/processed/SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite/limit-30_chunk_split/
       hash: md5
-      md5: 9e67a5a5fb8234d82b2b2a5df2e37e2d.dir
-      size: 770274
-      nfiles: 4
+      md5: 8e6ff2717f95ceeac4a23d4875ad531e.dir
+      size: 988449
+      nfiles: 5
   query_simulation@30-Word2Vec/models/Word2Vec/base_dict/kv.bin-chunk_split:
     cmd: poetry run python -m src.models.query_simulator 
       models/Word2Vec/models/Word2Vec/base_dict/kv.bin/engine_limit-30_chunk_split.cloudpickle
@@ -2231,8 +2231,8 @@ stages:
       size: 180940
     - path: scenario.yaml
       hash: md5
-      md5: 238169bf01f79d053353573d386c4690
-      size: 586
+      md5: b4593f901f8fbf2a1645d66a73b8fbe0
+      size: 1162
     - path: src/models/embedding/
       hash: md5
       md5: df2dc53616b190c21075be021cdb7337.dir
@@ -2240,8 +2240,8 @@ stages:
       nfiles: 10
     - path: src/models/query_simulator.py
       hash: md5
-      md5: 4d68c662a4a8f17ff1863969f9ee731c
-      size: 2641
+      md5: 44c38cb544b814909b599d561c3c1824
+      size: 2627
     - path: src/models/search_engine/
       hash: md5
       md5: 54b0efd26de9cfd4a957f30438bbcfa8.dir
@@ -2250,6 +2250,6 @@ stages:
     outs:
     - path: data/processed/Word2Vec/models/Word2Vec/base_dict/kv.bin/limit-30_chunk_split/
       hash: md5
-      md5: f56b1f16052d1c47306a60a4ce39627b.dir
-      size: 770277
-      nfiles: 4
+      md5: 84f5eae912a83e5e04abd45fb7cae90b.dir
+      size: 988452
+      nfiles: 5
