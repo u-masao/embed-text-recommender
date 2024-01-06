@@ -49,9 +49,9 @@ def make_features(raw_df):
     return pd.concat(rankings)
 
 
-def _plot_dendrogram(temp_df, title=""):
+def _plot_dendrogram(temp_df, title="", out_of_rank=100):
     labels = temp_df.index
-    linked = linkage(temp_df.map(lambda x: np.log10(x)), method="ward")
+    linked = linkage(temp_df.fillna(out_of_rank).map(lambda x: np.log10(x)), method="ward")
 
     fig, ax = plt.subplots(2, 1, figsize=(8, 8))
     ax = ax.flatten()
