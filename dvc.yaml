@@ -114,7 +114,7 @@ stages:
     cmd: >-
       poetry run python -m src.models.query_simulator
       models/${item.embedding_model_string}/engine_limit-${item.limit_sentences_size}_${item.chunk_method}.cloudpickle
-      data/processed/${item.embedding_model_string}/limit-${item.limit_sentences_size}_${item.chunk_method}/
+      data/processed/scenario/${item.embedding_model_string}/limit-${item.limit_sentences_size}_${item.chunk_method}/
       --embedding_model_string=${item.embedding_model_string}
       --scenario_filepath=scenario.yaml
       --mlflow_run_name=pipeline
@@ -125,4 +125,4 @@ stages:
     - models/${item.embedding_model_string}/engine_limit-${item.limit_sentences_size}_${item.chunk_method}.cloudpickle
     - scenario.yaml
     outs:
-    - data/processed/${item.embedding_model_string}/limit-${item.limit_sentences_size}_${item.chunk_method}/
+    - data/processed/scenario/${item.embedding_model_string}/limit-${item.limit_sentences_size}_${item.chunk_method}/
