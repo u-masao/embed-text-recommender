@@ -1,8 +1,8 @@
 scenarios:
   - positive_query: カメラ
     negative_query: 地図
-    dislike_ids: 4674693
-    like_ids: 6588884
+    dislike_ids: "4674693"
+    like_ids: "6588884"
     top_n: 30
   - positive_query: 時計
     negative_query: 地図
