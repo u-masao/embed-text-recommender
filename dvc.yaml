@@ -122,6 +122,7 @@ stages:
     - src/models/query_simulator.py
     - src/models/embedding/
     - src/models/search_engine/
+    - src/models/query_handler.py
     - models/${item.embedding_model_string}/engine_limit-${item.limit_sentences_size}_${item.chunk_method}.cloudpickle
     - scenario.yaml
     outs:
