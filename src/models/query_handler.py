@@ -331,7 +331,7 @@ class QueryHandler:
                     "timestamp": time.time(),
                 },
                 "configuration": {
-                    "embedding_model": self.embedding_model.get_model_name(),
+                    "embedding_model": str(self.embedding_model),
                     "engine": str(self.engine),
                 },
             }
