@@ -106,3 +106,24 @@ stages:
     - src/models/embedding/
     - src/models/search_engine/
     - models/${item.embedding_model_string}/engine_limit-${item.limit_sentences_size}_${item.chunk_method}.cloudpickle
+  query_simulation:
+    matrix:
+      limit_sentences_size: ${limit_sentences_sizes}
+      embedding_model_string: ${embedding_model_strings}
+      chunk_method: ${chunk_methods}
+    cmd: >-
+      poetry run python -m src.models.query_simulator
+      models/${item.embedding_model_string}/engine_limit-${item.limit_sentences_size}_${item.chunk_method}.cloudpickle
+      data/processed/scenario/${item.embedding_model_string}/limit-${item.limit_sentences_size}_${item.chunk_method}/
+      --embedding_model_string=${item.embedding_model_string}
+      --scenario_filepath=scenario.yaml
+      --mlflow_run_name=pipeline
+    deps:
+    - src/models/query_simulator.py
+    - src/models/embedding/
+    - src/models/search_engine/
+    - src/models/query_handler.py
+    - models/${item.embedding_model_string}/engine_limit-${item.limit_sentences_size}_${item.chunk_method}.cloudpickle
+    - scenario.yaml
+    outs:
+    - data/processed/scenario/${item.embedding_model_string}/limit-${item.limit_sentences_size}_${item.chunk_method}/

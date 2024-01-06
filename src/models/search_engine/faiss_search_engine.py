@@ -1,8 +1,8 @@
 """
 このモジュールは FaissSearchEngine モデルを実装します
 """
+import json
 from pathlib import Path
-from pprint import pformat
 from typing import List, Optional, Tuple
 
 import cloudpickle
@@ -298,11 +298,11 @@ class FaissSearchEngine(SearchEngineStrategy):
 
     def __str__(self) -> str:
         params = {
-            "indexer": self.index,
+            "indexer": str(self.index),
             "ids length": len(self.ids),
             "embeddings shape": self.embeds.shape,
             "normalized_embeddings shape": self.normalized_embeds.shape,
             "embedding dimension": self.dimension,
             "metric_space_distance": self.metric_space_distance,
         }
-        return pformat(params)
+        return json.dumps(params)

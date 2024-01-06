@@ -1,5 +1,4 @@
 ui:
-  active_embedding_model_index: 0
   chunk_method: chunk_split
   default_dislike_ids: 4674693 4839374
   default_like_ids: 6588884 6592773

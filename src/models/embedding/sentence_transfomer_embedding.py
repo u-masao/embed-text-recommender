@@ -1,8 +1,8 @@
 """
-このモジュールは DummyEmbedding モデルを実装します
+このモジュールは SentenceTransformerEmbedding モデルを実装します
 """
+import json
 import logging
-from pprint import pformat
 from typing import List, Optional
 
 import numpy as np
@@ -203,13 +203,13 @@ class SentenceTransformerEmbedding(EmbeddingStrategy):
 
     def __str__(self) -> str:
         params = {
-            "model": self.model,
-            "splitter": self.splitter,
+            "model": str(self.model),
+            "splitter": str(self.splitter),
             "model_name_or_filepath": self.model_name_or_filepath,
             "chunk_method": self.chunk_method,
             "batch_size": self.batch_size,
         }
-        return pformat(params)
+        return json.dumps(params)
 
 
 def make_weight_matrix(chunks_list: List[List[str]]) -> np.ndarray:

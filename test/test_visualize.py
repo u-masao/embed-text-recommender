@@ -4,9 +4,9 @@ import numpy as np
 import pandas as pd
 import pytest
 
+from src.models import QueryHandler
 from src.models.embedding import EmbeddingModel
 from src.models.search_engine import SearchEngine
-from src.visualization.visualize import merge_embeddings
 
 
 @pytest.fixture(
@@ -33,15 +33,27 @@ def embedding_model(request):
 @pytest.fixture(
     scope="session",
 )
+def query_handler(request):
+    handler = QueryHandler()
+    handler.init_models(
+        "SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite"
+    )
+    return handler
+
+
+@pytest.fixture(
+    scope="session",
+)
 def text_df(request):
     return pd.read_parquet("data/interim/sentences-limit-30.parquet")
 
 
-def test_merge(embedding_model, engine, text_df):
+def test_merge(embedding_model, engine, text_df, query_handler):
     # 初期化チェック
     assert embedding_model is not None
     assert engine is not None
     assert text_df is not None
+    assert query_handler is not None
 
     # 適当な入力を設定
     positive_query = "就職活動 新卒"
@@ -66,7 +78,7 @@ def test_merge(embedding_model, engine, text_df):
     dislike_embeddings = embedding_from_ids_string(dislike_ids, engine)
 
     # ベクトル合成
-    total_embedding = merge_embeddings(
+    total_embedding = query_handler.merge_embeddings(
         positive_query_embeddings,
         positive_query_blend_ratio,
         negative_query_embeddings,
@@ -82,11 +94,12 @@ def test_merge(embedding_model, engine, text_df):
     assert total_embedding.shape[0] == d_size
 
 
-def test_single(embedding_model, engine, text_df):
+def test_single(embedding_model, engine, text_df, query_handler):
     # 初期化チェック
     assert embedding_model is not None
     assert engine is not None
     assert text_df is not None
+    assert query_handler is not None
 
     positive_query = "就職活動"
     positive_query_blend_ratio = 0.9
@@ -107,7 +120,7 @@ def test_single(embedding_model, engine, text_df):
     dislike_embeddings = embedding_from_ids_string(dislike_ids, engine)
 
     # ベクトル合成
-    total_embedding = merge_embeddings(
+    total_embedding = query_handler.merge_embeddings(
         positive_query_embeddings,
         positive_query_blend_ratio,
         negative_query_embeddings,
