@@ -2207,8 +2207,8 @@ stages:
       size: 14166
     - path: src/models/query_simulator.py
       hash: md5
-      md5: 44c38cb544b814909b599d561c3c1824
-      size: 2627
+      md5: 2543ea5ab63dd28786a440e30607c0d2
+      size: 2685
     - path: src/models/search_engine/
       hash: md5
       md5: a3d1c7fb83c326822ff81ca7cfc5102f.dir
@@ -2218,8 +2218,8 @@ stages:
     - path: 
         data/processed/scenario/SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite/limit-30_chunk_split/
       hash: md5
-      md5: 28ff04446269531a160b06344decdc29.dir
-      size: 988549
+      md5: 9ec39c320e3461180e101c169409be1c.dir
+      size: 988547
       nfiles: 5
   query_simulation@30-Word2Vec/models/Word2Vec/base_dict/kv.bin-chunk_split:
     cmd: poetry run python -m src.models.query_simulator 
@@ -2248,8 +2248,8 @@ stages:
       size: 14166
     - path: src/models/query_simulator.py
       hash: md5
-      md5: 44c38cb544b814909b599d561c3c1824
-      size: 2627
+      md5: 2543ea5ab63dd28786a440e30607c0d2
+      size: 2685
     - path: src/models/search_engine/
       hash: md5
       md5: a3d1c7fb83c326822ff81ca7cfc5102f.dir
@@ -2259,6 +2259,6 @@ stages:
     - path: 
         data/processed/scenario/Word2Vec/models/Word2Vec/base_dict/kv.bin/limit-30_chunk_split/
       hash: md5
-      md5: dcf39bf27178677c66d80f1058e1731e.dir
+      md5: ea1add808d7556a1a36e04e84b9cf055.dir
       size: 988550
       nfiles: 5
