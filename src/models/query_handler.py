@@ -23,7 +23,7 @@ MINIMUM_L2_NORM = 0.000001
 class QueryHandler:
     def __init__(self, config_filepath=CONFIG_FILEPATH):
         self.config = ConfigurationManager().load(config_filepath)
-        self.embedding_model, self.engine, self.text_df = self.init_models()
+        self.init_models()
 
     def init_models(self, model_name=None):
         # init logging
@@ -39,22 +39,20 @@ class QueryHandler:
         ) = self.get_active_model_name()
 
         # load embedding_model
-        embedding_model = EmbeddingModel.make_embedding_model(
+        self.embedding_model = EmbeddingModel.make_embedding_model(
             embedding_model_string,
             chunk_method=self.config["chunk_method"],
         )
 
         # init search engin
-        engine = SearchEngine.load(search_engine_filepath)
+        self.engine = SearchEngine.load(search_engine_filepath)
 
         # load text data
-        text_df = pd.read_parquet(self.config["sentences_data"])
+        self.text_df = pd.read_parquet(self.config["sentences_data"])
 
         # logging
-        logger.info(f"engine summary: {engine}")
-        logger.info(f"embedding_model summary: {embedding_model}")
-
-        return embedding_model, engine, text_df
+        logger.info(f"engine summary: {self.engine}")
+        logger.info(f"embedding_model summary: {self.embedding_model}")
 
     def update_config(self, new_model_name):
         # reload config
@@ -64,9 +62,7 @@ class QueryHandler:
         del self.embedding_model, self.engine, self.text_df
 
         # init models
-        self.embedding_model, self.engine, self.text_df = self.init_models(
-            new_model_name
-        )
+        self.init_models(new_model_name)
 
         # save config
         self.config.save(CONFIG_FILEPATH)
