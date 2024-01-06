@@ -13,11 +13,11 @@ scenarios:
     top_n: 30
 
 ui:
-  search_engine: engine_limit-30_chunk_split.cloudpickle
-  # search_engine: engine_limit-0_chunk_split.cloudpickle
+  # search_engine: engine_limit-30_chunk_split.cloudpickle
+  search_engine: engine_limit-0_chunk_split.cloudpickle
 
-  sentences_data: data/interim/sentences-limit-30.parquet
-  # sentences_data: data/interim/sentences-limit-0.parquet
+  # sentences_data: data/interim/sentences-limit-30.parquet
+  sentences_data: data/interim/sentences-limit-0.parquet
 
   embedding_model_strings:
   - SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite
