@@ -26,7 +26,7 @@ def main():
     raw_df = pd.DataFrame(runs)
     df = pd.DataFrame()
     df["model_name"] = raw_df["configuration"].map(
-        lambda x: filter_model_name(x["embedding_model"])
+        lambda x: x["embedding_model"]
     )
     df["id"] = pd.DataFrame(raw_df["outputs"]).map(lambda x: x["result"]["id"])
     df["query"] = pd.DataFrame(raw_df["inputs"]).map(
