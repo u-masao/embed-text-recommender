@@ -19,7 +19,7 @@ def query_simulator(kwargs):
     logger.info(f"{scenarios=}")
 
     # init QueryHandler
-    handler = QueryHandler(kwargs["scenario_file"])
+    handler = QueryHandler(kwargs["scenario_filepath"])
     handler.config['log_dir'] = kwargs['log_output_dir']
 
     for scenario in scenarios:
