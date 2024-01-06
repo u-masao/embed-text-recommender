@@ -13,7 +13,7 @@ def query_simulator(kwargs):
     logger = logging.getLogger(__name__)
 
     # load scenario
-    scenarios = yaml.load(
+    scenarios = yaml.safe_load(
         open(kwargs["scenario_filepath"], "r", encoding="utf-8")
     )["scenarios"]
     logger.info(f"{scenarios=}")
