@@ -1,0 +1,20 @@
+scenarios:
+  - positive_query: カメラ
+    negative_query: 地図
+    dislike_ids: 4674693
+    like_ids: 6588884
+    top_n: 30
+  - positive_query: 時計
+    negative_query: 地図
+    top_n: 30
+  - positive_query: スマホ
+    top_n: 30
+ui:
+  chunk_method: head_only
+  embedding_model_strings:
+  - SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite
+  - Word2Vec/models/Word2Vec/base_dict/kv.bin
+  log_dir: data/processed/log/
+  models_directory: models
+  search_engine: engine_limit-30_head_only.cloudpickle
+  sentences_data: data/interim/sentences-limit-30.parquet
