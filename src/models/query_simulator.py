@@ -20,23 +20,23 @@ def query_simulator(kwargs):
 
     # init QueryHandler
     handler = QueryHandler(kwargs["scenario_filepath"])
-    handler.config['log_dir'] = kwargs['log_output_dir']
+    handler.config["log_dir"] = kwargs["log_output_dir"]
 
     for scenario in scenarios:
         print(scenario)
-        print(
-            handler.search(
-                scenario.get("positive_query", ""),
-                scenario.get("positive_query_blend_ratio", 1.0),
-                scenario.get("negative_query", ""),
-                scenario.get("negative_query_blend_ratio", 1.0),
-                scenario.get("like_ids", ""),
-                scenario.get("like_blend_ratio", 1.0),
-                scenario.get("dislike_ids", ""),
-                scenario.get("dislike_blend_ratio", 1.0),
-                scenario.get("top_n", 20),
-            )
+        result = handler.search(
+            scenario.get("positive_query", ""),
+            scenario.get("positive_query_blend_ratio", 1.0),
+            scenario.get("negative_query", ""),
+            scenario.get("negative_query_blend_ratio", 1.0),
+            scenario.get("like_ids", ""),
+            scenario.get("like_blend_ratio", 1.0),
+            scenario.get("dislike_ids", ""),
+            scenario.get("dislike_blend_ratio", 1.0),
+            scenario.get("top_n", 20),
         )
+
+        print(f"len(result): {len(result)}")
 
 
 @click.command()
