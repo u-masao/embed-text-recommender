@@ -8,7 +8,7 @@ ui:
   embedding_model_strings:
   - SentenceTransformer/oshizo/sbert-jsnli-luke-japanese-base-lite
   - Word2Vec/models/Word2Vec/base_dict/kv.bin
-  gradio_share: true
+  gradio_share: false
   models_directory: models
   search_engine: engine_limit-30_chunk_split.cloudpickle
   sentences_data: data/interim/sentences-limit-30.parquet

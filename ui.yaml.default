@@ -14,7 +14,7 @@ ui:
   - SentenceTransformer/sentence-transformers/paraphrase-multilingual-mpnet-base-v2
   - SentenceTransformer/sonoisa/sentence-bert-base-ja-mean-tokens-v2
   - Word2Vec/models/Word2Vec/base_dict/kv.bin
-  gradio_share: true
+  gradio_share: false
   models_directory: models
   search_engine: engine_limit-0_chunk_split.cloudpickle
   sentences_data: data/interim/sentences-limit-0.parquet
